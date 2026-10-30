@@ -36,6 +36,15 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 - **Projekt** (`projects/<slug>.md`): Fortschritt nur mit `source` und `updatedAt`.
 - Ein fehlerhafter Eintrag **bricht den Build ab** (Zod-Schema). Schemas ändern nur zusammen mit `tests/schemas.test.mjs`.
 
+## Prüfungen (ersetzen das alte `verify.js`)
+
+`npm run check` führt alles der Reihe nach aus. Die CI macht dasselbe vor jedem Deploy: `npm test`, `npm run check:content`, `npm run build`, `npm run check:dist`. Schlägt eine Prüfung an, wird **nicht** veröffentlicht.
+
+- **Inhalte** (`check:content`): Slug im Dateinamen, Video-Dateiname = YouTube-ID, Bilder und GPX existieren (unter `public/`), Verweise (Tour ↔ Video ↔ Story) zeigen auf Vorhandenes, **GPX-Länge passt zur Angabe `distanceKm`** (Toleranz 15 %, mindestens 0,3 km). Hinweis (kein Fehler): Tour mit GPX ohne Koordinaten hat keinen Pin.
+- **Gebaute Seite** (`check:dist`, prüft `dist/`): `lang="de"`, Title, Meta Description, Canonical (https, `.html`), **Umami-Zeile genau einmal und unverändert**, `noindex` im Staging und nicht live, **kein iFrame, keine YouTube-Einbettung, kein `img.youtube.com`, kein Tailwind-CDN, keine Google Fonts, keine Fremdanfrage beim Laden** (außer Umami), **keine toten internen Links**, Lizenztext liegt neben den Schriftdateien.
+- Entfallen gegenüber `verify.js` (Live-Seite): Dateiende und JS-Syntax von `index.html`, Touren-Pin-Abgleich (Pins entstehen aus den Daten).
+- Neue Regeln nur zusammen mit Tests in `tests/checks.test.mjs`.
+
 ## Arbeitsweise
 
 - **Kein Push ohne ausdrückliche Freigabe von Björn.** Staging-Push löst den Deploy nach GitHub Pages aus (nur Testseite, nicht die Live-Seite).
