@@ -27,6 +27,15 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 - **Slugs** nur `a–z`, `0–9`, Bindestrich, einmal vergeben, nie ändern. Tabelle im Vault (Slug-Tabelle).
 - **Keine Geheimnisse im Repo** (öffentlich): kein Mastercode der Pfadwerk-Codes, keine Schlüssel.
 
+## Inhalte anlegen (Collections)
+
+- **Tour/Ziel** (`src/content/tours/<slug>.md`): Pflicht `title`, `place`, `description`, `duration`, `difficulty`, `image`, `imageAlt`, `publishedAt`; bei `kind: tour` zusätzlich `distanceKm`. Optional: `gpx`, `coordinates`, `video`, `stories`, `komoot`, `parking`, `rating` u. a. Ein **Ziel** (`kind: ziel`) hat keine GPX. Unbekanntes bleibt leer oder `unbekannt`, **nichts erfinden**.
+- **Video** (`videos/<YouTube-ID>.md`): `youtubeId`, `title`, `thumbnail` (lokal unter `images/`, nie `img.youtube.com`).
+- **Story** (`stories/<bisheriger-dateiname>.md`): `title`, `description` (20–300 Zeichen), `date`, `category` (unterwegs, randnotizen, archiv), Titelbild nur mit Alt-Text.
+- **Event** (`events/<slug>.md`): `endDate` ist Pflicht (danach wird der Eintrag ausgeblendet), `url` nur https.
+- **Projekt** (`projects/<slug>.md`): Fortschritt nur mit `source` und `updatedAt`.
+- Ein fehlerhafter Eintrag **bricht den Build ab** (Zod-Schema). Schemas ändern nur zusammen mit `tests/schemas.test.mjs`.
+
 ## Arbeitsweise
 
 - **Kein Push ohne ausdrückliche Freigabe von Björn.** Staging-Push löst den Deploy nach GitHub Pages aus (nur Testseite, nicht die Live-Seite).
@@ -44,6 +53,9 @@ src/styles/global.css    Tailwind, Farben, Jahreszeit-Variablen
 src/lib/season.js        Jahreszeitenlogik (wird in den <head> eingebettet)
 src/lib/fonts.js         @font-face für Inter (mit Basispfad)
 src/data/nav.js          Hauptnavigation (live:true erst, wenn die Seite existiert)
+src/content.config.ts    Collections: tours (inkl. Ziele per kind), videos, stories, events, projects
+src/schemas/             Zod-Schemas (testbar ohne Build), Pflichtfelder und Regeln je Typ
+src/content/<typ>/       Eine Markdown-Datei pro Inhalt, Dateiname = Slug (Video: YouTube-ID)
 src/pages/               Seiten
 public/fonts/            Inter + OFL-Lizenztext
 tests/                   Tests (npm test)
