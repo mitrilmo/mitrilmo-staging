@@ -17,6 +17,16 @@ Format pro Eintrag: Datum, dann nur zutreffende Kategorien **Neu**, **Geändert*
 - `CLAUDE.md` mit den Entscheidungen von Björn, Regeln und Arbeitsweise für den Neubau.
 - 58 Tests (Jahreszeit, Schemas, Prüfregeln, Anker, Bilder).
 
+### Nachbesserungen nach dem Review zu M1 (30.10.2026)
+- **Fremdanfragen-Prüfung neu gefasst** (Gegenprobe statt Aufzählung): erkennt jetzt `srcset`, `poster`, `<object>`, `preconnect`/`dns-prefetch`/`preload`, `//host`, Großschreibung, einfache und fehlende Anführungszeichen, `<form action>`, `@import`, Adressen in Inline-Skripten und alle gebauten CSS-Dateien.
+- Umami-Zeile darf nur noch die vier vorgesehenen Attribute haben.
+- `public/robots.txt` mit `Disallow: /` entfernt (sie hätte beim Cutover die Live-Seite gesperrt). `check:dist` bricht beim Live-Build ab, wenn eine `robots.txt` die ganze Seite sperrt.
+- Link auf noch nicht migrierte Seiten (`PENDING`) ist beim Live-Build ein Fehler, nur im Staging erlaubt.
+- Rechtstext von Impressum und Datenschutz per Prüfsumme gegen Abdriften gesichert (`tests/legal.test.mjs`, verglichen mit der Live-Seite).
+- `build:live` und `check:live` laufen plattformunabhängig (auch unter Windows-PowerShell), Pfade in den Skripten mit `fileURLToPath`.
+- CI läuft auch bei Pull Requests (ohne Deployment), Hilfsfunktion `withBase` für interne Adressen aus Inhalten.
+- Alt-Text des 3-Türme-Bildes kennzeichnet es als Illustration, leerer Ordner `public/images` und ein veralteter Testpfad entfernt. 66 Tests.
+
 ### Geändert
 - Gegenüber der Live-Seite: Tailwind lokal statt CDN, kein `img.youtube.com`-Fallback für Video-Vorschaubilder, Prüfungen in CI statt `verify.js`.
 

@@ -1,19 +1,22 @@
-// Prüft die gebaute Seite (dist/): Metadaten, Umami, Fremdanfragen, tote Links, Lizenztext der Schrift.
-// Start nach dem Build: npm run check:dist   (Live-Build: STAGING=false npm run check:dist)
+// Prüft die gebaute Seite (dist/): Metadaten, Umami, Fremdanfragen (HTML und CSS), tote Links, Bilder, Lizenztext der Schrift.
+// Staging:  npm run check:dist        Live:  npm run check:live   (oder: node scripts/check-dist.mjs --live)
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { checkHtml, checkLinks, checkLegal, checkDistImages } from './lib/checks.mjs';
+import { fileURLToPath } from 'node:url';
+import { checkHtml, checkLinks, checkLegal, checkDistImages, checkCss, checkRobots } from './lib/checks.mjs';
 
-// Seiten, auf die schon verlinkt wird, die aber erst migriert werden (Umsetzungsplan). Eintrag entfernen, sobald die Seite existiert.
+// Seiten, auf die schon verlinkt wird, die aber erst migriert werden (Umsetzungsplan). Nur im Staging erlaubt,
+// beim Live-Build ist ein Link ohne Seite ein Fehler. Eintrag entfernen, sobald die Seite existiert.
 const PENDING = { 'pfadwerk.html': 'AP2.5 (Datenschutztext verlinkt darauf)' };
 
-const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 if (!existsSync(dist)) {
-  console.error('dist/ fehlt, bitte zuerst npm run build ausführen.');
+  console.error('dist/ fehlt, bitte zuerst bauen (npm run build bzw. npm run build:live).');
   process.exit(1);
 }
-const staging = process.env.STAGING !== 'false';
+const live = process.argv.includes('--live') || process.env.STAGING === 'false';
+const staging = !live;
 const base = staging ? '/mitrilmo-staging' : '';
 
 const files = [];
@@ -28,19 +31,23 @@ const pages = new Map(files.filter((f) => f.endsWith('.html')).map((f) => [f, re
 const problems = [];
 
 for (const [page, html] of pages) for (const p of checkHtml(html, { staging })) problems.push(`${page}: ${p}`);
+for (const f of files.filter((x) => x.endsWith('.css'))) problems.push(...checkCss(readFileSync(join(dist, f), 'utf8'), f));
+
 const set = new Set(files);
 const pending = new Set();
 problems.push(...checkLinks(pages, base, (rel) => {
   if (set.has(rel)) return true;
-  if (PENDING[rel]) { pending.add(rel); return true; }
+  if (staging && PENDING[rel]) { pending.add(rel); return true; }
   return false;
 }));
 problems.push(...checkLegal(pages));
 problems.push(...checkDistImages(files.map((f) => ({ path: f, bytes: statSync(join(dist, f)).size }))));
-// Entwicklungsseiten (dev-*.html) gibt es nur im Staging, sie dürfen nie live gehen
-if (!staging) for (const f of files.filter((x) => /(^|\/)dev-[^/]*\.html$/.test(x))) problems.push(`Entwicklungsseite ${f} darf nicht live gehen`);
+if (set.has('robots.txt')) problems.push(...checkRobots(readFileSync(join(dist, 'robots.txt'), 'utf8'), staging));
+
 for (const rel of pending) console.log(`  Hinweis: Link auf ${rel} noch ohne Seite, geplant in ${PENDING[rel]}`);
 for (const rel of Object.keys(PENDING)) if (set.has(rel)) problems.push(`${rel} existiert jetzt, bitte aus PENDING in scripts/check-dist.mjs entfernen`);
+// Entwicklungsseiten (dev-*.html) gibt es nur im Staging, sie dürfen nie live gehen
+if (live) for (const f of files.filter((x) => /(^|\/)dev-[^/]*\.html$/.test(x))) problems.push(`Entwicklungsseite ${f} darf nicht live gehen`);
 
 for (const req of ['index.html', '404.html']) if (!set.has(req)) problems.push(`${req} fehlt im Build`);
 if (files.some((f) => f.endsWith('.woff2')) && !files.some((f) => /^fonts\/OFL.*\.txt$/.test(f))) {

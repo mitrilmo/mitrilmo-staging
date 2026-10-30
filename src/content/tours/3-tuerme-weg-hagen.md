@@ -10,7 +10,7 @@ distanceKm: 10.8
 duration: "4h 56min"
 difficulty: mittel
 image: ../../assets/images/tours/3-tuerme-weg-hagen.jpg
-imageAlt: "Wandergruppe mit Wanderstöcken vor den drei Türmen des Hagener 3-Türme-Wegs"
+imageAlt: "Illustration: Wandergruppe mit Wanderstöcken vor den drei Türmen des Hagener 3-Türme-Wegs"
 gpx: gpx/3-tuerme-weg-hagen.gpx
 coordinates: { lat: 51.3521184, lng: 7.4662851 }
 video: k1JNFJuXz7o

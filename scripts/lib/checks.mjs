@@ -98,9 +98,53 @@ export function checkEntries(data, io) {
   return { errors, warnings };
 }
 
-const attrsOf = (s) => Object.fromEntries([...s.matchAll(/([\w:-]+)(?:="([^"]*)")?/g)].map((m) => [m[1], m[2] ?? '']));
+// Tags und Attribute: Groß-/Kleinschreibung egal, Werte in "..." oder '...' oder ohne Anführungszeichen
+const ATTR = /([^\s"'<>\/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g;
+const attrsOf = (s) => {
+  const out = {};
+  for (const m of s.matchAll(ATTR)) out[m[1].toLowerCase()] = m[2] ?? m[3] ?? m[4] ?? '';
+  return out;
+};
 const tagsOf = (html, name) => [...html.matchAll(new RegExp(`<${name}\\b([^>]*)>`, 'gi'))].map((m) => attrsOf(m[1]));
+const allTags = (html) => [...html.matchAll(/<([a-z][a-z0-9-]*)\b([^>]*)>/gi)].map((m) => ({ name: m[1].toLowerCase(), attrs: attrsOf(m[2]) }));
 const isExternal = (u) => /^https?:\/\//i.test(u);
+const stripCssComments = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+// Externe Adressen in einem Text: http(s)://host oder protokollrelativ //host
+const EXT_URL = /(?:https?:)?\/\/[a-z0-9][a-z0-9.-]*\.[a-z]{2,}(?::\d+)?(?:\/[^\s"'<>(),]*)?/gi;
+export const externalUrls = (text) => [...text.matchAll(EXT_URL)].map((m) => m[0]);
+
+// Fremdanfragen beim Laden: Gegenprobe statt Aufzählung. JEDE externe Adresse in einem Tag-Attribut, in <style> oder in einem
+// Inline-Skript ist ein Fehler, außer: anklickbare Links (<a href>), Canonical/alternate, Meta-Inhalte, xmlns, JSON-LD
+// und das Umami-Skript. Text zwischen den Tags zählt nicht (da stehen nur Anzeigetexte).
+export function externalProblems(html) {
+  const problems = [];
+  const umamiHost = new URL(UMAMI.src).host;
+  const hostOf = (u) => { try { return new URL(u.startsWith('//') ? 'https:' + u : u).host; } catch { return u; } };
+  const flag = (where, u) => problems.push(`Externe Anfrage beim Laden (${where}): ${u}`);
+  for (const t of allTags(html)) {
+    for (const [attr, val] of Object.entries(t.attrs)) {
+      if (!val) continue;
+      if (attr === 'xmlns' || attr.startsWith('xmlns:')) continue;
+      if (t.name === 'a' && attr === 'href') continue;
+      if (t.name === 'link' && attr === 'href' && /^(canonical|alternate|author|me|license)$/i.test(t.attrs.rel || '')) continue;
+      if (t.name === 'meta' && attr === 'content') continue;
+      if (t.name === 'script' && attr === 'src' && hostOf(val) === umamiHost) continue;
+      for (const u of externalUrls(val)) flag(`${t.name}[${attr}]`, u);
+    }
+  }
+  for (const m of html.matchAll(/<(style|script)\b([^>]*)>([\s\S]*?)<\/\1>/gi)) {
+    const kind = m[1].toLowerCase();
+    if (kind === 'script' && /ld\+json/i.test(attrsOf(m[2]).type || '')) continue;
+    for (const u of externalUrls(kind === 'style' ? stripCssComments(m[3]) : m[3])) flag(kind, u);
+  }
+  return problems;
+}
+
+// Gebaute CSS-Dateien: keine externen Adressen (Kommentare ausgenommen)
+export function checkCss(css, name = 'CSS') {
+  return externalUrls(stripCssComments(css)).map((u) => `${name}: externe Adresse in der CSS-Datei: ${u}`);
+}
 
 // Prüft eine gebaute Seite. opts: { staging: boolean }
 export function checkHtml(html, opts = { staging: true }) {
@@ -120,13 +164,15 @@ export function checkHtml(html, opts = { staging: true }) {
     if (u.src !== UMAMI.src || u['data-website-id'] !== UMAMI.websiteId || u['data-domains'] !== UMAMI.domains || !('defer' in u)) {
       problems.push('Umami-Zeile weicht von der Vorgabe ab (src, data-website-id, data-domains, defer)');
     }
+    const extra = Object.keys(u).filter((k) => !['src', 'defer', 'data-website-id', 'data-domains'].includes(k));
+    if (extra.length) problems.push(`Umami-Zeile hat zusätzliche Attribute: ${extra.join(', ')}`);
   }
 
   const noindex = tagsOf(html, 'meta').some((a) => a.name === 'robots' && /noindex/i.test(a.content || ''));
   if (opts.staging && !noindex) problems.push('Staging-Seite ohne noindex');
   if (!opts.staging && noindex) problems.push('Live-Seite mit noindex');
 
-  for (const bad of ['<iframe', 'youtube.com/embed', 'img.youtube.com', 'cdn.tailwindcss.com', 'fonts.googleapis.com', 'fonts.gstatic.com']) {
+  for (const bad of ['<iframe', 'youtube.com/embed', 'youtube-nocookie.com', 'img.youtube.com', 'cdn.tailwindcss.com', 'fonts.googleapis.com', 'fonts.gstatic.com']) {
     if (html.toLowerCase().includes(bad)) problems.push(`Verbotener Bestandteil: ${bad}`);
   }
 
@@ -139,15 +185,15 @@ export function checkHtml(html, opts = { staging: true }) {
     if (!a.width || !a.height) problems.push(`Bild ohne width und height (Layout springt beim Laden): ${label}`);
   }
 
-  const umamiHost = new URL(UMAMI.src).host;
-  const loads = [];
-  for (const t of ['script', 'img', 'source', 'video', 'audio', 'embed', 'object']) for (const a of tagsOf(html, t)) if (a.src) loads.push(a.src);
-  for (const a of tagsOf(html, 'link')) if (/^(stylesheet|preload|modulepreload|icon|apple-touch-icon|prefetch)$/i.test(a.rel || '') && a.href) loads.push(a.href);
-  for (const m of html.matchAll(/url\(\s*['"]?(https?:\/\/[^'")\s]+)/gi)) loads.push(m[1]);
-  for (const u of loads) {
-    if (isExternal(u) && new URL(u).host !== umamiHost) problems.push(`Externe Anfrage beim Laden: ${u}`);
-  }
+  problems.push(...externalProblems(html));
   return problems;
+}
+
+// robots.txt: Die Live-Seite darf nicht komplett gesperrt sein. (Im Staging ist eine robots.txt im Unterpfad ohnehin wirkungslos,
+// dort schützt nur der noindex-Meta-Tag.)
+export function checkRobots(content, staging) {
+  if (!staging && /^\s*Disallow:\s*\/\s*$/im.test(content || '')) return ['robots.txt sperrt die ganze Live-Seite (Disallow: /)'];
+  return [];
 }
 
 // files: [{ path, bytes }] des Builds. Jede ausgelieferte Bilddatei muss unter dem Budget bleiben.

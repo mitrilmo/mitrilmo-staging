@@ -17,7 +17,9 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 ## Technik und Regeln
 
 - **Astro** mit `build.format: 'file'`: Seiten sind `.html`, Links **ohne** Schrägstrich am Ende (`/x/` liefert auf GitHub Pages 404). Canonical immer auf die `.html`-Adresse.
-- **Basispfad:** Alle Links über `import.meta.env.BASE_URL` (Staging `/mitrilmo-staging`, Live `/`). Live bauen mit `npm run build:live`.
+- **Basispfad:** Alle Links über `import.meta.env.BASE_URL` (Staging `/mitrilmo-staging`, Live `/`). **Interne Adressen aus Inhalten** (z. B. `projects/*.md`, `links[].href: /pfadwerk.html`) gelten relativ zum Site-Root und werden beim Ausgeben mit `withBase(import.meta.env.BASE_URL, href)` aus `src/lib/url.js` versehen.
+- **Live bauen und prüfen** (läuft auch unter Windows/PowerShell): `npm run build:live`, `npm run check:live`. Der Live-Check blockiert bewusst, solange es `dev-*.html` oder Links auf noch nicht migrierte Seiten (`PENDING`) gibt.
+- **`robots.txt`:** Im Staging gibt es keine (im Unterpfad wirkungslos, es schützt nur `noindex`). Die Live-`robots.txt` mit `Sitemap:`-Zeile kommt in AP4.1. `check:dist` bricht beim Live-Build ab, wenn sie die ganze Seite sperrt (`Disallow: /`).
 - **Tailwind lokal gebaut** (`@tailwindcss/vite`), **kein CDN**. Farben als Tokens in `src/styles/global.css`.
 - **Schriften:** nur frei lizenzierte (OFL/Apache), lokal gehostet, Lizenztext im selben Ordner (`public/fonts/OFL-Inter.txt`). Keine externen Schriftdienste. Neue Schriften nur nach Rückfrage. Ausweichkette `system-ui, sans-serif`.
 - **Kein externes CSS/JS** außer dem Umami-Skript (selbst gehostet auf MOBRAIN, steht einmal im Layout `src/layouts/Base.astro`, mit `data-domains="mitrilmo.com,www.mitrilmo.com"`, damit Staging nicht zählt).
@@ -53,7 +55,10 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 
 ## Prüfungen (ersetzen das alte `verify.js`)
 
-`npm run check` führt alles der Reihe nach aus. Die CI macht dasselbe vor jedem Deploy: `npm test`, `npm run check:content`, `npm run build`, `npm run check:dist`. Schlägt eine Prüfung an, wird **nicht** veröffentlicht.
+`npm run check` führt alles der Reihe nach aus. Die CI macht dasselbe vor jedem Deploy: `npm test`, `npm run check:content`, `npm run build`, `npm run check:dist`. Schlägt eine Prüfung an, wird **nicht** veröffentlicht. Bei Pull Requests läuft die CI ebenfalls, veröffentlicht aber nichts.
+
+- **Rechtstext festgeschrieben:** `tests/legal.test.mjs` hält Prüfsummen von `src/legal/impressum.html` und `datenschutz.html` (verglichen mit der Live-Seite am 30.10.2026). Änderungen am Text nur nach Rücksprache mit Björn, danach Prüfsumme aktualisieren und im CHANGELOG vermerken.
+- **Fremdanfragen** werden als Gegenprobe geprüft: Jede externe Adresse in einem Tag-Attribut, in `<style>`, in einem Inline-Skript oder in einer gebauten CSS-Datei ist ein Fehler. Ausgenommen sind nur anklickbare Links (`<a href>`), Canonical/alternate, Meta-Inhalte, `xmlns`, JSON-LD und die Umami-Zeile (die genau diese vier Attribute haben darf).
 
 - **Inhalte** (`check:content`): Slug im Dateinamen, Video-Dateiname = YouTube-ID, Bilder (unter `src/assets/images/`) und GPX (unter `public/gpx/`) existieren, **Bildbudget** (Original höchstens 8 MB, Hinweis ab 3 MB, mindestens 800 px breit, **keine GPS-Daten in den Metadaten**), Verweise (Tour ↔ Video ↔ Story) zeigen auf Vorhandenes, **GPX-Länge passt zur Angabe `distanceKm`** (Toleranz 15 %, mindestens 0,3 km). Hinweis (kein Fehler): Tour mit GPX ohne Koordinaten hat keinen Pin.
 - **Gebaute Seite** (`check:dist`, prüft `dist/`): jedes `<img>` mit `alt`, `width` und `height`, **keine ausgelieferte Bilddatei über 450 KB**, `dev-*.html` nur im Staging, `lang="de"`, Title, Meta Description, Canonical (https, `.html`), **Umami-Zeile genau einmal und unverändert**, `noindex` im Staging und nicht live, **kein iFrame, keine YouTube-Einbettung, kein `img.youtube.com`, kein Tailwind-CDN, keine Google Fonts, keine Fremdanfrage beim Laden** (außer Umami), **keine toten internen Links**, Lizenztext liegt neben den Schriftdateien.

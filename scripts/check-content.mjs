@@ -1,11 +1,12 @@
 // Prüft die Inhalte vor dem Build: Slugs, Dateien, Bilder (Größe, Breite, GPS), Verweise, GPX-Länge. Start: npm run check:content
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { checkEntries, parseFrontmatter, gpxLengthKm } from './lib/checks.mjs';
 import { exifHasGps } from './lib/exif.mjs';
 
-const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+const root = fileURLToPath(new URL('..', import.meta.url));
 const collections = ['tours', 'videos', 'stories', 'events', 'projects'];
 const data = {};
 const readErrors = [];

@@ -20,7 +20,7 @@ const okTour = {
   title: 'Rund um die Heilenbecke Talsperre', place: 'Ennepetal',
   description: 'Rundweg Heilenbecke Talsperre mit Enten und frischer Luft.',
   distanceKm: 2.6, duration: '30-60 Minuten', difficulty: 'leicht',
-  image: 'images/tours/heilenbecke-talsperre.jpg', imageAlt: 'Titelbild der Tour',
+  image: '../../assets/images/tours/heilenbecke-talsperre.jpg', imageAlt: 'Titelbild der Tour',
   publishedAt: '2026-06-07',
 };
 const bad = (schema, obj) => assert.equal(schema.safeParse(obj).success, false);

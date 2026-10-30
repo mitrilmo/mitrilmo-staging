@@ -3,9 +3,10 @@
 // Das Ziel heißt wie der Slug des Eintrags (tours/<slug>.jpg) bzw. wie die YouTube-ID (videos/<ID>.jpg).
 import { existsSync, mkdirSync, statSync } from 'node:fs';
 import { dirname, join, basename, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { importImage } from './lib/image.mjs';
 
-const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+const root = fileURLToPath(new URL('..', import.meta.url));
 const args = process.argv.slice(2);
 const flag = (n) => args.includes(n);
 const opt = (n, d) => (args.includes(n) ? Number(args[args.indexOf(n) + 1]) : d);

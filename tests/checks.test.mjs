@@ -199,3 +199,63 @@ test('Bilder im Build: zu große ausgelieferte Dateien werden gefunden, Favicons
   assert.equal(p.length, 2);
   assert.ok(p.every((x) => /zu groß/.test(x)));
 });
+
+// --- Fremdanfragen: Gegenprobe statt Aufzählung (Review M1) ---
+import { externalProblems, checkCss, checkRobots } from '../scripts/lib/checks.mjs';
+const ext = (html) => externalProblems(html);
+const flagged = (html) => ext(html).length > 0;
+
+test('Fremdanfragen: alle Wege nach außen werden gefunden', () => {
+  const cases = {
+    'srcset': '<img src="/a.jpg" alt="x" width="1" height="1" srcset="https://example.org/a.jpg 480w, /b.jpg 800w">',
+    'poster': '<video poster="https://example.org/p.jpg"></video>',
+    'object': '<object data="https://example.org/x.swf"></object>',
+    'preconnect': '<link rel="preconnect" href="https://example.org">',
+    'dns-prefetch': '<link rel="dns-prefetch" href="//example.org">',
+    'preload': '<link rel="preload" href="https://example.org/f.woff2" as="font">',
+    'protokollrelativ': '<script src="//example.org/x.js"></script>',
+    'Großbuchstaben': '<SCRIPT SRC="https://example.org/x.js"></SCRIPT>',
+    'einfache Anführungszeichen': "<img src='https://example.org/a.jpg' alt='x' width='1' height='1'>",
+    'ohne Anführungszeichen': '<img src=https://example.org/a.jpg alt=x width=1 height=1>',
+    'form': '<form action="https://example.org/senden"></form>',
+    'css @import ohne url()': '<style>@import "https://example.org/a.css";</style>',
+    'css url()': '<style>.a{background:url(https://example.org/a.png)}</style>',
+    'css @font-face //': '<style>@font-face{src:url(//example.org/f.woff2)}</style>',
+    'inline-Skript fetch': '<script>fetch("https://example.org/api")</script>',
+    'iframe-Quelle': '<iframe src="https://example.org"></iframe>',
+    'fremdes Skript mit anderer Umami-Domain': '<script defer src="https://mobrain.example.net/script.js"></script>',
+  };
+  for (const [name, html] of Object.entries(cases)) assert.ok(flagged(html), name);
+});
+test('Fremdanfragen: erlaubte Fälle werden nicht beanstandet', () => {
+  const allowed = [
+    '<a href="https://www.youtube.com/@mitrilmo">YouTube</a>',
+    '<A HREF="https://www.instagram.com/mitrilmo/">I</A>',
+    '<link rel="canonical" href="https://www.mitrilmo.com/index.html">',
+    '<link rel="alternate" href="https://www.mitrilmo.com/rss.xml">',
+    '<meta property="og:image" content="https://www.mitrilmo.com/og.jpg">',
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>',
+    '<script type="application/ld+json">{"@context":"https://schema.org"}</script>',
+    '<style>/* tailwindcss v4 | https://tailwindcss.com */ .a{color:red}</style>',
+    '<p>Mehr Infos unter https://3tuermeweg.de/die-tuerme im Text, nicht anklickbar.</p>',
+    '<img src="/mitrilmo-staging/_astro/a.avif" srcset="/mitrilmo-staging/_astro/a.avif 480w" alt="x" width="1" height="1">',
+    `<script defer src="${UMAMI.src}" data-website-id="${UMAMI.websiteId}" data-domains="${UMAMI.domains}"></script>`,
+  ];
+  for (const html of allowed) assert.deepEqual(ext(html), [], html);
+});
+test('CSS-Dateien: externe Adressen werden gefunden, Kommentare nicht', () => {
+  assert.equal(checkCss('/*! tailwindcss | https://tailwindcss.com */ .a{color:red}').length, 0);
+  assert.equal(checkCss('@import "https://example.org/a.css"; .a{background:url(//example.org/a.png)}').length, 2);
+  assert.equal(checkCss('.a{background:url(/mitrilmo-staging/fonts/x.woff2)}').length, 0);
+});
+test('Umami: zusätzliche Attribute werden gefunden', () => {
+  const one = `<script defer src="${UMAMI.src}" data-website-id="${UMAMI.websiteId}" data-domains="${UMAMI.domains}" data-auto-track="false"></script>`;
+  assert.ok(hasProblem(page({ umami: one }), /zusätzliche Attribute: data-auto-track/));
+});
+test('robots.txt: Live darf nicht komplett gesperrt sein, Staging egal', () => {
+  assert.deepEqual(checkRobots('User-agent: *\nDisallow: /\n', true), []);
+  assert.equal(checkRobots('User-agent: *\nDisallow: /\n', false).length, 1);
+  assert.equal(checkRobots('User-agent: *\r\nDisallow: /  \r\n', false).length, 1);
+  assert.deepEqual(checkRobots('User-agent: *\nDisallow: /dev-bilder.html\nSitemap: https://www.mitrilmo.com/sitemap.xml\n', false), []);
+  assert.deepEqual(checkRobots('User-agent: *\nDisallow:\n', false), []);
+});
