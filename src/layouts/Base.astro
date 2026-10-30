@@ -1,0 +1,29 @@
+---
+const { title } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{title} – mitrilmo Staging</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #1a2520; color: #d9d4cc; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
+    a { color: #7bbf6a; }
+    code { background: #243029; padding: 0 .3em; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href={`${base}/`}>Start</a> ·
+    <a href={`${base}/impressum`}>Impressum (ohne Endung)</a> ·
+    <a href={`${base}/impressum.html`}>Impressum.html</a> ·
+    <a href={`${base}/stories/test.html`}>Story test.html</a> ·
+    <a href={`${base}/stories/test`}>Story test (ohne Endung)</a>
+  </nav>
+  <hr />
+  <slot />
+</body>
+</html>
