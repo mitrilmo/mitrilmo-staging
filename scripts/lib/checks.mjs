@@ -9,6 +9,13 @@ export const UMAMI = {
   websiteId: 'b0279420-580a-4f86-99df-4ac427936c73',
   domains: 'mitrilmo.com,www.mitrilmo.com',
 };
+// Bildbudgets (AP1.6). Originale liegen in src/assets/images/, ausgeliefert werden die von Astro erzeugten Varianten.
+export const IMAGE_BUDGET = {
+  maxBytes: 8 * 1024 * 1024,  // Original darf nicht größer sein (Repo bleibt klein), Import-Skript verkleinert
+  warnBytes: 3 * 1024 * 1024,
+  minWidth: 800,              // kleinere Originale wirken auf großen Bildschirmen unscharf
+  distMaxBytes: 450 * 1024,   // jede ausgelieferte Bilddatei (größte Variante, 1600 px); fängt Ausreißer im MB-Bereich ab
+};
 const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const YT = /^[A-Za-z0-9_-]{11}$/;
 
@@ -47,6 +54,16 @@ export function checkEntries(data, io) {
   const need = (c, id, field, rel) => {
     if (rel && !io.exists(rel)) err(c, id, `${field} verweist auf eine Datei, die es nicht gibt (${rel})`);
   };
+  // Bilddatei: io.image(rel) liefert null (fehlt) oder { bytes, width, height, gps }
+  const img = (c, id, field, rel) => {
+    if (!rel) return;
+    const i = io.image(rel);
+    if (!i) return err(c, id, `${field} verweist auf eine Datei, die es nicht gibt (${rel})`);
+    if (i.gps) err(c, id, `${field}: das Bild enthält GPS-Koordinaten in den Metadaten (mit scripts/import-image.mjs importieren, das entfernt sie)`);
+    if (i.bytes > IMAGE_BUDGET.maxBytes) err(c, id, `${field}: Original ist ${(i.bytes / 1048576).toFixed(1)} MB groß (Grenze ${IMAGE_BUDGET.maxBytes / 1048576} MB), bitte mit scripts/import-image.mjs verkleinern`);
+    else if (i.bytes > IMAGE_BUDGET.warnBytes) warn(c, id, `${field}: Original ist ${(i.bytes / 1048576).toFixed(1)} MB groß`);
+    if (i.width < IMAGE_BUDGET.minWidth) err(c, id, `${field}: nur ${i.width} px breit (mindestens ${IMAGE_BUDGET.minWidth} px)`);
+  };
 
   for (const [c, entries] of Object.entries(data)) {
     for (const id of Object.keys(entries)) {
@@ -60,7 +77,7 @@ export function checkEntries(data, io) {
   }
 
   for (const [id, t] of Object.entries(data.tours || {})) {
-    need('tours', id, 'image', t.image);
+    img('tours', id, 'image', t.image);
     need('tours', id, 'gpx', t.gpx);
     if (t.gpx && io.exists(t.gpx)) {
       const km = io.gpxKm(t.gpx);
@@ -73,9 +90,9 @@ export function checkEntries(data, io) {
     for (const s of t.stories || []) if (!(data.stories || {})[s]) err('tours', id, `Story ${s} gibt es nicht`);
     if (t.gpx && !t.coordinates) warn('tours', id, 'Koordinaten fehlen, kein Pin auf der Karte');
   }
-  for (const [id, v] of Object.entries(data.videos || {})) need('videos', id, 'thumbnail', v.thumbnail);
+  for (const [id, v] of Object.entries(data.videos || {})) img('videos', id, 'thumbnail', v.thumbnail);
   for (const [id, s] of Object.entries(data.stories || {})) {
-    need('stories', id, 'cover', s.cover);
+    img('stories', id, 'cover', s.cover);
     if (s.tour && !(data.tours || {})[s.tour]) err('stories', id, `Tour ${s.tour} gibt es nicht`);
   }
   return { errors, warnings };
@@ -114,6 +131,14 @@ export function checkHtml(html, opts = { staging: true }) {
   }
 
   // Fremdanfragen beim Laden: nur das Umami-Skript darf extern sein
+  // Bilder: alt, width und height sind Pflicht (Barrierefreiheit, kein Springen beim Laden), Alt darf nicht leer sein
+  for (const a of tagsOf(html, 'img')) {
+    const label = a.src || '(ohne src)';
+    if (!('alt' in a)) problems.push(`Bild ohne alt-Attribut: ${label}`);
+    else if (a.alt.trim() === '' && a.role !== 'presentation') problems.push(`Bild mit leerem Alt-Text (nur mit role="presentation" erlaubt): ${label}`);
+    if (!a.width || !a.height) problems.push(`Bild ohne width und height (Layout springt beim Laden): ${label}`);
+  }
+
   const umamiHost = new URL(UMAMI.src).host;
   const loads = [];
   for (const t of ['script', 'img', 'source', 'video', 'audio', 'embed', 'object']) for (const a of tagsOf(html, t)) if (a.src) loads.push(a.src);
@@ -123,6 +148,14 @@ export function checkHtml(html, opts = { staging: true }) {
     if (isExternal(u) && new URL(u).host !== umamiHost) problems.push(`Externe Anfrage beim Laden: ${u}`);
   }
   return problems;
+}
+
+// files: [{ path, bytes }] des Builds. Jede ausgelieferte Bilddatei muss unter dem Budget bleiben.
+export function checkDistImages(files) {
+  return files
+    .filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f.path) && !/^(favicon|apple-touch-icon)/i.test(f.path.split('/').pop()))
+    .filter((f) => f.bytes > IMAGE_BUDGET.distMaxBytes)
+    .map((f) => `Bild zu groß für die Auslieferung: ${f.path} (${Math.round(f.bytes / 1024)} KB, Grenze ${IMAGE_BUDGET.distMaxBytes / 1024} KB)`);
 }
 
 // Impressum und Datenschutz bleiben Modals auf der Startseite (Entscheidung Björn 30.10.2026).

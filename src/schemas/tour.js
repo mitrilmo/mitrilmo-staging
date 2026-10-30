@@ -2,7 +2,7 @@
 // Pflicht: title, place, description, duration, difficulty, image, imageAlt, publishedAt (bei kind=tour zusätzlich distanceKm).
 // GPX, Koordinaten, Video, Region, Bewertung sind optional. Unbekanntes bleibt leer oder "unbekannt".
 import { z } from 'astro/zod';
-import { gpxPath, httpsUrl, localImage, season, triState, date } from './common.js';
+import { gpxPath, httpsUrl, season, triState, date } from './common.js';
 
 const rating = z.object({
   hiking: z.number().int().min(1).max(5).optional(),
@@ -18,7 +18,8 @@ const parking = z.object({
   note: z.string().optional(),
 });
 
-export const tourSchema = (reference) =>
+// helpers: { reference, image } aus astro:content (in den Tests Attrappen)
+export const tourSchema = ({ reference, image }) =>
   z
     .object({
       title: z.string().min(3),
@@ -32,7 +33,7 @@ export const tourSchema = (reference) =>
       distanceKm: z.number().positive().optional(),
       duration: z.string().min(3), // Freitext wie "4–5 Std." (Bestand ist uneinheitlich)
       difficulty: z.enum(['sehr-leicht', 'leicht', 'mittel', 'schwer']),
-      image: localImage,
+      image: image(),
       imageAlt: z.string().min(3),
       gpx: gpxPath.optional(),
       coordinates: z.object({ lat: z.number().min(46).max(56), lng: z.number().min(5).max(16) }).optional(),

@@ -1,0 +1,37 @@
+---
+// Einheitliche Bildausgabe für Inhalte (AP1.6): Astro erzeugt beim Bauen schlanke AVIF/WebP-Varianten
+// in mehreren Breiten, mit width und height (kein Springen beim Laden). Alt-Text ist Pflicht.
+// Das Hero-Bild einer Seite bekommt priority (sofort laden), alle anderen laden erst beim Scrollen.
+import { Picture } from 'astro:assets';
+
+const {
+  image,
+  alt,
+  sizes = '(min-width: 1024px) 33vw, 100vw',
+  widths = [480, 800, 1200, 1600],
+  quality = 75,
+  priority = false,
+  class: className = '',
+} = Astro.props;
+
+if (!image || typeof image.width !== 'number') throw new Error('ContentImage: image muss ein Bild aus src/assets sein (image() im Schema)');
+if (typeof alt !== 'string' || alt.trim().length < 3) throw new Error(`ContentImage: Alt-Text fehlt oder ist zu kurz (${image.src})`);
+
+// Nie größer ausgeben als das Original und nie breiter als die größte gewünschte Breite (Standard 1600 px).
+// Ist das Original schmaler als alle gewünschten Breiten, kommt nur die Originalbreite dazu.
+const usable = widths.filter((w) => w <= image.width);
+const ws = usable.length === widths.length ? usable : [...usable, ...(image.width < Math.max(...widths) && !usable.includes(image.width) ? [image.width] : [])];
+---
+<Picture
+  src={image}
+  alt={alt}
+  widths={ws}
+  sizes={sizes}
+  formats={['avif']}
+  fallbackFormat="webp"
+  quality={quality}
+  loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : 'auto'}
+  decoding="async"
+  class={className}
+/>

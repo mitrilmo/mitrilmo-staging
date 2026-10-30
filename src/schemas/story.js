@@ -1,15 +1,15 @@
 // Story (Wanderbericht, Randnotiz, Archiv). Dateiname = bisheriger Dateiname der Story-Seite (URL bleibt).
 import { z } from 'astro/zod';
-import { localImage, date } from './common.js';
+import { date } from './common.js';
 
-export const storySchema = (reference) =>
+export const storySchema = ({ reference, image }) =>
   z
     .object({
       title: z.string().min(3),
       description: z.string().min(20, 'Beschreibung für die Suchmaschine zu kurz').max(300),
       date,
       category: z.enum(['unterwegs', 'randnotizen', 'archiv']),
-      cover: localImage.optional(),
+      cover: image().optional(),
       coverAlt: z.string().min(3).optional(),
       tour: reference('tours').optional(),
       draft: z.boolean().default(false),

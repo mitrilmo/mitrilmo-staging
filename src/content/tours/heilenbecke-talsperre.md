@@ -7,7 +7,7 @@ description: "Rundweg Heilenbecke Talsperre: Wenn die Enten den Weg besser kenne
 distanceKm: 2.6
 duration: "30-60 Minuten"
 difficulty: leicht
-image: images/tours/heilenbecke-talsperre.jpg
+image: ../../assets/images/tours/heilenbecke-talsperre.jpg
 imageAlt: "Titelbild zur Tour Rund um die Heilenbecke Talsperre"
 gpx: gpx/heilenbecke-talsperre.gpx
 parking:

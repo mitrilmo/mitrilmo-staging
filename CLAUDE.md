@@ -27,6 +27,14 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 - **Slugs** nur `a–z`, `0–9`, Bindestrich, einmal vergeben, nie ändern. Tabelle im Vault (Slug-Tabelle).
 - **Keine Geheimnisse im Repo** (öffentlich): kein Mastercode der Pfadwerk-Codes, keine Schlüssel.
 
+## Bilder
+
+- **Originale** liegen unter `src/assets/images/tours/<slug>.jpg`, `videos/<YouTube-ID>.jpg`, `stories/…`. Im Eintrag steht der Pfad relativ zur Markdown-Datei, z. B. `image: ../../assets/images/tours/mein-slug.jpg`. Astro erzeugt beim Bauen AVIF und WebP in 480, 800, 1200 und 1600 px (nie größer als das Original, kein JPEG).
+- **Neues Bild importieren:** `node scripts/import-image.mjs "<Quelle>" tours/<slug>.jpg` (verkleinert auf höchstens 2400 px, übernimmt die Ausrichtung, **entfernt alle Metadaten einschließlich GPS**, Original bleibt unverändert). Nie ein Foto direkt nach `src/assets` kopieren.
+- **Ausgabe immer über `src/components/ContentImage.astro`**: Alt-Text ist Pflicht (mindestens 3 Zeichen), das erste, sichtbare Bild einer Seite bekommt `priority`, alle anderen laden erst beim Scrollen.
+- **Vorschaubilder von Videos** immer lokal (`videos/<ID>.jpg`), nie von `img.youtube.com`.
+- Zum Ansehen der Pipeline gibt es `src/pages/dev-bilder.astro` (nur Staging, wird beim Live-Build von `check:dist` blockiert).
+
 ## Impressum, Datenschutz und alte Anker
 
 - Beide Texte stehen als Modals **nur auf der Startseite** (`LegalModals`), fest im HTML, ausgeblendet. `/#impressum` und `/#datenschutz` öffnen sie, Schließen entfernt den Anker. Jede Seite hat im Footer Links auf `/#impressum` und `/#datenschutz` (`check:dist` prüft das und den Text der Modals).
@@ -37,7 +45,7 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 ## Inhalte anlegen (Collections)
 
 - **Tour/Ziel** (`src/content/tours/<slug>.md`): Pflicht `title`, `place`, `description`, `duration`, `difficulty`, `image`, `imageAlt`, `publishedAt`; bei `kind: tour` zusätzlich `distanceKm`. Optional: `gpx`, `coordinates`, `video`, `stories`, `komoot`, `parking`, `rating` u. a. Ein **Ziel** (`kind: ziel`) hat keine GPX. Unbekanntes bleibt leer oder `unbekannt`, **nichts erfinden**.
-- **Video** (`videos/<YouTube-ID>.md`): `youtubeId`, `title`, `thumbnail` (lokal unter `images/`, nie `img.youtube.com`).
+- **Video** (`videos/<YouTube-ID>.md`): `youtubeId`, `title`, `thumbnail` (lokal unter `src/assets/images/videos/`, nie `img.youtube.com`).
 - **Story** (`stories/<bisheriger-dateiname>.md`): `title`, `description` (20–300 Zeichen), `date`, `category` (unterwegs, randnotizen, archiv), Titelbild nur mit Alt-Text.
 - **Event** (`events/<slug>.md`): `endDate` ist Pflicht (danach wird der Eintrag ausgeblendet), `url` nur https.
 - **Projekt** (`projects/<slug>.md`): Fortschritt nur mit `source` und `updatedAt`.
@@ -47,8 +55,8 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 
 `npm run check` führt alles der Reihe nach aus. Die CI macht dasselbe vor jedem Deploy: `npm test`, `npm run check:content`, `npm run build`, `npm run check:dist`. Schlägt eine Prüfung an, wird **nicht** veröffentlicht.
 
-- **Inhalte** (`check:content`): Slug im Dateinamen, Video-Dateiname = YouTube-ID, Bilder und GPX existieren (unter `public/`), Verweise (Tour ↔ Video ↔ Story) zeigen auf Vorhandenes, **GPX-Länge passt zur Angabe `distanceKm`** (Toleranz 15 %, mindestens 0,3 km). Hinweis (kein Fehler): Tour mit GPX ohne Koordinaten hat keinen Pin.
-- **Gebaute Seite** (`check:dist`, prüft `dist/`): `lang="de"`, Title, Meta Description, Canonical (https, `.html`), **Umami-Zeile genau einmal und unverändert**, `noindex` im Staging und nicht live, **kein iFrame, keine YouTube-Einbettung, kein `img.youtube.com`, kein Tailwind-CDN, keine Google Fonts, keine Fremdanfrage beim Laden** (außer Umami), **keine toten internen Links**, Lizenztext liegt neben den Schriftdateien.
+- **Inhalte** (`check:content`): Slug im Dateinamen, Video-Dateiname = YouTube-ID, Bilder (unter `src/assets/images/`) und GPX (unter `public/gpx/`) existieren, **Bildbudget** (Original höchstens 8 MB, Hinweis ab 3 MB, mindestens 800 px breit, **keine GPS-Daten in den Metadaten**), Verweise (Tour ↔ Video ↔ Story) zeigen auf Vorhandenes, **GPX-Länge passt zur Angabe `distanceKm`** (Toleranz 15 %, mindestens 0,3 km). Hinweis (kein Fehler): Tour mit GPX ohne Koordinaten hat keinen Pin.
+- **Gebaute Seite** (`check:dist`, prüft `dist/`): jedes `<img>` mit `alt`, `width` und `height`, **keine ausgelieferte Bilddatei über 450 KB**, `dev-*.html` nur im Staging, `lang="de"`, Title, Meta Description, Canonical (https, `.html`), **Umami-Zeile genau einmal und unverändert**, `noindex` im Staging und nicht live, **kein iFrame, keine YouTube-Einbettung, kein `img.youtube.com`, kein Tailwind-CDN, keine Google Fonts, keine Fremdanfrage beim Laden** (außer Umami), **keine toten internen Links**, Lizenztext liegt neben den Schriftdateien.
 - Entfallen gegenüber `verify.js` (Live-Seite): Dateiende und JS-Syntax von `index.html`, Touren-Pin-Abgleich (Pins entstehen aus den Daten).
 - Neue Regeln nur zusammen mit Tests in `tests/checks.test.mjs`.
 

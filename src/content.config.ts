@@ -7,17 +7,18 @@ import { eventSchema } from './schemas/event.js';
 import { projectSchema } from './schemas/project.js';
 
 // Eine Datei pro Inhalt, Dateiname = ID (Slug bzw. YouTube-ID). Fehlerhafte Einträge brechen den Build.
+// Bilder liegen als Originale unter src/assets/images/ und werden von Astro beim Bauen verkleinert (image()).
 const tours = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/tours' }),
-  schema: tourSchema(reference),
+  schema: ({ image }) => tourSchema({ reference, image }),
 });
 const videos = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/videos' }),
-  schema: videoSchema,
+  schema: ({ image }) => videoSchema({ image }),
 });
 const stories = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/stories' }),
-  schema: storySchema(reference),
+  schema: ({ image }) => storySchema({ reference, image }),
 });
 const events = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/events' }),

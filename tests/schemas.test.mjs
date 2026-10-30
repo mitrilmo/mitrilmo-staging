@@ -1,17 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'astro/zod';
-import { slug, youtubeId, httpsUrl, localImage } from '../src/schemas/common.js';
+import { slug, youtubeId, httpsUrl } from '../src/schemas/common.js';
 import { tourSchema } from '../src/schemas/tour.js';
 import { videoSchema } from '../src/schemas/video.js';
 import { storySchema } from '../src/schemas/story.js';
 import { eventSchema } from '../src/schemas/event.js';
 import { projectSchema } from '../src/schemas/project.js';
 
-// reference() gibt es nur im Astro-Build, hier genügt ein String
+// reference() und image() gibt es nur im Astro-Build, hier genügt ein String
+// (dass ein Bild lokal existiert und keine Fremd-URL ist, prüft Astro über image() sowie scripts/check-content.mjs)
 const ref = () => z.string();
-const tour = tourSchema(ref);
-const story = storySchema(ref);
+const imageStub = () => z.string();
+const tour = tourSchema({ reference: ref, image: imageStub });
+const story = storySchema({ reference: ref, image: imageStub });
+const video = videoSchema({ image: imageStub });
 
 const okTour = {
   title: 'Rund um die Heilenbecke Talsperre', place: 'Ennepetal',
@@ -32,13 +35,11 @@ test('Slug: gültig und ungültig', () => {
   for (const s of ['Altenberger-Dom', 'dhünn-dom', 'tour_1', 'a--b', '-a', 'a-', 'a b', '']) assert.equal(slug.safeParse(s).success, false, s);
 });
 
-test('Hilfsprüfungen: YouTube-ID, https, Bildpfad', () => {
+test('Hilfsprüfungen: YouTube-ID und https', () => {
   assert.equal(youtubeId.safeParse('iw7wg-KqpSU').success, true);
   assert.equal(youtubeId.safeParse('zu-kurz').success, false);
   assert.equal(httpsUrl.safeParse('https://www.mitrilmo.com').success, true);
   assert.equal(httpsUrl.safeParse('http://www.mitrilmo.com').success, false);
-  assert.equal(localImage.safeParse('images/tours/x.jpg').success, true);
-  assert.equal(localImage.safeParse('https://img.youtube.com/vi/abc/maxresdefault.jpg').success, false);
 });
 
 test('Tour: gültiger Minimalfall, Standardwerte greifen', () => {
@@ -55,7 +56,6 @@ test('Tour: Pflichtfelder fehlen oder sind falsch', () => {
   }
   bad(tour, { ...okTour, difficulty: 'extrem' });
   bad(tour, { ...okTour, gpx: 'gpx/Heilenbecke.gpx' });
-  bad(tour, { ...okTour, image: 'https://img.youtube.com/vi/x/maxresdefault.jpg' });
   bad(tour, { ...okTour, komoot: 'http://www.komoot.com/tour/1' });
   bad(tour, { ...okTour, coordinates: { lat: 5, lng: 7 } });
   bad(tour, { ...okTour, updatedAt: '2026-01-01' });
@@ -68,9 +68,9 @@ test('Ziel: ohne GPX und ohne Distanz gültig, mit GPX ungültig', () => {
 });
 
 test('Video: ID, Titel und lokales Vorschaubild', () => {
-  ok(videoSchema, { youtubeId: 'k1JNFJuXz7o', title: '3-Türme-Weg Hagen', thumbnail: 'images/k1JNFJuXz7o.jpg' });
-  bad(videoSchema, { youtubeId: 'k1JNFJuXz7o', title: '3-Türme-Weg Hagen', thumbnail: 'https://img.youtube.com/vi/k1JNFJuXz7o/0.jpg' });
-  bad(videoSchema, { youtubeId: 'kurz', title: 'x', thumbnail: 'images/x.jpg' });
+  ok(video, { youtubeId: 'k1JNFJuXz7o', title: '3-Türme-Weg Hagen', thumbnail: '../../assets/images/videos/k1JNFJuXz7o.jpg' });
+  bad(video, { youtubeId: 'kurz', title: 'x', thumbnail: 'x.jpg' });
+  bad(video, { youtubeId: 'k1JNFJuXz7o', title: '3-Türme-Weg Hagen' }); // Vorschaubild fehlt
 });
 
 test('Story: Beschreibung Pflicht, Titelbild braucht Alt-Text', () => {

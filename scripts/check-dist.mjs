@@ -2,7 +2,7 @@
 // Start nach dem Build: npm run check:dist   (Live-Build: STAGING=false npm run check:dist)
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { checkHtml, checkLinks, checkLegal } from './lib/checks.mjs';
+import { checkHtml, checkLinks, checkLegal, checkDistImages } from './lib/checks.mjs';
 
 // Seiten, auf die schon verlinkt wird, die aber erst migriert werden (Umsetzungsplan). Eintrag entfernen, sobald die Seite existiert.
 const PENDING = { 'pfadwerk.html': 'AP2.5 (Datenschutztext verlinkt darauf)' };
@@ -36,6 +36,9 @@ problems.push(...checkLinks(pages, base, (rel) => {
   return false;
 }));
 problems.push(...checkLegal(pages));
+problems.push(...checkDistImages(files.map((f) => ({ path: f, bytes: statSync(join(dist, f)).size }))));
+// Entwicklungsseiten (dev-*.html) gibt es nur im Staging, sie dürfen nie live gehen
+if (!staging) for (const f of files.filter((x) => /(^|\/)dev-[^/]*\.html$/.test(x))) problems.push(`Entwicklungsseite ${f} darf nicht live gehen`);
 for (const rel of pending) console.log(`  Hinweis: Link auf ${rel} noch ohne Seite, geplant in ${PENDING[rel]}`);
 for (const rel of Object.keys(PENDING)) if (set.has(rel)) problems.push(`${rel} existiert jetzt, bitte aus PENDING in scripts/check-dist.mjs entfernen`);
 

@@ -9,9 +9,8 @@ export const triState = z.enum(['ja', 'nein', 'unbekannt']).default('unbekannt')
 
 export const httpsUrl = z.url('Gültige URL erwartet').refine((u) => u.startsWith('https://'), 'Nur https-Adressen');
 
-export const localImage = z
-  .string()
-  .regex(/^images\/[A-Za-z0-9_\-./]+\.(jpg|jpeg|png|webp)$/, 'Bildpfad muss unter images/ liegen (jpg, png, webp)');
+// Bilder: Astro prüft über image() im Schema, dass die Datei lokal existiert (src/assets/images/...).
+// Fremde URLs sind damit nicht möglich, die Prüfungen zu Größe, Maßen und GPS stehen in scripts/check-content.mjs.
 
 export const gpxPath = z.string().regex(/^gpx\/[a-z0-9-]+\.gpx$/, 'GPX-Pfad wie gpx/<slug>.gpx');
 

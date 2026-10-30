@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkEntries, checkHtml, checkLinks, checkLegal, gpxLengthKm, UMAMI } from '../scripts/lib/checks.mjs';
+import { checkEntries, checkHtml, checkLinks, checkLegal, checkDistImages, gpxLengthKm, UMAMI } from '../scripts/lib/checks.mjs';
 
 // --- GPX ---
 const gpx = (...segments) =>
@@ -29,7 +29,12 @@ const baseData = () => ({
   stories: { 'story-eins-2026-06-07': { tour: 'heilenbecke-talsperre' } },
   events: {}, projects: {},
 });
-const io = (missing = [], km = 10) => ({ exists: (p) => !missing.includes(p), gpxKm: () => km });
+const okImage = { bytes: 400000, width: 1600, height: 900, gps: false };
+const io = (missing = [], km = 10, image = okImage) => ({
+  exists: (p) => !missing.includes(p),
+  gpxKm: () => km,
+  image: (p) => (missing.includes(p) ? null : image), // Bild: null = Datei fehlt
+});
 const errs = (data, i) => checkEntries(data, i).errors;
 
 test('Inhalte: gültiger Satz hat keine Fehler', () => {
@@ -163,4 +168,34 @@ test('Rechtliches: Modal fehlt, nicht ausgeblendet, ohne Dialog-Attribute, falsc
 });
 test('Rechtliches: Anker-Skript im Head der Startseite ist Pflicht', () => {
   assert.ok(legal(homeHtml().replace('function resolveHash(){}', '')).some((x) => /resolveHash/.test(x)));
+});
+
+// --- Bilder (AP1.6) ---
+const imgErrs = (image, imageName = 'images/a.jpg') => checkEntries(baseData(), io([], 10, image)).errors.filter((e) => /image|thumbnail/.test(e));
+const imgWarns = (image) => checkEntries(baseData(), io([], 10, image)).warnings.filter((w) => /Original/.test(w));
+
+test('Bilder: Original zu groß, zu schmal oder mit GPS ist ein Fehler', () => {
+  assert.deepEqual(imgErrs(okImage), []);
+  assert.ok(imgErrs({ ...okImage, bytes: 9 * 1048576 }).some((e) => /MB groß/.test(e)));
+  assert.ok(imgErrs({ ...okImage, width: 600 }).some((e) => /nur 600 px breit/.test(e)));
+  assert.ok(imgErrs({ ...okImage, gps: true }).some((e) => /GPS-Koordinaten/.test(e)));
+});
+test('Bilder: zwischen 3 und 8 MB nur ein Hinweis', () => {
+  assert.deepEqual(imgErrs({ ...okImage, bytes: 4 * 1048576 }), []);
+  assert.ok(imgWarns({ ...okImage, bytes: 4 * 1048576 }).length > 0);
+});
+test('Bilder im HTML: alt, width und height sind Pflicht, leerer Alt-Text nur dekorativ', () => {
+  const ok = '<img src="/a.webp" alt="Wandergruppe vor drei Türmen" width="1600" height="900" loading="lazy">';
+  assert.deepEqual(checkHtml(page({ body: ok }), { staging: true }), []);
+  assert.ok(hasProblem(page({ body: '<img src="/a.webp" width="1" height="1">' }), /ohne alt-Attribut/));
+  assert.ok(hasProblem(page({ body: '<img src="/a.webp" alt="" width="1" height="1">' }), /leerem Alt-Text/));
+  assert.ok(hasProblem(page({ body: '<img src="/a.webp" alt="x">' }), /ohne width und height/));
+  assert.deepEqual(checkHtml(page({ body: '<img src="/a.webp" alt="" role="presentation" width="1" height="1">' }), { staging: true }), []);
+});
+test('Bilder im Build: zu große ausgelieferte Dateien werden gefunden, Favicons nicht', () => {
+  const mk = (path, kb) => ({ path, bytes: kb * 1024 });
+  assert.deepEqual(checkDistImages([mk('_astro/a.webp', 300), mk('_astro/b.avif', 449), mk('favicon-32x32.png', 900)]), []);
+  const p = checkDistImages([mk('_astro/gross.webp', 460), mk('_astro/riesig.jpeg', 2500)]);
+  assert.equal(p.length, 2);
+  assert.ok(p.every((x) => /zu groß/.test(x)));
 });
