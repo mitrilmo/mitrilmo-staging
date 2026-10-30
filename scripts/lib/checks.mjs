@@ -125,6 +125,37 @@ export function checkHtml(html, opts = { staging: true }) {
   return problems;
 }
 
+// Impressum und Datenschutz bleiben Modals auf der Startseite (Entscheidung Björn 30.10.2026).
+// Jede Seite verlinkt im Footer auf /#impressum und /#datenschutz, die Startseite enthält beide Modals samt Text.
+export function checkLegal(pages) {
+  const problems = [];
+  for (const [page, html] of pages) {
+    const hrefs = tagsOf(html, 'a').map((a) => a.href || '');
+    for (const id of ['impressum', 'datenschutz']) {
+      if (!hrefs.some((h) => h.endsWith('/#' + id))) problems.push(`${page}: Footer-Link auf /#${id} fehlt`);
+    }
+  }
+  const home = pages.get('index.html');
+  if (!home) return problems;
+  const rules = [
+    ['impressum', 'Impressum', ['§ 5 DDG', 'kontakt-impressum@mitrilmo.com']],
+    ['datenschutz', 'Datenschutzerklärung', ['GitHub Pages', 'Umami']],
+  ];
+  for (const [id, title, must] of rules) {
+    const m = home.match(new RegExp(`<div id="modal-${id}"([^>]*)>`));
+    if (!m) { problems.push(`index.html: Modal ${id} fehlt`); continue; }
+    if (!/role="dialog"/.test(m[1]) || !/aria-modal="true"/.test(m[1]) || !new RegExp(`aria-labelledby="modal-${id}-title"`).test(m[1])) {
+      problems.push(`index.html: Modal ${id} ohne role="dialog", aria-modal und aria-labelledby`);
+    }
+    if (!/\bhidden\b/.test((m[1].match(/class="([^"]*)"/) || [])[1] || '')) problems.push(`index.html: Modal ${id} ist nicht ausgeblendet`);
+    if (!new RegExp(`<h2 id="modal-${id}-title"[^>]*>${title}</h2>`).test(home)) problems.push(`index.html: Titel „${title}" im Modal ${id} fehlt`);
+    const body = home.slice(home.indexOf(`<div id="modal-${id}"`));
+    for (const t of must) if (!body.includes(t)) problems.push(`index.html: Text im Modal ${id} enthält „${t}" nicht`);
+  }
+  if (!/function resolveHash/.test(home)) problems.push('index.html: Anker-Skript (resolveHash) fehlt im <head>');
+  return problems;
+}
+
 // pages: Map(relPfad -> html); has(relPfad): gibt es die Datei im Build (Seiten und Assets)? base z. B. "/mitrilmo-staging" oder ""
 export function checkLinks(pages, base, has) {
   const problems = [];

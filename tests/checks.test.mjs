@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkEntries, checkHtml, checkLinks, gpxLengthKm, UMAMI } from '../scripts/lib/checks.mjs';
+import { checkEntries, checkHtml, checkLinks, checkLegal, gpxLengthKm, UMAMI } from '../scripts/lib/checks.mjs';
 
 // --- GPX ---
 const gpx = (...segments) =>
@@ -139,4 +139,28 @@ test('Links: toter Link und Link ohne Basispfad werden gefunden', () => {
 test('Links: ohne Basispfad (Live) und relative Links', () => {
   assert.deepEqual(links({ 'stories/test.html': '<a href="../index.html">z</a><a href="/stories/test.html">s</a>' }, ''), []);
   assert.equal(links({ 'index.html': '<a href="/nope.html">x</a>' }, '').length, 1);
+});
+
+// --- Impressum und Datenschutz (Modals auf der Startseite) ---
+const footer = '<footer><a href="/mitrilmo-staging/#impressum">Impressum</a><a href="/mitrilmo-staging/#datenschutz">Datenschutz</a></footer>';
+const modal = (id, title, text, cls = 'hidden') => `<div id="modal-${id}" role="dialog" aria-modal="true" aria-labelledby="modal-${id}-title" class="x ${cls}"><h2 id="modal-${id}-title">${title}</h2><div>${text}</div></div>`;
+const homeHtml = (over = {}) => `<head><script>function resolveHash(){}</script></head><body>${footer}${over.imp ?? modal('impressum', 'Impressum', 'Angaben gemäß § 5 DDG kontakt-impressum@mitrilmo.com')}${over.ds ?? modal('datenschutz', 'Datenschutzerklärung', 'Hosting bei GitHub Pages, Messung mit Umami')}</body>`;
+const legal = (home, other = footer) => checkLegal(new Map([['index.html', home], ['404.html', other]]));
+
+test('Rechtliches: gültige Startseite mit beiden Modals und Footer-Links', () => {
+  assert.deepEqual(legal(homeHtml()), []);
+});
+test('Rechtliches: Footer-Links auf /#impressum und /#datenschutz fehlen auf einer Seite', () => {
+  const p = legal(homeHtml(), '<footer><a href="/mitrilmo-staging/#impressum">I</a></footer>');
+  assert.ok(p.some((x) => /404\.html: Footer-Link auf \/#datenschutz fehlt/.test(x)), JSON.stringify(p));
+});
+test('Rechtliches: Modal fehlt, nicht ausgeblendet, ohne Dialog-Attribute, falscher Titel oder fehlender Text', () => {
+  assert.ok(legal(homeHtml({ imp: '' })).some((x) => /Modal impressum fehlt/.test(x)));
+  assert.ok(legal(homeHtml({ ds: modal('datenschutz', 'Datenschutzerklärung', 'GitHub Pages Umami', 'flex') })).some((x) => /nicht ausgeblendet/.test(x)));
+  assert.ok(legal(homeHtml({ ds: '<div id="modal-datenschutz" class="hidden"><h2 id="modal-datenschutz-title">Datenschutzerklärung</h2>GitHub Pages Umami</div>' })).some((x) => /ohne role="dialog"/.test(x)));
+  assert.ok(legal(homeHtml({ imp: modal('impressum', 'Kontakt', '§ 5 DDG kontakt-impressum@mitrilmo.com') })).some((x) => /Titel „Impressum"/.test(x)));
+  assert.ok(legal(homeHtml({ imp: modal('impressum', 'Impressum', 'nur ein Satz') })).some((x) => /enthält „§ 5 DDG" nicht/.test(x)));
+});
+test('Rechtliches: Anker-Skript im Head der Startseite ist Pflicht', () => {
+  assert.ok(legal(homeHtml().replace('function resolveHash(){}', '')).some((x) => /resolveHash/.test(x)));
 });

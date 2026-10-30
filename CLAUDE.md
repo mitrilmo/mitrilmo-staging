@@ -27,6 +27,13 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 - **Slugs** nur `a–z`, `0–9`, Bindestrich, einmal vergeben, nie ändern. Tabelle im Vault (Slug-Tabelle).
 - **Keine Geheimnisse im Repo** (öffentlich): kein Mastercode der Pfadwerk-Codes, keine Schlüssel.
 
+## Impressum, Datenschutz und alte Anker
+
+- Beide Texte stehen als Modals **nur auf der Startseite** (`LegalModals`), fest im HTML, ausgeblendet. `/#impressum` und `/#datenschutz` öffnen sie, Schließen entfernt den Anker. Jede Seite hat im Footer Links auf `/#impressum` und `/#datenschutz` (`check:dist` prüft das und den Text der Modals).
+- Neue Unterseiten und alle Stories verlinken **nur** über diese beiden Footer-Links, nie eigene Kopien des Textes.
+- Alte Inhaltsanker (`#touren`, `#videos`, `#wanderberichte` …) leiten auf die neue Seite weiter, **sobald** deren Eintrag in `src/data/nav.js` auf `live: true` steht. Tabelle in `src/lib/anchors.js`, Quelle: URL-Inventar im Vault.
+- Der Datenschutztext verlinkt auf `pfadwerk.html`. Bis diese Seite migriert ist (AP2.5), steht sie in `PENDING` in `scripts/check-dist.mjs` und muss dort danach entfernt werden.
+
 ## Inhalte anlegen (Collections)
 
 - **Tour/Ziel** (`src/content/tours/<slug>.md`): Pflicht `title`, `place`, `description`, `duration`, `difficulty`, `image`, `imageAlt`, `publishedAt`; bei `kind: tour` zusätzlich `distanceKm`. Optional: `gpx`, `coordinates`, `video`, `stories`, `komoot`, `parking`, `rating` u. a. Ein **Ziel** (`kind: ziel`) hat keine GPX. Unbekanntes bleibt leer oder `unbekannt`, **nichts erfinden**.
@@ -62,6 +69,9 @@ src/styles/global.css    Tailwind, Farben, Jahreszeit-Variablen
 src/lib/season.js        Jahreszeitenlogik (wird in den <head> eingebettet)
 src/lib/fonts.js         @font-face für Inter (mit Basispfad)
 src/data/nav.js          Hauptnavigation (live:true erst, wenn die Seite existiert)
+src/legal/               Text von Impressum und Datenschutz (1:1 aus der alten Seite, HTML), nur bewusst ändern
+src/components/LegalModals.astro  die beiden Modals mit Skript (nur auf der Startseite eingebunden)
+src/lib/anchors.js       alte Anker der Startseite: Modals öffnen bzw. Redirect auf neue Seiten (getestet in tests/anchors.test.mjs)
 src/content.config.ts    Collections: tours (inkl. Ziele per kind), videos, stories, events, projects
 src/schemas/             Zod-Schemas (testbar ohne Build), Pflichtfelder und Regeln je Typ
 src/content/<typ>/       Eine Markdown-Datei pro Inhalt, Dateiname = Slug (Video: YouTube-ID)

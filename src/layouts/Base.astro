@@ -34,6 +34,7 @@ const seasonScript = seasonFn + `
   <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
   <style set:html={fontFaceCss(base)}></style>
   <script is:inline set:html={seasonScript}></script>
+  <slot name="head" />
   <script is:inline defer src="https://mobrain.tail4c30a8.ts.net/script.js" data-website-id="b0279420-580a-4f86-99df-4ac427936c73" data-domains="mitrilmo.com,www.mitrilmo.com"></script>
 </head>
 <body class="bg-slate-800 text-stone-200 font-sans antialiased min-h-screen flex flex-col">

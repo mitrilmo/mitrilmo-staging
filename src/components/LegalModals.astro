@@ -1,0 +1,78 @@
+---
+// Impressum und Datenschutz als Modals auf der Startseite, wie auf der bisherigen Seite (Entscheidung Björn, 30.10.2026).
+// Der Text steht fest im HTML (nur ausgeblendet) und wird 1:1 aus src/legal/ übernommen.
+import impressum from '../legal/impressum.html?raw';
+import datenschutz from '../legal/datenschutz.html?raw';
+
+const modals = [
+  { id: 'impressum', title: 'Impressum', html: impressum, space: 'space-y-4' },
+  { id: 'datenschutz', title: 'Datenschutzerklärung', html: datenschutz, space: 'space-y-5' },
+];
+---
+{modals.map((m) => (
+  <div id={`modal-${m.id}`} role="dialog" aria-modal="true" aria-labelledby={`modal-${m.id}-title`}
+       class="modal-overlay fixed inset-0 z-[200] flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-modal-close={m.id}></div>
+    <div class="modal-panel relative bg-slate-800 border border-white/10 rounded-2xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
+        <h2 id={`modal-${m.id}-title`} class="text-lg font-bold text-white">{m.title}</h2>
+        <button type="button" data-modal-close={m.id} aria-label="Schließen"
+                class="w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-white hover:bg-white/10 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class={`overflow-y-auto px-6 py-5 text-sm text-stone-300 leading-relaxed ${m.space} modal-content`} set:html={m.html}></div>
+    </div>
+  </div>
+))}
+
+<script is:inline>
+  // Öffnet und schließt die Modals. Benötigt resolveHash() aus dem <head> (src/lib/anchors.js).
+  (function () {
+    var ids = ['impressum', 'datenschutz'];
+    var lastFocus = null;
+    var el = function (id) { return document.getElementById('modal-' + id); };
+    var isOpen = function (id) { return !el(id).classList.contains('hidden'); };
+
+    function open(id) {
+      ids.forEach(function (o) { if (o !== id && isOpen(o)) el(o).classList.add('hidden'); });
+      if (!isOpen(id)) lastFocus = document.activeElement;
+      el(id).classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      var b = el(id).querySelector('button[aria-label="Schließen"]');
+      if (b) b.focus();
+    }
+    function close(id) {
+      el(id).classList.add('hidden');
+      document.body.style.overflow = '';
+      if (location.hash === '#' + id) history.replaceState(null, '', location.pathname + location.search);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    function fromHash() {
+      var r = typeof resolveHash === 'function' ? resolveHash(location.hash, []) : null;
+      if (r && r.type === 'modal') open(r.id);
+      else ids.forEach(function (id) { if (isOpen(id)) { el(id).classList.add('hidden'); document.body.style.overflow = ''; } });
+    }
+
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target.closest('[data-modal-close]') : null;
+      if (t) close(t.getAttribute('data-modal-close'));
+    });
+    document.addEventListener('keydown', function (e) {
+      var openId = ids.filter(isOpen)[0];
+      if (!openId) return;
+      if (e.key === 'Escape') { close(openId); return; }
+      if (e.key === 'Tab') { // Fokus bleibt im Dialog
+        var f = el(openId).querySelectorAll('button, a[href]');
+        if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    window.addEventListener('hashchange', fromHash);
+    fromHash();
+  })();
+</script>

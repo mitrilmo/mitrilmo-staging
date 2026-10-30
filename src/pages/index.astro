@@ -1,9 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
+import LegalModals from '../components/LegalModals.astro';
+import anchorsFn from '../lib/anchors.js?raw';
+import { nav } from '../data/nav.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const seasons = [['fruehling', 'Frühling'], ['sommer', 'Sommer'], ['herbst', 'Herbst'], ['winter', 'Winter']];
+
+// Alte Anker (#touren usw.) leiten im Browser auf die neuen Seiten weiter, sobald es sie gibt.
+// #impressum und #datenschutz öffnen die Modals (LegalModals), kein Redirect.
+const livePages = nav.filter((n) => n.live).map((n) => n.href);
+const anchorScript = `var LIVE_PAGES = ${JSON.stringify(livePages)}; var SITE_BASE = ${JSON.stringify(base)};
+${anchorsFn}
+(function () {
+  var r = resolveHash(location.hash, LIVE_PAGES);
+  if (r && r.type === 'redirect') location.replace(SITE_BASE + '/' + r.to);
+})();`;
 ---
 <Base title="mitrilmo, Staging" description="mitrilmo: Wandern, Radfahren und Neugier im Bergischen Land.">
+  <script slot="head" is:inline set:html={anchorScript}></script>
   <section class="sky">
     <div class="max-w-5xl mx-auto px-4 py-20">
       <h1 class="text-4xl md:text-5xl font-black text-stone-50 leading-tight">Raus.<br /><span class="text-accent">Entdecken.</span><br />Teilen.</h1>
@@ -23,4 +37,5 @@ const seasons = [['fruehling', 'Frühling'], ['sommer', 'Sommer'], ['herbst', 'H
     <h2 class="text-lg font-bold text-stone-50 mt-8">Testseiten für URL-Formate</h2>
     <p class="mt-2 text-sm"><a class="text-forest-400 underline" href={`${base}/stories/test.html`}>/stories/test.html</a> (so bleiben die 33 Stories erreichbar)</p>
   </section>
+  <LegalModals />
 </Base>
