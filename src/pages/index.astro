@@ -1,16 +1,26 @@
 ---
 import Base from '../layouts/Base.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const seasons = [['fruehling', 'Frühling'], ['sommer', 'Sommer'], ['herbst', 'Herbst'], ['winter', 'Winter']];
 ---
-<Base title="Start">
-  <h1>mitrilmo Staging, Spike AP0.7</h1>
-  <p>Platzhalterseite zum Testen von GitHub Pages. Kein echter Inhalt.</p>
-  <ul>
-    <li>BASE_URL: <code>{import.meta.env.BASE_URL}</code></li>
-    <li>Hash-Weiterleitung testen: <a href={`${base}/#impressum`}>/#impressum</a></li>
-  </ul>
-  <script is:inline define:vars={{ base }}>
-    var map = { '#impressum': '/impressum', '#datenschutz': '/datenschutz', '#touren': '/touren' };
-    if (map[location.hash]) location.replace(base + map[location.hash]);
-  </script>
+<Base title="mitrilmo, Staging" description="mitrilmo: Wandern, Radfahren und Neugier im Bergischen Land.">
+  <section class="sky">
+    <div class="max-w-5xl mx-auto px-4 py-20">
+      <h1 class="text-4xl md:text-5xl font-black text-stone-50 leading-tight">Raus.<br /><span class="text-accent">Entdecken.</span><br />Teilen.</h1>
+      <p class="mt-4 text-stone-200">Wandern, Radfahren und Neugier im Bergischen Land.</p>
+      <p class="mt-2 text-sm text-stone-300">Gerüst, Phase 1. Platzhalter, noch kein echter Inhalt.</p>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 py-10">
+    <h2 class="text-lg font-bold text-stone-50">Jahreszeit testen</h2>
+    <p class="text-sm text-stone-400 mt-1">Ohne Angabe richtet sich die Seite nach dem Datum des Besuchers.</p>
+    <p class="mt-3 flex flex-wrap gap-2 text-sm">
+      {seasons.map(([k, label]) => (
+        <a href={`${base}/?season=${k}`} class="px-3 py-1 rounded-full border border-accent text-accent hover:bg-slate-700">{label}</a>
+      ))}
+    </p>
+    <h2 class="text-lg font-bold text-stone-50 mt-8">Testseiten für URL-Formate</h2>
+    <p class="mt-2 text-sm"><a class="text-forest-400 underline" href={`${base}/stories/test.html`}>/stories/test.html</a> (so bleiben die 33 Stories erreichbar)</p>
+  </section>
 </Base>

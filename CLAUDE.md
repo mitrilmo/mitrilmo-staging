@@ -1,0 +1,50 @@
+# Instruktionen für Claude Code – mitrilmo-Website 2.0 (Neubau, Staging)
+
+## Projekt
+
+Neubau der Website für den YouTube-Kanal **mitrilmo** (Outdoor, Wandern, Radfahren, Bergisches Land) mit **Astro**, Content Collections und lokal gebautem Tailwind. Dieses Repo ist das **Staging** (`mitrilmo/mitrilmo-staging`, Test-URL `https://mitrilmo.github.io/mitrilmo-staging/`). Die alte Live-Seite liegt im Repo `mitrilmo/mitrilmo-website` (Branch `main`, bis zum Cutover unverändert; Sicherung `legacy-1.0`, Tag `vor-astro-relaunch`).
+
+Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-Website 2.0 - Umsetzungsplan`, `... Optimierungsplan`, `... Inventur`, `... Slug-Tabelle`, `... URL-Inventar und Weiterleitungen`. **Dort nachlesen, bevor etwas Strukturelles geändert wird.**
+
+## Feste Entscheidungen von Björn (nicht ohne Rückfrage ändern)
+
+- **Impressum und Datenschutz bleiben Modals auf der Startseite** (wie heute). `/#impressum` und `/#datenschutz` müssen auf `/` und `/index.html` das Modal öffnen (kein Redirect). Keine Änderung in Play Console und Apps. Unterseiten und alle 33 Stories verlinken im Footer auf `/#impressum` und `/#datenschutz`.
+- **Videos sind reine Links** mit lokalem Vorschaubild (öffnen YouTube in neuem Tab). Kein Embed, kein iFrame, kein Fallback auf `img.youtube.com`. Datenschutztext bleibt unverändert.
+- **Keine Search Console.** Beobachtung über Umami.
+- **Hub „Geschichten" = `/geschichten.html`**, die 33 Stories bleiben unter `/stories/<name>.html` (URLs unverändert).
+- **Zweite Welle nach dem Cutover:** Tiere am Wegweiser, Partikel, Parallax, RSS, weitere Skills.
+
+## Technik und Regeln
+
+- **Astro** mit `build.format: 'file'`: Seiten sind `.html`, Links **ohne** Schrägstrich am Ende (`/x/` liefert auf GitHub Pages 404). Canonical immer auf die `.html`-Adresse.
+- **Basispfad:** Alle Links über `import.meta.env.BASE_URL` (Staging `/mitrilmo-staging`, Live `/`). Live bauen mit `npm run build:live`.
+- **Tailwind lokal gebaut** (`@tailwindcss/vite`), **kein CDN**. Farben als Tokens in `src/styles/global.css`.
+- **Schriften:** nur frei lizenzierte (OFL/Apache), lokal gehostet, Lizenztext im selben Ordner (`public/fonts/OFL-Inter.txt`). Keine externen Schriftdienste. Neue Schriften nur nach Rückfrage. Ausweichkette `system-ui, sans-serif`.
+- **Kein externes CSS/JS** außer dem Umami-Skript (selbst gehostet auf MOBRAIN, steht einmal im Layout `src/layouts/Base.astro`, mit `data-domains="mitrilmo.com,www.mitrilmo.com"`, damit Staging nicht zählt).
+- **Jahreszeit** über `html[data-season]`, gesetzt vom Skript im `<head>` (`src/lib/season.js`, getestet in `tests/season.test.mjs`), Testen mit `?season=winter`. Standard ohne JavaScript: Herbst. Bewegung immer mit `prefers-reduced-motion` abschaltbar.
+- **Farben:** Body `#1a2520` (slate-800), Karten `#243029` (slate-700), Akzent je Jahreszeit, Logo „mitril" in `#7bbf6a` (forest-400) wie auf der Live-Seite.
+- **Ton:** Deutsch, ehrlich, persönlich, kein Marketing-Sprech, kein Sponsoring. Unbekannte Angaben bleiben leer, nie erfinden.
+- **Slugs** nur `a–z`, `0–9`, Bindestrich, einmal vergeben, nie ändern. Tabelle im Vault (Slug-Tabelle).
+- **Keine Geheimnisse im Repo** (öffentlich): kein Mastercode der Pfadwerk-Codes, keine Schlüssel.
+
+## Arbeitsweise
+
+- **Kein Push ohne ausdrückliche Freigabe von Björn.** Staging-Push löst den Deploy nach GitHub Pages aus (nur Testseite, nicht die Live-Seite).
+- Commits mit der Noreply-Adresse (`263847248+mitrilmo@users.noreply.github.com`), nie mit privater E-Mail (GitHub lehnt das ab).
+- Node 24 (Astro 7 verlangt mindestens 22.23.4), im Workflow ebenfalls 24.
+- Vor jedem Commit `npm test` und `npm run build`. Bei strukturellen Änderungen unabhängigen Review-Subagenten einsetzen.
+- Befehle für Björn in PowerShell **einzeln** liefern, nie mit `&&` verketten, beginnend mit `cd C:\Users\garte\Desktop\mitrilmo-staging`.
+- Änderungen, die nur auf der Live-Seite oder nur hier gelten, auf die **Nachzugsliste** im Umsetzungsplan (Abschnitt 2a).
+
+## Struktur
+
+```
+src/layouts/Base.astro   gemeinsames Layout (Head, Umami, Jahreszeit, Header, Footer)
+src/styles/global.css    Tailwind, Farben, Jahreszeit-Variablen
+src/lib/season.js        Jahreszeitenlogik (wird in den <head> eingebettet)
+src/lib/fonts.js         @font-face für Inter (mit Basispfad)
+src/data/nav.js          Hauptnavigation (live:true erst, wenn die Seite existiert)
+src/pages/               Seiten
+public/fonts/            Inter + OFL-Lizenztext
+tests/                   Tests (npm test)
+```

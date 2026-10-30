@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* Schrift Inter: Die @font-face-Regeln stehen in src/lib/fonts.js und werden vom Layout mit dem
+   richtigen Basispfad eingebettet. Dateien und Lizenztext (SIL OFL) liegen in public/fonts/. */
+
+/* Farben wie in der bisherigen Tailwind-Konfiguration der Seite (CLAUDE.md, Design-Regeln) */
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-slate-950: #0d1510;
+  --color-slate-900: #131d18;
+  --color-slate-800: #1a2520;
+  --color-slate-700: #243029;
+  --color-slate-600: #2e3d36;
+
+  --color-forest-900: #1a3317;
+  --color-forest-800: #2d5a27;
+  --color-forest-700: #3a7232;
+  --color-forest-600: #4a8c3f;
+  --color-forest-500: #5fa852;
+  --color-forest-400: #7bbf6a;
+  --color-forest-300: #a3d494;
+
+  --color-stone-50: #f7f5f2;
+  --color-stone-100: #edeae5;
+  --color-stone-200: #d9d4cc;
+  --color-stone-300: #c0b9ae;
+  --color-stone-400: #a89d8f;
+  --color-stone-500: #8f8275;
+
+  --color-amber-400: #f59e0b;
+  --color-amber-500: #d97706;
+}
+
+/* Jahreszeit: Akzentfarbe und Himmel. Gesetzt über html[data-season], Standard ohne JavaScript: Herbst */
+@theme inline {
+  --color-accent: var(--season-accent);
+  --color-accent-light: var(--season-accent-light);
+}
+
+html[data-season="fruehling"] {
+  --season-accent: #9bd67a; --season-accent-light: #b5e08f;
+  --sky-1: #10201a; --sky-2: #2d5a3a; --sky-3: #8cc76a;
+}
+html[data-season="sommer"] {
+  --season-accent: #f2cf6b; --season-accent-light: #f8e29a;
+  --sky-1: #0f2a3a; --sky-2: #2a6a8a; --sky-3: #9cc96a;
+}
+html[data-season="herbst"] {
+  --season-accent: #f0a85a; --season-accent-light: #f5c48a;
+  --sky-1: #1a1209; --sky-2: #4a2a12; --sky-3: #b5651d;
+}
+html[data-season="winter"] {
+  --season-accent: #a9d0ea; --season-accent-light: #cfe4f3;
+  --sky-1: #0d1318; --sky-2: #1c2a36; --sky-3: #5d7f9a;
+}
+
+.sky {
+  background: linear-gradient(135deg, var(--sky-1) 0%, var(--sky-2) 55%, var(--sky-3) 100%);
+  transition: background 0.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

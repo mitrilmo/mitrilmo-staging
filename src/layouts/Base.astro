@@ -1,29 +1,62 @@
 ---
-const { title } = Astro.props;
+import '../styles/global.css';
+import seasonFn from '../lib/season.js?raw';
+import { fontFaceCss } from '../lib/fonts.js';
+import { nav } from '../data/nav.js';
+
+const { title, description = 'mitrilmo: Wandern, Radfahren und Neugier im Bergischen Land.' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const staging = base !== '';
+// Canonical immer auf die .html-Adresse (die Variante ohne Endung liefert GitHub Pages ebenfalls aus)
+const path = Astro.url.pathname.replace(/\/$/, '') || '';
+const canonical = new URL(path.endsWith('.html') || path === base ? path || '/' : path + '.html', Astro.site).href;
+
+// Jahreszeit aus dem Datum, per ?season=herbst testbar. Ohne JavaScript bleibt der Standard (herbst).
+const seasonScript = seasonFn + `
+(function () {
+  var ok = ['fruehling', 'sommer', 'herbst', 'winter'];
+  var q = new URLSearchParams(location.search).get('season');
+  document.documentElement.setAttribute('data-season', ok.indexOf(q) >= 0 ? q : seasonFor(new Date()));
+})();`;
 ---
 <!doctype html>
-<html lang="de">
+<html lang="de" data-season="herbst">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>{title} – mitrilmo Staging</title>
-  <style>
-    body { font-family: system-ui, sans-serif; background: #1a2520; color: #d9d4cc; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
-    a { color: #7bbf6a; }
-    code { background: #243029; padding: 0 .3em; border-radius: 4px; }
-  </style>
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {staging && <meta name="robots" content="noindex, nofollow" />}
+  <link rel="icon" href={`${base}/favicon.ico`} sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href={`${base}/favicon-32x32.png`} />
+  <link rel="icon" type="image/png" sizes="16x16" href={`${base}/favicon-16x16.png`} />
+  <link rel="apple-touch-icon" href={`${base}/apple-touch-icon.png`} />
+  <style set:html={fontFaceCss(base)}></style>
+  <script is:inline set:html={seasonScript}></script>
+  <script is:inline defer src="https://mobrain.tail4c30a8.ts.net/script.js" data-website-id="b0279420-580a-4f86-99df-4ac427936c73" data-domains="mitrilmo.com,www.mitrilmo.com"></script>
 </head>
-<body>
-  <nav>
-    <a href={`${base}/`}>Start</a> ·
-    <a href={`${base}/impressum`}>Impressum (ohne Endung)</a> ·
-    <a href={`${base}/impressum.html`}>Impressum.html</a> ·
-    <a href={`${base}/stories/test.html`}>Story test.html</a> ·
-    <a href={`${base}/stories/test`}>Story test (ohne Endung)</a>
-  </nav>
-  <hr />
-  <slot />
+<body class="bg-slate-800 text-stone-200 font-sans antialiased min-h-screen flex flex-col">
+  <header class="bg-slate-900/90 border-b border-white/5">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <a href={`${base}/`} class="font-black text-lg tracking-tight text-white"><span class="text-forest-400">mitril</span>mo</a>
+      <nav aria-label="Hauptnavigation" class="flex gap-5 text-sm font-medium text-stone-300">
+        {nav.filter((n) => n.live).map((n) => (
+          <a href={`${base}/${n.href}`} class="hover:text-accent transition-colors">{n.label}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1"><slot /></main>
+
+  <footer class="border-t border-white/5 bg-slate-950/50">
+    <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+      <p>© 2026 mitrilmo · Bergisches Land, NRW</p>
+      <p>
+        <a href={`${base}/#impressum`} class="hover:text-accent transition-colors">Impressum</a><span class="mx-2" aria-hidden="true">·</span><a href={`${base}/#datenschutz`} class="hover:text-accent transition-colors">Datenschutz</a>
+      </p>
+    </div>
+  </footer>
 </body>
 </html>

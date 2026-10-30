@@ -1,7 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-<Base title="Nicht gefunden">
-  <h1>404</h1>
-  <p>Diese Seite gibt es nicht. (Eigene 404-Seite des Spikes.)</p>
+<Base title="Nicht gefunden, mitrilmo">
+  <section class="max-w-3xl mx-auto px-4 py-16">
+    <h1 class="text-3xl font-black text-stone-50">Hier ist niemand langgegangen.</h1>
+    <p class="mt-3 text-stone-300">Diese Seite gibt es nicht. <a class="text-accent underline" href={`${base}/`}>Zurück zum Start</a></p>
+  </section>
 </Base>
