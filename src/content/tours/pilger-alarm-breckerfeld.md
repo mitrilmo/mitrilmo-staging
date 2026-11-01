@@ -19,5 +19,6 @@ parking:
   name: Breckerfeld-Delle
   cost: kostenfrei
 strollerOk: nein
+mapsUrl: https://maps.google.com/?q=Breckerfeld+Delle
 publishedAt: 2026-10-25
 ---

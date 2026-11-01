@@ -40,6 +40,7 @@ export const tourSchema = ({ reference, image }) =>
       video: reference('videos').optional(),
       stories: z.array(reference('stories')).default([]),
       komoot: httpsUrl.optional(),
+      mapsUrl: httpsUrl.optional(), // Google-Maps-Suche zu Parkplatz, Start oder Anlegestelle (Link "Google Maps öffnen" der alten Seite)
       parking: parking.optional(),
       familyFriendly: triState,
       dogFriendly: triState,

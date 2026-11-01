@@ -19,5 +19,6 @@ coordinates:
 video: q_ee_VkBWME
 parking:
   name: Landschaftspark Duisburg-Nord
+mapsUrl: https://maps.google.com/?q=Landschaftspark+Duisburg-Nord
 publishedAt: 2026-09-01
 ---

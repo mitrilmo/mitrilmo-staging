@@ -11,5 +11,6 @@ difficulty: sehr-leicht
 image: ../../assets/images/videos/gML8ApT6qlw.jpg
 imageAlt: "Vorschaubild des Videos zur 6-Schleusen-Fahrt im Ruhrgebiet"
 video: gML8ApT6qlw
+mapsUrl: https://maps.google.com/?q=Wei%C3%9Fe+Flotte+Baldeneysee+Essen
 publishedAt: 2026-06-06
 ---

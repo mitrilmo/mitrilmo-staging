@@ -30,5 +30,6 @@ bestSeasons:
   - sommer
   - herbst
 tips: "Viele zusätzliche Infos findet man unter: https://3tuermeweg.de/die-tuerme/3-tuerme"
+mapsUrl: https://maps.google.com/?q=Stadtgarten+Hagen
 publishedAt: 2026-08-23
 ---

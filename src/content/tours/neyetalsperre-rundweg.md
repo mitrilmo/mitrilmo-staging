@@ -32,5 +32,6 @@ bestSeasons:
   - herbst
   - winter
 tips: Für Kinder ab 6 Jahren geeignet
+mapsUrl: https://maps.google.com/?q=Neyetalsperre+Wipperf%C3%BCrth
 publishedAt: 2026-06-06
 ---

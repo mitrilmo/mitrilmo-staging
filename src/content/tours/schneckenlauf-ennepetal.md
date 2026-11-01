@@ -18,5 +18,6 @@ video: poFIYRmw_aw
 parking:
   name: Wanderparkplatz Ennepetal-Rüggeberg
 strollerOk: nein
+mapsUrl: https://maps.google.com/?q=Wanderparkplatz+Ennepetal-R%C3%BCggeberg
 publishedAt: 2026-09-20
 ---

@@ -31,5 +31,6 @@ bestSeasons:
   - sommer
   - herbst
   - winter
+mapsUrl: https://maps.google.com/?q=Wanderparkplatz+Ennepetal-Voerde+Aldi
 publishedAt: 2026-08-16
 ---

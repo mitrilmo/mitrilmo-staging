@@ -1,5 +1,13 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, AP2.7 Paritätsliste)
+
+### Neu
+- **Paritätsprüfung** `scripts/parity.mjs`: vergleicht die alte Seite (Branch main) mit dem Neubau, Touren und ihre Felder, 29 YouTube-IDs, 33 Stories, 16 Events, 6 Neuigkeiten, Monatscodes, 35 externe Links, 30 Sprüche. Endet mit Fehlercode 1, wenn etwas fehlt. Eine bewusste Abweichung (Altenberger Dom 16,4 km) ist im Skript begründet.
+- **Sprüche des Tages** (30) als `src/data/sprueche.js` mit `spruchFuer()` (gleiche Rechnung wie die alte Seite), Test dazu.
+- Tour-Feld `mapsUrl` (Link "Google Maps öffnen" zu Parkplatz, Start oder Anlegestelle) für 8 Touren und Ziele. Das fiel bei der Prüfung als Lücke auf.
+- Vault: `mitrilmo-Website 2.0 - Paritätsliste.md` (Inhalte, Abschnitte, Funktionen, bewusste Änderungen, offene Punkte für Phase 3).
+
 ## 2026-11-01 (Phase 2, AP2.6 Über mitrilmo)
 
 ### Neu

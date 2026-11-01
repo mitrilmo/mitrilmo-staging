@@ -13,5 +13,6 @@ strollerOk: ja
 parking:
   name: "Parkplatz Ost"
   cost: "7 € pro Tag"
+mapsUrl: https://maps.google.com/?q=Landesgartenschau+Neuss+Parkplatz+Ost
 publishedAt: 2026-08-05
 ---
