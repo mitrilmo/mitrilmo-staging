@@ -4,6 +4,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Einmaliges Migrationsskript: überschreibt Inhalte (auch von Hand nachgezogene Felder). Nur mit --force starten.
+if (!process.argv.includes('--force')) { console.error('Einmaliges Skript, das vorhandene Inhalte überschreibt. Zum bewussten Start --force anhängen.'); process.exit(1); }
+process.argv.splice(process.argv.indexOf('--force'), 1);
+
 const root = fileURLToPath(new URL('..', import.meta.url));
 const html = readFileSync(process.argv[2], 'utf8');
 const block = html.match(/const sprueche = \[([\s\S]*?)\];/)[1];

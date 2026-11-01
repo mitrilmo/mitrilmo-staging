@@ -6,6 +6,10 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stringify } from 'yaml';
 
+// Einmaliges Migrationsskript: überschreibt Inhalte (auch von Hand nachgezogene Felder). Nur mit --force starten.
+if (!process.argv.includes('--force')) { console.error('Einmaliges Skript, das vorhandene Inhalte überschreibt. Zum bewussten Start --force anhängen.'); process.exit(1); }
+process.argv.splice(process.argv.indexOf('--force'), 1);
+
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dir = join(root, 'src', 'content', 'videos');
 const write = (id, fm) => writeFileSync(join(dir, `${id}.md`), '---\n' + stringify(fm, { lineWidth: 0 }) + '---\n');

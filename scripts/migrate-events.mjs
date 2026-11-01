@@ -8,6 +8,10 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stringify } from 'yaml';
 
+// Einmaliges Migrationsskript: überschreibt Inhalte (auch von Hand nachgezogene Felder). Nur mit --force starten.
+if (!process.argv.includes('--force')) { console.error('Einmaliges Skript, das vorhandene Inhalte überschreibt. Zum bewussten Start --force anhängen.'); process.exit(1); }
+process.argv.splice(process.argv.indexOf('--force'), 1);
+
 const root = fileURLToPath(new URL('..', import.meta.url));
 const old = process.argv[2];
 if (!old) { console.error('Aufruf: node scripts/migrate-events.mjs <Ordner der alten Seite>'); process.exit(1); }
@@ -34,7 +38,9 @@ const EXTRA = {
 const SPLIT = / ?(?:–|-) ?(Termin vor Besuch selbst gegenchecken\.?)$/;
 
 const html = readFileSync(join(old, 'index.html'), 'utf8').split('\n');
-const region = html.slice(1065, 1283).join('\n');
+const whole = html.join('\n');
+const region = whole.slice(whole.indexOf('id="eventsSection"'), whole.indexOf('id="upcomingSection"'));
+if (region.length < 1000) throw new Error('Event-Abschnitt in der alten Seite nicht gefunden');
 const dir = join(root, 'src', 'content', 'events');
 rmSync(dir, { recursive: true, force: true });
 mkdirSync(dir, { recursive: true });

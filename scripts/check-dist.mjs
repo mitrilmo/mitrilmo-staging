@@ -48,6 +48,7 @@ for (const rel of pending) console.log(`  Hinweis: Link auf ${rel} noch ohne Sei
 for (const rel of Object.keys(PENDING)) if (set.has(rel)) problems.push(`${rel} existiert jetzt, bitte aus PENDING in scripts/check-dist.mjs entfernen`);
 // Entwicklungsseiten (dev-*.html) gibt es nur im Staging, sie dürfen nie live gehen
 if (live) for (const f of files.filter((x) => /(^|\/)dev-[^/]*\.html$/.test(x))) problems.push(`Entwicklungsseite ${f} darf nicht live gehen`);
+if (live && set.has('stories/test.html')) problems.push('Testseite stories/test.html darf nicht live gehen');
 
 for (const req of ['index.html', '404.html']) if (!set.has(req)) problems.push(`${req} fehlt im Build`);
 if (files.some((f) => f.endsWith('.woff2')) && !files.some((f) => /^fonts\/OFL.*\.txt$/.test(f))) {

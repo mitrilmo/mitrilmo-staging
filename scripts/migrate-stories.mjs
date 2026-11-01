@@ -9,6 +9,10 @@ import { fileURLToPath } from 'node:url';
 import { stringify } from 'yaml';
 import { importImage } from './lib/image.mjs';
 
+// Einmaliges Migrationsskript: überschreibt Inhalte (auch von Hand nachgezogene Felder). Nur mit --force starten.
+if (!process.argv.includes('--force')) { console.error('Einmaliges Skript, das vorhandene Inhalte überschreibt. Zum bewussten Start --force anhängen.'); process.exit(1); }
+process.argv.splice(process.argv.indexOf('--force'), 1);
+
 const root = fileURLToPath(new URL('..', import.meta.url));
 const old = process.argv[2];
 if (!old) { console.error('Aufruf: node scripts/migrate-stories.mjs <Ordner der alten Seite>'); process.exit(1); }

@@ -1,5 +1,12 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (M2 Review)
+
+### Geändert (nach Review-Subagent)
+- `parity.mjs`: Eine Prüfung ohne Treffer in der alten Seite meldet jetzt einen Fehler (vorher "0 von 0 = vollständig"). Der Event-Abschnitt wird über Marker statt über feste Zeilen gefunden, es müssen genau 13 Region-Events gefunden werden.
+- Alle `migrate-*.mjs` starten nur noch mit `--force` (sie überschreiben Inhalte und löschen teils Ordner). `migrate-events.mjs` findet den Abschnitt ebenfalls über Marker.
+- `check-dist` sperrt `stories/test.html` fürs Live-Bauen, wie `dev-bilder.html`.
+
 ## 2026-11-01 (Phase 2, AP2.7 Paritätsliste)
 
 ### Neu

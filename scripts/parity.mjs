@@ -21,6 +21,8 @@ const DEVIATIONS = {
 };
 const deviated = [];
 const check = (area, oldN, found, notFound) => {
+  // Eine Prüfung ohne Treffer in der alten Seite ist wertlos (Suchmuster passt nicht mehr): als Fehler melden
+  if (!oldN) notFound = [...notFound, 'keine Treffer in der alten Seite, Suchmuster prüfen'];
   const real = notFound.filter((m) => !DEVIATIONS[m]);
   deviated.push(...notFound.filter((m) => DEVIATIONS[m]).map((m) => `${m}: ${DEVIATIONS[m]}`));
   rows.push([area, oldN, found, real.length ? `FEHLT: ${real.join(', ')}` : notFound.length ? 'vollständig (1 bewusste Abweichung)' : 'vollständig']);
@@ -70,9 +72,11 @@ check('Stories (Dateien in stories/)', oldStories.length, oldStories.filter((s) 
 
 // 4. Events der Startseite (Region und Kanal)
 const events = dir('events').map((id) => ({ id, t: norm(fm('events', id).match(/^title: (.*)$/m)?.[1] ?? '') }));
-const evRegion = [...index.split('\n').slice(1065, 1283).join('\n').matchAll(/data-end="([^"]+)"[\s\S]*?<p class="text-white text-sm font-bold[^>]*>([^<]*)</g)].map((m) => ({ end: m[1], title: dec(m[2]).trim() }));
+const evSection = index.slice(index.indexOf('id="eventsSection"'), index.indexOf('id="upcomingSection"'));
+const evRegion = [...evSection.matchAll(/data-end="([^"]+)"[\s\S]*?<p class="text-white text-sm font-bold[^>]*>([^<]*)</g)].map((m) => ({ end: m[1], title: dec(m[2]).trim() }));
 const evKanal = ['Wanderung: Auf der Trasse zum Luftkurort', 'Mammutmarsch Dresden 30 Kilometer', 'UltraWandern auf dem Kölnpfad'];
 const evAll = [...evRegion.map((e) => e.title), ...evKanal];
+if (evRegion.length !== 13) missing.push(`Events: 13 Karten der Region erwartet, gefunden ${evRegion.length}`);
 check('Events und Vorhaben', evAll.length, evAll.filter((t) => events.some((e) => e.t === norm(t))).length, evAll.filter((t) => !events.some((e) => e.t === norm(t))));
 
 // 5. Neuigkeiten (Blog-Slider) und Wanderberichte-Liste
