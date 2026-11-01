@@ -9,8 +9,9 @@
 ### Geändert
 - Video-IDs behalten ihre Groß-/Kleinschreibung (`generateId` im Loader). Vorher schrieb Astro sie klein, und `reference()` meldete beim Build "Invalid content reference" für alle Tour-Videos.
 
-### Offen
-- Video "Rucksackhaken" (`0lX1btjYfzY`) fehlt, bis ein Vorschaubild vorliegt.
+### Geändert (Nachtrag)
+- Neue Thumbnails (Textfassung mit Schlagzeile) für 8 Videos eingesetzt, Video "Rucksackhaken" angelegt.
+- Noch ohne Eintrag: Drachenfels-Abenteuer, Talsperren-Therapie (Lister), Verschwundene Grenzen (Bergische Landwehr), weil die YouTube-IDs fehlen.
 
 Protokoll der Änderungen am Neubau. Die alte Live-Seite hat ihr eigenes Changelog (nicht in diesem Repo).
 Format pro Eintrag: Datum, dann nur zutreffende Kategorien **Neu**, **Geändert**, **Entfernt**.
