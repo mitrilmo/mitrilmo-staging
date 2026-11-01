@@ -283,8 +283,8 @@
   let lastTs = null;
 
   // ── pixel-sound (leise, abschaltbar, kein Audio-File, nur WebAudio) ──
-  const MUTE_KEY = 'mitrilmo_hikequest_muted';
-  let muted = localStorage.getItem(MUTE_KEY) === '1';
+  // Das Spiel speichert nichts im Browser (kein localStorage): Ton und Bestzeit gelten nur, solange die Seite offen ist.
+  let muted = false;
   let actx = null;
   function audioCtx() {
     if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
@@ -424,20 +424,15 @@
   syncMuteBtn();
   btnMute.addEventListener('click', () => {
     muted = !muted;
-    localStorage.setItem(MUTE_KEY, muted ? '1' : '0');
     syncMuteBtn();
     setAmbientMute(muted);
     if (!muted) blip(440, 0.08, 'square', 0.03);
   });
 
-  const BEST_KEY = 'mitrilmo_hikequest_besttime';
-  function getBest() {
-    const v = parseFloat(localStorage.getItem(BEST_KEY));
-    return isNaN(v) ? null : v;
-  }
+  let bestMs = null; // nur im Arbeitsspeicher, nach dem Schließen der Seite weg
+  function getBest() { return bestMs; }
   function setBest(ms) {
-    const cur = getBest();
-    if (cur === null || ms < cur) localStorage.setItem(BEST_KEY, String(ms));
+    if (bestMs === null || ms < bestMs) bestMs = ms;
   }
   function fmtTime(ms) {
     const totalSec = ms / 1000;

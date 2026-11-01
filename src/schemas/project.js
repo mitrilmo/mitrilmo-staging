@@ -22,6 +22,7 @@ export const projectSchema = z
     kind: z.enum(['app', 'spiel', 'challenge', 'marsch']),
     description: z.string().min(20),
     status: z.enum(['live', 'laufend', 'abgeschlossen']).default('laufend'),
+    draft: z.boolean().default(false), // Entwurf: wird auf keiner Seite gezeigt (z. B. Spiel, noch nicht freigegeben)
     links: z.array(link).default([]),
     progress: progress.optional(),
   })

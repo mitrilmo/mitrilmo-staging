@@ -3,6 +3,7 @@ title: "Mo's Hike Quest"
 kind: spiel
 description: "Lauf, spring und duck dich durch 6 Etappen Bergisches Land, von Sommerwald bis Winterlandschaft. Erreiche alle Schutzhütten so schnell wie möglich, deine Zeit ist dein Highscore."
 status: live
+draft: true # Spiel noch nicht live (Entscheidung Björn 01.11.2026)
 links:
   - label: "Quest starten"
     href: /games/mos-hike-quest.html

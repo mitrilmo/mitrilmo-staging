@@ -1,5 +1,12 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Entscheidungen nach M2-Review)
+
+### Geändert
+- **Mo's Hike Quest ist nur im Staging** (Entscheidung Björn): Die Route wird in `astro.config.mjs` nur bei Staging eingebunden (`src/staging/`), der Live-Build entfernt `images/game`, der Projekt-Eintrag ist `draft: true` (neues Feld `draft` im Projektschema). Zum Freigeben die Route immer einbinden, den Aufräum-Schritt entfernen und `draft` löschen.
+- **Das Spiel speichert nichts mehr** im Browser (kein `localStorage`): Ton und Bestzeit gelten nur, solange die Seite offen ist. Der Datenschutztext bleibt dadurch unverändert.
+- `channel-logo.jpg` liegt unverändert unter `/images/` (ohne Metadaten neu kodiert, 1024 px), für Altverweise und später `og:image`.
+
 ## 2026-11-01 (M2 Review)
 
 ### Geändert (nach Review-Subagent)

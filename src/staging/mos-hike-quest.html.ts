@@ -1,6 +1,6 @@
-// Mo's Hike Quest: eigenständiges Spiel (Quelle: src/game/mos-hike-quest.html, Bilder unter public/images/game/).
+// Mo's Hike Quest: eigenständiges Spiel, NUR im Staging (astro.config.mjs bindet die Route nur dort ein; Freigabe fürs Live durch Björn offen) (Quelle: src/game/mos-hike-quest.html, Bilder unter public/images/game/).
 // Der Endpunkt ergänzt zur Bauzeit, was jede Seite braucht: Beschreibung, Canonical, noindex im Staging und die Rechtlich-Links.
-import source from '../../game/mos-hike-quest.html?raw';
+import source from '../game/mos-hike-quest.html?raw';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = ({ site }) => {
