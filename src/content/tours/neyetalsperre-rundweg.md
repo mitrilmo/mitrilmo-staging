@@ -1,0 +1,36 @@
+---
+title: Rund um die Neye-Talsperre
+kind: tour
+activity: wandern
+place: Wipperfürth
+description: Auf satten 12 Kilometern gibt es reinstes Karibik-Feeling – inklusive schattiger Urwald-Pfade und genialem Blick aufs glitzernde Neye-Meer.
+distanceKm: 12
+duration: 2-3 Std.
+difficulty: leicht
+image: ../../assets/images/tours/neyetalsperre-rundweg.jpg
+imageAlt: Titelbild zur Tour Rund um die Neye-Talsperre
+gpx: gpx/neyetalsperre-rundweg.gpx
+coordinates:
+  lat: 51.14602
+  lng: 7.38934
+video: cZt9hn0tH3E
+komoot: https://www.komoot.com/de-de/tour/2976055967?share_token=aQykfHTeMEklGUrtte4q2PGp64y0d4EK1dEWsw3xO188VRrvW3&ref=wtd&t_s=referral&t_cid=route_share&t_ref_username=848397235919
+parking:
+  name: Wanderparkplatz Schwarzer Weg, Hückeswagen
+familyFriendly: ja
+dogFriendly: ja
+openingHours: ganzjährig zugänglich
+prices: Kostenlos
+refreshments:
+  - Gaststätte
+equipment:
+  - Festes Schuhwerk
+  - Wasser mitnehmen
+bestSeasons:
+  - fruehling
+  - sommer
+  - herbst
+  - winter
+tips: Für Kinder ab 6 Jahren geeignet
+publishedAt: 2026-06-06
+---

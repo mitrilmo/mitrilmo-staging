@@ -3,6 +3,20 @@
 Protokoll der Änderungen am Neubau. Die alte Live-Seite hat ihr eigenes Changelog (nicht in diesem Repo).
 Format pro Eintrag: Datum, dann nur zutreffende Kategorien **Neu**, **Geändert**, **Entfernt**.
 
+## 2026-11-01 (Phase 2, AP2.1 Touren)
+
+### Neu
+- Alle **11 Touren** migriert (`src/content/tours/`, Einmal-Skript `scripts/migrate-tours.mjs`): 8 aus dem Bestand (JS-Array `alle`) und die 3 neuen (Pilger-Alarm Breckerfeld, Schneckenlauf Ennepetal, Nachtmammutmarsch Ruhrgebiet). Neue Slugs laut Slug-Tabelle (`3-tuerme-weg-hagen`, `huelsenbecker-tal`, `altenberger-dom`). 9 neue Titelbilder und 11 GPX übernommen, Bilder über `import-image.mjs`.
+- 9 **Videos**, auf die Touren verweisen (Hasper Talsperre, Neye, Pilger-Alarm, Schneckenlauf, Mammutmarsch, Altenberger Dom, Elbschetal, Trassentrekking, Hülsenbecker Tal), mit lokalem Vorschaubild.
+- Koordinaten für Heilenbecke, Neye und die drei neuen Touren aus dem GPX-Start.
+
+### Geändert
+- Beispiele 3-Türme-Weg und Heilenbecke vollständig (Komoot-Link, Koordinaten).
+- Beschreibungen ohne die doppelte Tipp-Zeile (💡) und ohne Schluss-Emojis, Tippfehler "mittele" korrigiert. Länge der neuen Touren laut GPX (6,7 / 10,6 / 30,3 km).
+
+### Offen aus AP2.1
+- Alt-Texte der Titelbilder sind Platzhalter ("Titelbild zur Tour …"), `place` ist bei den Bestandstouren die alte `region`, `publishedAt` ist das Datum der ersten Veröffentlichung auf der alten Seite (aus Git).
+
 ## 2026-11-01 (Phase 2, Neuigkeiten)
 
 ### Neu
