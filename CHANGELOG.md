@@ -11,7 +11,7 @@
 
 ### Geändert (Nachtrag)
 - Neue Thumbnails (Textfassung mit Schlagzeile) für 8 Videos eingesetzt, Video "Rucksackhaken" angelegt.
-- Noch ohne Eintrag: Drachenfels-Abenteuer, Talsperren-Therapie (Lister), Verschwundene Grenzen (Bergische Landwehr), weil die YouTube-IDs fehlen.
+- Drei weitere Videos angelegt: Drachen-Power (Drachenfels), Talsperren-Therapie (Lister), Verschwundene Grenzen (Bergische Landwehr). Titel von YouTube übernommen.
 
 Protokoll der Änderungen am Neubau. Die alte Live-Seite hat ihr eigenes Changelog (nicht in diesem Repo).
 Format pro Eintrag: Datum, dann nur zutreffende Kategorien **Neu**, **Geändert**, **Entfernt**.
