@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mo's Hike Quest – mitrilmo</title>
+<style>
+  :root {
+    --green-dark: #2d5a27;
+    --green-mid: #4a8c3f;
+    --green-light: #7bbf6a;
+    --brown: #6b4226;
+    --stone-200: #d9d4cc;
+    --stone-400: #a89d8f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #11160f;
+    color: var(--stone-200);
+    font-family: 'Courier New', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  h1 {
+    color: var(--green-light);
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  .arcade-frame {
+    background: #1a1a1a;
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 0 0 4px #000, 0 10px 30px rgba(0,0,0,0.6);
+    max-width: 920px;
+    width: 100%;
+  }
+  .screen-wrap {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 3px solid #000;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #87b4c9;
+    image-rendering: pixelated;
+  }
+  .hud {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: #ffd76a;
+    text-shadow: 1px 1px 0 #000;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
+    pointer-events: none;
+  }
+  .hud span.label { color: var(--green-light); }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 14, 9, 0.86);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 14px;
+    padding: 20px;
+  }
+  .overlay.hidden { display: none; }
+  .overlay h2 { color: var(--green-light); margin: 0; font-size: 1.3rem; letter-spacing: 0.08em; }
+  .overlay p { color: var(--stone-400); font-size: 0.85rem; max-width: 480px; line-height: 1.5; margin: 0; }
+  .overlay.grand {
+    background: radial-gradient(circle at 50% 40%, rgba(245,158,11,0.28), rgba(10,14,9,0.92));
+    animation: grandPulse 1.8s ease-in-out infinite;
+  }
+  .overlay.grand h2 {
+    color: #ffd76a;
+    font-size: 1.8rem;
+    text-shadow: 0 0 14px rgba(255,215,106,0.7);
+    animation: grandPop 0.5s ease-out;
+  }
+  @keyframes grandPulse {
+    0%, 100% { box-shadow: inset 0 0 60px rgba(245,158,11,0.15); }
+    50% { box-shadow: inset 0 0 110px rgba(245,158,11,0.35); }
+  }
+  @keyframes grandPop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+  .btn {
+    background: var(--green-mid);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--green-light); }
+  .controls-hint {
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: var(--stone-400);
+    text-align: center;
+  }
+  .touch-controls {
+    display: none;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .touch-controls button {
+    width: 64px; height: 56px;
+    border-radius: 10px;
+    border: 2px solid var(--green-mid);
+    background: #1e2a1a;
+    color: var(--green-light);
+    font-size: 1.3rem;
+  }
+  @media (max-width: 640px) {
+    .touch-controls { display: flex; }
+  }
+  .back-link {
+    margin-top: 16px;
+    color: var(--stone-400);
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  .back-link:hover { color: var(--green-light); }
+  .mute-btn {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(217,212,204,0.3);
+    color: var(--stone-200);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .mute-btn:hover { border-color: var(--green-light); }
+</style>
+<script defer src="https://mobrain.tail4c30a8.ts.net/script.js" data-website-id="b0279420-580a-4f86-99df-4ac427936c73" data-domains="mitrilmo.com,www.mitrilmo.com"></script>
+</head>
+<body>
+
+<h1>~ Mo's Hike Quest ~</h1>
+
+<div class="arcade-frame">
+  <div class="screen-wrap">
+    <canvas id="game" width="900" height="420"></canvas>
+    <div class="hud">
+      <div><span class="label">ZEIT:</span> <span id="hudTime">00:00.0</span></div>
+      <div><span class="label">BESTZEIT:</span> <span id="hudBest">--:--.-</span></div>
+      <div><span class="label">LEBEN:</span> <span id="hudLives">♥♥♥</span></div>
+      <button id="btnMute" class="mute-btn" title="Sound an/aus" style="pointer-events:auto;">🔈</button>
+    </div>
+
+    <div id="overlayStart" class="overlay">
+      <h2>MO'S HIKE QUEST</h2>
+      <p>Lauf, spring und duck dich durch 6 Etappen Bergisches Land – von Sommerwald bis Winterlandschaft. Erreiche alle Schutzhütten so schnell wie möglich – deine Zeit ist dein Highscore.</p>
+      <button class="btn" id="btnStart">Quest starten</button>
+      <div class="controls-hint">
+        → / D: schneller laufen &nbsp;·&nbsp; ↑ / Leertaste: springen &nbsp;·&nbsp; ↓ / S: ducken
+      </div>
+    </div>
+
+    <div id="overlayLevel" class="overlay hidden">
+      <h2 id="levelTitle">Etappe 2</h2>
+      <p id="levelSub">Schutzhütte erreicht – weiter geht's!</p>
+    </div>
+
+    <div id="overlayEnd" class="overlay hidden">
+      <h2 id="endTitle">QUEST GESCHAFFT!</h2>
+      <p id="endText">Zeit: 00:00.0</p>
+      <button class="btn" id="btnRetry">Nochmal versuchen</button>
+    </div>
+  </div>
+
+  <div class="touch-controls">
+    <button id="touchDuck">▼</button>
+    <button id="touchJump">▲</button>
+    <button id="touchRun">▶</button>
+  </div>
+
+  <a class="back-link" href="../index.html">← zurück zu mitrilmo</a>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const GROUND_Y = H - 70;
+
+  const SPRITE_NAMES = ['player_run1','player_run2','player_jump','player_duck','fox','wolf','bear','fox_winter','wolf_winter','bear_winter','eagle','log','log_winter','rock','rock_winter','hut','hut_winter','coin','mushroom_danger','cloud'];
+  const BG_NAMES = ['summer','autumn','winter'];
+  const sprites = {};
+  let loaded = 0;
+  SPRITE_NAMES.forEach(name => {
+    const img = new Image();
+    img.src = '../images/game/' + name + '.png';
+    img.onload = () => loaded++;
+    sprites[name] = img;
+  });
+  BG_NAMES.forEach(name => {
+    const img = new Image();
+    img.src = '../images/game/bg_' + name + '.jpg';
+    img.onload = () => loaded++;
+    sprites['bg_' + name] = img;
+  });
+
+  const LEVELS = [
+    { name: 'Etappe 1 – Bergischer Wald', distance: 3600, groundAnimal: 'fox', groundObstacle: 'log', bg: 'summer' },
+    { name: 'Etappe 2 – Herbstlicher Teichpfad', distance: 4200, groundAnimal: 'wolf', groundObstacle: 'rock', bg: 'autumn' },
+    { name: 'Etappe 3 – Sonniger Uferweg', distance: 4800, groundAnimal: 'bear', groundObstacle: 'rock', bg: 'summer' },
+    { name: 'Etappe 4 – Verschneiter Winterwald', distance: 3800, groundAnimal: 'fox_winter', groundObstacle: 'log_winter', winter: true, bg: 'winter' },
+    { name: 'Etappe 5 – Eisiger Seerundweg', distance: 4400, groundAnimal: 'wolf_winter', groundObstacle: 'rock_winter', winter: true, bg: 'winter' },
+    { name: 'Etappe 6 – Winterlicher Uferpfad', distance: 5000, groundAnimal: 'bear_winter', groundObstacle: 'rock_winter', winter: true, bg: 'winter' },
+  ];
+
+  // Erzeugt bei jedem Levelstart ein neues, zufaelliges Hindernis-Layout statt eines
+  // festen Musters - Abstand zwischen den Hindernissen bleibt in einer fairen Spanne,
+  // Wiederholungen desselben Typs werden meistens vermieden, letzte 400px vor der
+  // Huette bleiben frei (Auslauf).
+  const SPAWN_POOL = ['log', 'log', 'animal', 'animal', 'animal', 'eagle', 'eagle', 'gap', 'coin', 'mushroom_danger'];
+  function generateSpawns(level) {
+    const spawns = [];
+    let pos = 450 + Math.random() * 150;
+    let lastType = null;
+    while (pos < level.distance - 400) {
+      let type = SPAWN_POOL[Math.floor(Math.random() * SPAWN_POOL.length)];
+      if (type === lastType && Math.random() < 0.7) {
+        type = SPAWN_POOL[Math.floor(Math.random() * SPAWN_POOL.length)];
+      }
+      lastType = type;
+      const spawn = { type, at: Math.round(pos) };
+      if (type === 'gap') {
+        spawn.width = 120 + Math.round(Math.random() * 60);
+        if (Math.random() < 0.45) spawn.water = true;
+      }
+      spawns.push(spawn);
+      pos += 350 + Math.random() * 250;
+    }
+    return spawns;
+  }
+
+  const BASE_SPEED = 230;   // px/s
+  const BOOST_SPEED = 380;  // px/s
+  const GRAVITY = 1650;
+  const JUMP_VELOCITY = -650;
+
+  const player = {
+    x: 130, y: GROUND_Y, vy: 0,
+    w: 30, h: 44,
+    grounded: true, ducking: false, jumping: false,
+    invuln: 0, runFrame: 0, runTimer: 0,
+  };
+
+  let state = 'start'; // start | playing | levelTransition | gameover | complete
+  let levelIndex = 0;
+  let distance = 0;
+  let obstacles = [];
+  let lives = 3;
+  let elapsed = 0; // ms, running across all levels
+  let timerRunning = false;
+  let keyRight = false, keyUp = false, keyDown = false;
+  let lastTs = null;
+
+  // ── pixel-sound (leise, abschaltbar, kein Audio-File, nur WebAudio) ──
+  const MUTE_KEY = 'mitrilmo_hikequest_muted';
+  let muted = localStorage.getItem(MUTE_KEY) === '1';
+  let actx = null;
+  function audioCtx() {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    return actx;
+  }
+  function blip(freq, dur, type, vol) {
+    if (muted) return;
+    const ac = audioCtx();
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.type = type || 'square';
+    osc.frequency.value = freq;
+    gain.gain.value = 0;
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    const t0 = ac.currentTime;
+    gain.gain.linearRampToValueAtTime(vol || 0.035, t0 + 0.01);
+    gain.gain.linearRampToValueAtTime(0, t0 + dur);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  }
+  const sfx = {
+    jump: () => blip(520, 0.12, 'square', 0.03),
+    duck: () => blip(180, 0.08, 'triangle', 0.02),
+    hit: () => { blip(140, 0.18, 'sawtooth', 0.04); setTimeout(() => blip(90, 0.18, 'sawtooth', 0.03), 90); },
+    levelup: () => { blip(440, 0.1, 'square', 0.035); setTimeout(() => blip(660, 0.14, 'square', 0.035), 110); },
+    gameover: () => { blip(220, 0.2, 'sawtooth', 0.035); setTimeout(() => blip(140, 0.3, 'sawtooth', 0.03), 160); },
+    heal: () => { blip(523, 0.1, 'square', 0.035); setTimeout(() => blip(784, 0.16, 'square', 0.035), 90); },
+    fanfare: () => {
+      [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => blip(f, 0.28, 'square', 0.04), i * 150));
+      setTimeout(() => blip(1047, 0.5, 'triangle', 0.035), 620);
+    },
+  };
+
+  // ── Sternchenregen-Partikel ──
+  let particles = [];
+  function spawnBurst(x, y, count, colors, opts = {}) {
+    for (let i = 0; i < count; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = (opts.minSpd || 50) + Math.random() * (opts.spread || 130);
+      particles.push({
+        x, y,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - (opts.upBias || 90),
+        age: 0,
+        life: (opts.life || 1.0) + Math.random() * 0.4,
+        size: (opts.size || 3) + Math.random() * 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+  }
+  function updateParticles(dt) {
+    particles.forEach(p => {
+      p.age += dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += 200 * dt;
+    });
+    particles = particles.filter(p => p.age < p.life);
+  }
+  function drawStarShape(r) {
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const a = -Math.PI / 2 + i * (Math.PI * 2 / 5);
+      const a2 = a + (Math.PI * 2 / 10);
+      ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      ctx.lineTo(Math.cos(a2) * (r * 0.45), Math.sin(a2) * (r * 0.45));
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+  function drawParticles() {
+    particles.forEach(p => {
+      const alpha = Math.max(1 - p.age / p.life, 0);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.age * 5);
+      ctx.fillStyle = p.color;
+      drawStarShape(p.size);
+      ctx.restore();
+    });
+  }
+  // ── leiser 8-Bit-Hintergrund-Loop (Pad + sanfte Arpeggio-Töne) ──
+  let ambientGain = null, ambientPads = [], ambientTimer = null, ambientStarted = false;
+  const AMBIENT_NOTES = [261.6, 329.6, 392.0, 440.0, 392.0, 329.6]; // C4-A4 Pentatonik-artig, ruhig
+  let ambientStep = 0;
+
+  function startAmbient() {
+    if (ambientStarted) return;
+    ambientStarted = true;
+    const ac = audioCtx();
+    ambientGain = ac.createGain();
+    ambientGain.gain.value = muted ? 0 : 0.018;
+    ambientGain.connect(ac.destination);
+
+    // zwei leicht verstimmte Sinus-Drones als Pad
+    [220, 221.3].forEach(freq => {
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.value = 0.5;
+      osc.connect(g);
+      g.connect(ambientGain);
+      osc.start();
+      ambientPads.push(osc);
+    });
+
+    const playStep = () => {
+      if (muted) { ambientTimer = setTimeout(playStep, 2200); return; }
+      const freq = AMBIENT_NOTES[ambientStep % AMBIENT_NOTES.length];
+      ambientStep++;
+      const osc = ac.createOscillator();
+      const g = ac.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      g.gain.value = 0;
+      osc.connect(g);
+      g.connect(ambientGain);
+      const t0 = ac.currentTime;
+      g.gain.linearRampToValueAtTime(0.6, t0 + 0.15);
+      g.gain.linearRampToValueAtTime(0, t0 + 1.4);
+      osc.start(t0);
+      osc.stop(t0 + 1.5);
+      ambientTimer = setTimeout(playStep, 2200);
+    };
+    playStep();
+  }
+
+  function setAmbientMute(isMuted) {
+    if (ambientGain) ambientGain.gain.linearRampToValueAtTime(isMuted ? 0 : 0.018, audioCtx().currentTime + 0.2);
+  }
+
+  const btnMute = document.getElementById('btnMute');
+  function syncMuteBtn() { btnMute.textContent = muted ? '🔇' : '🔈'; }
+  syncMuteBtn();
+  btnMute.addEventListener('click', () => {
+    muted = !muted;
+    localStorage.setItem(MUTE_KEY, muted ? '1' : '0');
+    syncMuteBtn();
+    setAmbientMute(muted);
+    if (!muted) blip(440, 0.08, 'square', 0.03);
+  });
+
+  const BEST_KEY = 'mitrilmo_hikequest_besttime';
+  function getBest() {
+    const v = parseFloat(localStorage.getItem(BEST_KEY));
+    return isNaN(v) ? null : v;
+  }
+  function setBest(ms) {
+    const cur = getBest();
+    if (cur === null || ms < cur) localStorage.setItem(BEST_KEY, String(ms));
+  }
+  function fmtTime(ms) {
+    const totalSec = ms / 1000;
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec - m * 60;
+    return String(m).padStart(2, '0') + ':' + s.toFixed(1).padStart(4, '0');
+  }
+
+  const hudTime = document.getElementById('hudTime');
+  const hudBest = document.getElementById('hudBest');
+  const hudLives = document.getElementById('hudLives');
+  const overlayStart = document.getElementById('overlayStart');
+  const overlayLevel = document.getElementById('overlayLevel');
+  const overlayEnd = document.getElementById('overlayEnd');
+
+  function updateHud() {
+    hudTime.textContent = fmtTime(elapsed);
+    const best = getBest();
+    hudBest.textContent = best ? fmtTime(best) : '--:--.-';
+    hudLives.textContent = '♥'.repeat(Math.max(lives, 0)) + '·'.repeat(Math.max(3 - lives, 0));
+  }
+  updateHud();
+
+  const PLAYER_BASE_X = 130;
+  const HUT_WALK_DIST = 38;
+  const HUT_TRANSITION_DURATION = 0.8;
+  let transitionT = 0;
+  let playerAlpha = 1;
+
+  function startLevel(i, fromHut) {
+    levelIndex = i;
+    distance = 0;
+    obstacles = generateSpawns(LEVELS[i]).map(s => ({ ...s, spawned: false }));
+    overlayLevel.classList.add('hidden');
+    overlayStart.classList.add('hidden');
+    overlayEnd.classList.add('hidden');
+    if (fromHut) {
+      state = 'exitingHut';
+      transitionT = 0;
+      player.x = PLAYER_BASE_X + HUT_WALK_DIST;
+      playerAlpha = 0;
+      player.grounded = true;
+      player.ducking = false;
+    } else {
+      state = 'playing';
+      player.x = PLAYER_BASE_X;
+      playerAlpha = 1;
+    }
+  }
+
+  function beginGame() {
+    lives = 3;
+    elapsed = 0;
+    timerRunning = true;
+    startAmbient();
+    startLevel(0, false);
+  }
+
+  function hitPlayer() {
+    if (player.invuln > 0) return;
+    lives--;
+    player.invuln = 1.2;
+    sfx.hit();
+    updateHud();
+    if (lives <= 0) {
+      timerRunning = false;
+      state = 'gameover';
+      sfx.gameover();
+      document.getElementById('endTitle').textContent = 'GAME OVER';
+      document.getElementById('endText').textContent = 'Zeit: ' + fmtTime(elapsed) + ' – versuch’s noch mal!';
+      overlayEnd.classList.remove('hidden');
+    }
+  }
+
+  function reachHut() {
+    const burstX = player.x + 50, burstY = GROUND_Y - 70;
+    if (levelIndex < LEVELS.length - 1) {
+      state = 'levelTransition';
+      sfx.levelup();
+      spawnBurst(burstX, burstY, 34, ['#ffd76a', '#fff3c4', '#7bbf6a', '#ffffff'], { life: 1.1, spread: 150, upBias: 110 });
+      setTimeout(() => {
+        document.getElementById('levelTitle').textContent = LEVELS[levelIndex + 1].name;
+        document.getElementById('levelSub').textContent = 'Schutzhütte erreicht – weiter geht’s!';
+        overlayLevel.classList.remove('hidden');
+      }, 650);
+      setTimeout(() => startLevel(levelIndex + 1, true), 2400);
+    } else {
+      timerRunning = false;
+      state = 'complete';
+      sfx.fanfare();
+      spawnBurst(burstX, burstY, 70, ['#ffd76a', '#fff3c4', '#7bbf6a', '#ffffff', '#f59e0b'], { life: 1.7, spread: 220, upBias: 150 });
+      setTimeout(() => spawnBurst(burstX - 90, burstY - 20, 40, ['#ffd76a', '#ffffff'], { life: 1.4, spread: 190 }), 300);
+      setTimeout(() => spawnBurst(burstX + 90, burstY - 20, 40, ['#7bbf6a', '#ffffff'], { life: 1.4, spread: 190 }), 550);
+      setTimeout(() => spawnBurst(burstX, burstY - 60, 50, ['#ffd76a', '#f59e0b', '#ffffff'], { life: 1.6, spread: 210, upBias: 160 }), 850);
+      setTimeout(() => {
+        setBest(elapsed);
+        const best = getBest();
+        document.getElementById('endTitle').textContent = '★ QUEST GESCHAFFT! ★';
+        document.getElementById('endText').textContent =
+          'Gesamtzeit: ' + fmtTime(elapsed) + '  ·  Bestzeit: ' + fmtTime(best);
+        overlayEnd.classList.add('grand');
+        overlayEnd.classList.remove('hidden');
+        updateHud();
+      }, 1300);
+    }
+  }
+
+  // ── input ──
+  window.addEventListener('keydown', e => {
+    if (['ArrowRight','d','D'].includes(e.key)) keyRight = true;
+    if (['ArrowUp',' ','Spacebar'].includes(e.key)) { keyUp = true; e.preventDefault(); }
+    if (['ArrowDown','s','S'].includes(e.key)) keyDown = true;
+  });
+  window.addEventListener('keyup', e => {
+    if (['ArrowRight','d','D'].includes(e.key)) keyRight = false;
+    if (['ArrowUp',' ','Spacebar'].includes(e.key)) keyUp = false;
+    if (['ArrowDown','s','S'].includes(e.key)) keyDown = false;
+  });
+  function bindHold(el, setter) {
+    el.addEventListener('touchstart', e => { e.preventDefault(); setter(true); });
+    el.addEventListener('touchend', e => { e.preventDefault(); setter(false); });
+    el.addEventListener('mousedown', () => setter(true));
+    el.addEventListener('mouseup', () => setter(false));
+  }
+  bindHold(document.getElementById('touchRun'), v => keyRight = v);
+  bindHold(document.getElementById('touchDuck'), v => keyDown = v);
+  document.getElementById('touchJump').addEventListener('touchstart', e => { e.preventDefault(); tryJump(); });
+  document.getElementById('touchJump').addEventListener('click', tryJump);
+
+  function tryJump() {
+    if (player.grounded && !player.ducking) {
+      player.vy = JUMP_VELOCITY;
+      player.grounded = false;
+      player.jumping = true;
+      sfx.jump();
+    }
+  }
+
+  document.getElementById('btnStart').addEventListener('click', beginGame);
+  document.getElementById('btnRetry').addEventListener('click', () => {
+    overlayEnd.classList.add('hidden');
+    overlayEnd.classList.remove('grand');
+    beginGame();
+  });
+
+  // ── update ──
+  function update(dt) {
+    if (state === 'enteringHut') {
+      transitionT += dt;
+      const p = Math.min(transitionT / HUT_TRANSITION_DURATION, 1);
+      player.x = PLAYER_BASE_X + HUT_WALK_DIST * p;
+      playerAlpha = p < 0.6 ? 1 : 1 - (p - 0.6) / 0.4;
+      player.grounded = true;
+      player.ducking = false;
+      player.runTimer += dt;
+      if (player.runTimer > 0.1) { player.runTimer = 0; player.runFrame = 1 - player.runFrame; }
+      if (p >= 1) {
+        playerAlpha = 0;
+        reachHut();
+      }
+      return;
+    }
+    if (state === 'exitingHut') {
+      transitionT += dt;
+      const p = Math.min(transitionT / HUT_TRANSITION_DURATION, 1);
+      player.x = PLAYER_BASE_X + HUT_WALK_DIST * (1 - p);
+      playerAlpha = p < 0.4 ? p / 0.4 : 1;
+      player.grounded = true;
+      player.runTimer += dt;
+      if (player.runTimer > 0.1) { player.runTimer = 0; player.runFrame = 1 - player.runFrame; }
+      if (p >= 1) {
+        player.x = PLAYER_BASE_X;
+        playerAlpha = 1;
+        state = 'playing';
+      }
+      return;
+    }
+    if (state !== 'playing') return;
+
+    if (keyUp) tryJump();
+    const wasDucking = player.ducking;
+    player.ducking = keyDown && player.grounded;
+    if (player.ducking && !wasDucking) sfx.duck();
+
+    const speed = (keyRight ? BOOST_SPEED : BASE_SPEED);
+    distance += speed * dt;
+    if (timerRunning) elapsed += dt * 1000;
+    if (player.invuln > 0) player.invuln -= dt;
+
+    // gravity / jump
+    if (!player.grounded) {
+      player.vy += GRAVITY * dt;
+      player.y += player.vy * dt;
+      if (player.y >= GROUND_Y) {
+        player.y = GROUND_Y;
+        player.vy = 0;
+        player.grounded = true;
+        player.jumping = false;
+      }
+    }
+
+    // run animation
+    player.runTimer += dt;
+    if (player.runTimer > 0.12) { player.runTimer = 0; player.runFrame = 1 - player.runFrame; }
+
+    // spawn / move obstacles relative to camera: convert distance-based spawn to screen x
+    obstacles.forEach(ob => {
+      ob.screenX = W + 80 - (distance - ob.at);
+    });
+
+    // collisions
+    const pLeft = player.x, pRight = player.x + player.w;
+    const pTop = player.y - (player.ducking ? 22 : player.h);
+    const pBottom = player.y;
+
+    obstacles.forEach(ob => {
+      if (ob.resolved) return;
+      const sx = ob.screenX;
+      if (ob.type === 'log') {
+        const ow = 46, oh = 30, oy = GROUND_Y - oh + 4;
+        if (sx + ow > pLeft && sx < pRight && oy + oh > pTop && oy < pBottom) hitPlayer();
+      } else if (ob.type === 'animal') {
+        const ow = 60, oh = 50, oy = GROUND_Y - oh + 8;
+        if (sx + ow > pLeft && sx < pRight && oy + oh > pTop && oy < pBottom) hitPlayer();
+      } else if (ob.type === 'eagle') {
+        const ow = 60, oh = 46, oy = GROUND_Y - 96;
+        if (sx + ow > pLeft && sx < pRight && oy + oh > pTop && oy < pBottom) hitPlayer();
+      } else if (ob.type === 'gap') {
+        // Toleranz an den Rändern + Mittelpunkt-Check statt voller Breite,
+        // sonst ist ein gut getimter Sprung bei groesseren Schluchten unmoeglich.
+        const edgeForgiveness = 16;
+        const left = sx + edgeForgiveness;
+        const right = sx + ob.width - edgeForgiveness;
+        const centerX = player.x + player.w / 2;
+        if (centerX > left && centerX < right && player.grounded) hitPlayer();
+      } else if (ob.type === 'coin' || ob.type === 'mushroom_danger') {
+        const ow = 18, oh = 18, oy = GROUND_Y - oh + 4;
+        if (sx + ow > pLeft && sx < pRight && oy + oh > pTop && oy < pBottom) {
+          ob.resolved = true;
+          const cx = sx + ow / 2, cy = oy;
+          if (ob.type === 'coin') {
+            if (lives < 3) lives++;
+            sfx.heal();
+            spawnBurst(cx, cy, 16, ['#ffd76a', '#ffffff'], { life: 0.6, spread: 100, upBias: 70, size: 2.2 });
+          } else {
+            hitPlayer();
+            spawnBurst(cx, cy, 12, ['#c81d1d', '#ffffff'], { life: 0.5, spread: 90, upBias: 50, size: 2.2 });
+          }
+          updateHud();
+        }
+      }
+    });
+
+    obstacles = obstacles.filter(ob => ob.screenX > -250);
+
+    if (distance >= LEVELS[levelIndex].distance) {
+      distance = LEVELS[levelIndex].distance;
+      state = 'enteringHut';
+      transitionT = 0;
+    }
+    updateHud();
+  }
+
+  // ── draw ──
+  // Alle Scroll-Positionen haengen an der echten Spieldistanz (nicht an der Zeit),
+  // damit Hintergrund/Baeume/Blumen exakt im selben Tempo laufen wie die Hindernisse
+  // (inkl. Tempo-Boost) - eine reine Zeit-Animation lief vorher unabhaengig und wirkte dadurch entkoppelt.
+  function drawBackground(dist, levelIdx) {
+    const lvl = LEVELS[levelIdx];
+    const winter = !!lvl.winter;
+    const bgImg = sprites['bg_' + lvl.bg];
+
+    if (bgImg && bgImg.complete && bgImg.naturalWidth) {
+      const scale = H / bgImg.naturalHeight;
+      const tileW = bgImg.naturalWidth * scale;
+      const off = (dist * 0.18) % tileW;
+      let x = -off;
+      while (x < W) {
+        ctx.drawImage(bgImg, x, 0, tileW, H);
+        x += tileW;
+      }
+    } else {
+      ctx.fillStyle = winter ? '#cfe0ea' : '#8fc7e8';
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Wolken (Bild statt gezeichneter Ellipsen) - am weitesten entfernt, sehr langsame Parallax
+    const cloudImg = sprites.cloud;
+    if (cloudImg && cloudImg.complete) {
+      const cw = 140, ch = 81;
+      const cOff = (dist * 0.06) % 420;
+      ctx.globalAlpha = 0.85;
+      for (let i = -1; i < 4; i++) {
+        const cx = i * 420 - cOff;
+        ctx.drawImage(cloudImg, cx, 18 + (i % 2) * 22, cw, ch);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  let bgT = 0;
+  function draw() {
+    const winter = !!LEVELS[levelIndex].winter;
+    drawBackground(distance, levelIndex);
+
+    obstacles.forEach(ob => {
+      if (ob.resolved) return;
+      const sx = ob.screenX;
+      if (ob.type === 'log') {
+        const img = sprites[LEVELS[levelIndex].groundObstacle || 'log'];
+        ctx.drawImage(img, sx, GROUND_Y - 26, 46, 30);
+      } else if (ob.type === 'animal') {
+        const img = sprites[LEVELS[levelIndex].groundAnimal];
+        ctx.drawImage(img, sx, GROUND_Y - 42, 60, 50);
+      } else if (ob.type === 'eagle') {
+        const bob = Math.sin(bgT * 3 + sx * 0.01) * 6;
+        ctx.drawImage(sprites.eagle, sx, GROUND_Y - 96 + bob, 60, 46);
+      } else if (ob.type === 'gap') {
+        if (ob.water) {
+          const grad = ctx.createLinearGradient(0, GROUND_Y, 0, H);
+          if (winter) {
+            grad.addColorStop(0, '#9fc8da');
+            grad.addColorStop(1, '#4f7e96');
+          } else {
+            grad.addColorStop(0, '#3a7fa6');
+            grad.addColorStop(1, '#1c4a63');
+          }
+          ctx.fillStyle = grad;
+          ctx.fillRect(sx, GROUND_Y, ob.width, H - GROUND_Y);
+          ctx.strokeStyle = winter ? 'rgba(255,255,255,0.7)' : 'rgba(220,240,250,0.55)';
+          ctx.lineWidth = 2;
+          const waveOff = (bgT * 90) % 18;
+          for (let wy = GROUND_Y + 8; wy < H; wy += 12) {
+            ctx.beginPath();
+            for (let wx = sx - waveOff; wx < sx + ob.width + 18; wx += 18) {
+              ctx.lineTo(wx, wy + Math.sin(wx * 0.2 + bgT * 4) * 2);
+            }
+            ctx.stroke();
+          }
+          if (winter) {
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.fillRect(sx, GROUND_Y, 10, H - GROUND_Y);
+            ctx.fillRect(sx + ob.width - 10, GROUND_Y, 10, H - GROUND_Y);
+          }
+        } else {
+          const pitGrad = ctx.createLinearGradient(0, GROUND_Y, 0, H);
+          pitGrad.addColorStop(0, winter ? '#4a5a66' : '#3a2c1e');
+          pitGrad.addColorStop(1, '#0b0906');
+          ctx.fillStyle = pitGrad;
+          ctx.fillRect(sx, GROUND_Y, ob.width, H - GROUND_Y);
+          // Abbruchkante oben
+          ctx.fillStyle = winter ? 'rgba(230,240,245,0.75)' : 'rgba(140,105,70,0.6)';
+          ctx.fillRect(sx, GROUND_Y, ob.width, 4);
+          // grobe Felsstruktur an den Seiten
+          ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+          ctx.lineWidth = 2;
+          for (let wx = sx + 8; wx < sx + ob.width - 6; wx += 14) {
+            ctx.beginPath();
+            ctx.moveTo(wx, GROUND_Y + 6);
+            ctx.lineTo(wx + 5, H);
+            ctx.stroke();
+          }
+        }
+      } else if (ob.type === 'coin') {
+        ctx.drawImage(sprites.coin, sx, GROUND_Y - 14, 18, 18);
+      } else if (ob.type === 'mushroom_danger') {
+        ctx.drawImage(sprites.mushroom_danger, sx, GROUND_Y - 14, 18, 18);
+      }
+    });
+
+    // hut: scrollt heran und steht ab Levelende fest bei der Spielfigur (groß dargestellt)
+    const hutSprite = winter ? sprites.hut_winter : sprites.hut;
+    const hutW = 110, hutH = 92;
+    const hutScreenX = PLAYER_BASE_X + 18 + (LEVELS[levelIndex].distance - distance) - hutW / 2;
+    if (hutScreenX < W + 60) {
+      ctx.drawImage(hutSprite, hutScreenX, GROUND_Y - hutH + 8, hutW, hutH);
+    }
+
+    // player
+    if (playerAlpha > 0 && (player.invuln <= 0 || Math.floor(bgT * 12) % 2 === 0)) {
+      let img;
+      if (!player.grounded) img = sprites.player_jump;
+      else if (player.ducking) img = sprites.player_duck;
+      else img = player.runFrame === 0 ? sprites.player_run1 : sprites.player_run2;
+      const drawH = player.ducking ? 48 : 62;
+      ctx.save();
+      ctx.globalAlpha = playerAlpha;
+      ctx.drawImage(img, player.x - 11, player.y - drawH, 52, drawH);
+      ctx.restore();
+    }
+
+    drawParticles();
+  }
+
+  function loop(ts) {
+    if (lastTs === null) lastTs = ts;
+    const dt = Math.min((ts - lastTs) / 1000, 0.05);
+    lastTs = ts;
+    bgT += dt;
+    update(dt);
+    updateParticles(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

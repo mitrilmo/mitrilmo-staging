@@ -115,3 +115,10 @@ test('Short: ohne Vorschaubild gültig', () => {
   ok(video, { youtubeId: '_A4uDbxSqSI', title: 'LaGa Neuss 2026', format: 'short', publishedAt: '2026-08-01' });
   bad(video, { youtubeId: '_A4uDbxSqSI', title: 'LaGa Neuss 2026', format: 'kurz' });
 });
+
+test('Event: Kanal-Vorhaben braucht keinen Link, Event der Region schon', () => {
+  const kanal = { title: 'Mammutmarsch Dresden 30 km', scope: 'kanal', endDate: '2027-06-05' };
+  ok(eventSchema, kanal);
+  bad(eventSchema, { ...kanal, scope: 'region' });
+  ok(eventSchema, { ...kanal, scope: 'region', url: 'https://example.org/termin', time: '10:15 Uhr', price: 'Eintritt frei' });
+});

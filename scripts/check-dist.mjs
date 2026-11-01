@@ -7,7 +7,7 @@ import { checkHtml, checkLinks, checkLegal, checkDistImages, checkCss, checkRobo
 
 // Seiten, auf die schon verlinkt wird, die aber erst migriert werden (Umsetzungsplan). Nur im Staging erlaubt,
 // beim Live-Build ist ein Link ohne Seite ein Fehler. Eintrag entfernen, sobald die Seite existiert.
-const PENDING = { 'pfadwerk.html': 'AP2.5 (Datenschutztext verlinkt darauf)' };
+const PENDING = {};
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');

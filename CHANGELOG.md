@@ -1,5 +1,20 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, AP2.5 Events, Projekte, Pfadwerk)
+
+### Neu
+- **16 Events** migriert (`scripts/migrate-events.mjs`): 13 aus "Demnächst in der Region" und 3 Vorhaben aus "Demnächst auf dem Kanal" (`scope: kanal`, ohne Veranstalter-Link). Neue Felder `scope`, `time`, `price`; `url` ist nur bei Events der Region Pflicht. Preis "unbekannt" bleibt leer.
+- **Pfadwerk-Seite** `/pfadwerk.html` (aus `pfadwerk.html` des Branches main, mit den Monatscodes 2027): Text als Markdown in der neuen Sammlung `pages`, 16 Screenshots neu kodiert, Inhaltsverzeichnis automatisch aus den Überschriften. Monatscodes liegen in `src/data/premium-codes.js` (Seite wählt den Code nach dem Datum des Besuchers). `check:content` meldet, wenn der Code des laufenden Monats fehlt oder ab dem 20. der des Folgemonats.
+- **Mo's Hike Quest** unter `/games/mos-hike-quest.html` (Quelle `src/game/`, Endpunkt ergänzt Beschreibung, Canonical, noindex im Staging, Umami und Rechtlich-Links zur Bauzeit). Spielbilder von 10,7 MB auf 1,4 MB verkleinert.
+- Projekte: Mo's Hike Quest und "Mammut- und Megamärsche" angelegt (Letzteres nur der Eintrag, die Projektseite folgt in Phase 3); Wander-Challenge mit Link zur Veranstaltung.
+
+### Geändert
+- `pfadwerk.html` steht nicht mehr in `PENDING` (check-dist).
+
+### Offen
+- Projektseite Mammut- und Megamärsche und die Anzeige der Events/Projekte auf der Startseite (Phase 3).
+- Review-Subagent zum Meilenstein M2 (Struktur: neue Sammlung `pages`, Endpunkt für das Spiel).
+
 ## 2026-11-01 (Phase 2, Unterseiten im Jahreszeiten-Look)
 
 ### Geändert

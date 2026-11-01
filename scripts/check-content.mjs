@@ -1,13 +1,13 @@
 // Prüft die Inhalte vor dem Build: Slugs, Dateien, Bilder (Größe, Breite, GPS), Verweise, GPX-Länge. Start: npm run check:content
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import { checkEntries, parseFrontmatter, gpxLengthKm } from './lib/checks.mjs';
 import { exifHasGps } from './lib/exif.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const collections = ['tours', 'videos', 'stories', 'events', 'projects', 'news'];
+const collections = ['tours', 'videos', 'stories', 'events', 'projects', 'news', 'pages'];
 const data = {};
 const readErrors = [];
 
@@ -65,6 +65,16 @@ for (const { where, rel } of bodyImages) {
   else if (i.gps) errors.push(where + ": Bild im Text enthält GPS-Koordinaten (" + rel + ")");
 }
 errors.unshift(...readErrors);
+
+// Pfadwerk-Monatscodes: der laufende Monat muss einen Code haben, ab dem 20. auch der nächste (Hinweis, kein Fehler)
+const { PREMIUM_CODES } = await import(pathToFileURL(join(root, 'src', 'data', 'premium-codes.js')).href);
+{
+  const now = new Date();
+  const key = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  if (!PREMIUM_CODES[key(now)]) warnings.push('Pfadwerk: für den laufenden Monat (' + key(now) + ') fehlt der Freischalt-Code in src/data/premium-codes.js');
+  else if (now.getDate() >= 20 && !PREMIUM_CODES[key(next)]) warnings.push('Pfadwerk: für ' + key(next) + ' fehlt noch der Freischalt-Code (src/data/premium-codes.js, wird am 25. ergänzt)');
+}
 
 // Originale, die kein Eintrag verwendet (Hinweis, kein Fehler)
 const assets = join(root, 'src', 'assets', 'images');
