@@ -277,3 +277,11 @@ test('Neuigkeiten: GPS in einem Foto ist ein Fehler', () => {
   d.news = { '2026-10-31-test': { cover: 'images/c.jpg', photos: [{ image: 'images/p1.jpg' }] } };
   assert.ok(errs(d, io([], 10, { ...okImage, gps: true })).some((e) => /GPS/.test(e)));
 });
+test('Inhalte: Video braucht Vorschaubild, Short ein Datum', () => {
+  const d = baseData(); delete d.videos.k1JNFJuXz7o.thumbnail;
+  assert.ok(errs(d, io()).some((e) => /Vorschaubild/.test(e)));
+  const s = baseData(); s.videos._A4uDbxSqSI = { youtubeId: '_A4uDbxSqSI', format: 'short' };
+  assert.ok(errs(s, io()).some((e) => /Short braucht ein Datum/.test(e)));
+  const ok = baseData(); ok.videos._A4uDbxSqSI = { youtubeId: '_A4uDbxSqSI', format: 'short', publishedAt: '2026-08-01' };
+  assert.ok(!errs(ok, io()).some((e) => /_A4uDbxSqSI/.test(e)));
+});

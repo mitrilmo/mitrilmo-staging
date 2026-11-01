@@ -14,7 +14,8 @@ const tours = defineCollection({
   schema: ({ image }) => tourSchema({ reference, image }),
 });
 const videos = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/videos' }),
+  // ID = Dateiname mit Groß-/Kleinschreibung der YouTube-ID (der Standard würde sie klein schreiben und reference() fände sie nicht)
+  loader: glob({ pattern: '**/*.md', base: './src/content/videos', generateId: ({ entry }) => entry.replace(/.md$/, '') }),
   schema: ({ image }) => videoSchema({ image }),
 });
 const stories = defineCollection({

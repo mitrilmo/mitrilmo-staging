@@ -70,7 +70,6 @@ test('Ziel: ohne GPX und ohne Distanz gültig, mit GPX ungültig', () => {
 test('Video: ID, Titel und lokales Vorschaubild', () => {
   ok(video, { youtubeId: 'k1JNFJuXz7o', title: '3-Türme-Weg Hagen', thumbnail: '../../assets/images/videos/k1JNFJuXz7o.jpg' });
   bad(video, { youtubeId: 'kurz', title: 'x', thumbnail: 'x.jpg' });
-  bad(video, { youtubeId: 'k1JNFJuXz7o', title: '3-Türme-Weg Hagen' }); // Vorschaubild fehlt
 });
 
 test('Story: Beschreibung Pflicht, Titelbild braucht Alt-Text', () => {
@@ -110,4 +109,9 @@ test('Story in einer Reihe braucht day, video ist eine YouTube-ID', () => {
   bad(story, { ...base, series: 'andere', day: 1 });
   ok(story, { ...base, series: 'weltreise', day: 3, video: 'iw7wg-KqpSU' });
   bad(story, { ...base, series: 'weltreise', day: 3, video: 'https://www.youtube.com/watch?v=iw7wg-KqpSU' });
+});
+
+test('Short: ohne Vorschaubild gültig', () => {
+  ok(video, { youtubeId: '_A4uDbxSqSI', title: 'LaGa Neuss 2026', format: 'short', publishedAt: '2026-08-01' });
+  bad(video, { youtubeId: '_A4uDbxSqSI', title: 'LaGa Neuss 2026', format: 'kurz' });
 });

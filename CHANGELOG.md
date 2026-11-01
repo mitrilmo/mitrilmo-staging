@@ -1,5 +1,17 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, AP2.2 Mediathek)
+
+### Neu
+- Restliche Mediathek migriert: 3 weitere Videos (6 Schleusen, Outdoor-Navi-Härtetest, Megamarsch Düsseldorf) mit lokalem Vorschaubild und **14 Shorts** (Textkarten mit Datum, ohne Vorschaubild). Einmal-Skript `scripts/migrate-videos.mjs`.
+- Videoschema: Feld `format` (`video` oder `short`), `thumbnail` nur bei Videos Pflicht, Shorts brauchen ein Datum (Prüfung in `checks.mjs`).
+
+### Geändert
+- Video-IDs behalten ihre Groß-/Kleinschreibung (`generateId` im Loader). Vorher schrieb Astro sie klein, und `reference()` meldete beim Build "Invalid content reference" für alle Tour-Videos.
+
+### Offen
+- Video "Rucksackhaken" (`0lX1btjYfzY`) fehlt, bis ein Vorschaubild vorliegt.
+
 Protokoll der Änderungen am Neubau. Die alte Live-Seite hat ihr eigenes Changelog (nicht in diesem Repo).
 Format pro Eintrag: Datum, dann nur zutreffende Kategorien **Neu**, **Geändert**, **Entfernt**.
 

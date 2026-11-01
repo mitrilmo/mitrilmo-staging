@@ -90,7 +90,11 @@ export function checkEntries(data, io) {
     for (const s of t.stories || []) if (!(data.stories || {})[s]) err('tours', id, `Story ${s} gibt es nicht`);
     if (t.gpx && !t.coordinates) warn('tours', id, 'Koordinaten fehlen, kein Pin auf der Karte');
   }
-  for (const [id, v] of Object.entries(data.videos || {})) img('videos', id, 'thumbnail', v.thumbnail);
+  for (const [id, v] of Object.entries(data.videos || {})) {
+    img('videos', id, 'thumbnail', v.thumbnail);
+    if ((v.format ?? 'video') === 'video' && !v.thumbnail) err('videos', id, 'Video braucht ein lokales Vorschaubild');
+    if (v.format === 'short' && !v.publishedAt) err('videos', id, 'Short braucht ein Datum');
+  }
   for (const [id, s] of Object.entries(data.stories || {})) {
     img('stories', id, 'cover', s.cover);
     if (s.tour && !(data.tours || {})[s.tour]) err('stories', id, `Tour ${s.tour} gibt es nicht`);
