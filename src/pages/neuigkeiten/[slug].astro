@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ContentImage from '../../components/ContentImage.astro';
+import PageHero from '../../components/PageHero.astro';
 import { withBase } from '../../lib/url.js';
 import { teaser, published, isExternal } from '../../lib/news.js';
 import { dateDe } from '../../lib/date.js';
@@ -19,17 +20,19 @@ const { Content } = await render(entry);
 const facts = [data.mood && `Stimmung: ${data.mood}`, data.weather, data.rating && `${data.rating} von 5 Sternen`].filter(Boolean);
 ---
 <Base title={`${data.title}, mitrilmo`} description={teaser(entry, 155)}>
-  <article class="max-w-2xl mx-auto px-4 py-10">
-    <p class="text-sm"><a href={`${root}/neuigkeiten.html`} class="text-forest-400 hover:underline">← Alle Neuigkeiten</a></p>
+  <PageHero width="max-w-2xl">
+    <p class="text-sm"><a href={`${root}/neuigkeiten.html`} class="text-accent hover:underline">← Alle Neuigkeiten</a></p>
     <h1 class="mt-4 text-3xl font-black text-stone-50 leading-tight">{data.title}</h1>
-    <p class="mt-2 text-sm text-stone-400">
+    <p class="mt-2 text-sm text-stone-300">
       <time datetime={data.date.toISOString().slice(0, 10)}>{dateDe(data.date)}</time>
       {facts.length > 0 && <span> · {facts.join(' · ')}</span>}
     </p>
+  </PageHero>
 
-    <ContentImage image={data.cover} alt={data.coverAlt} sizes="(min-width: 672px) 640px, 100vw" widths={[480, 800, 1200]} priority class="mt-6 w-full rounded-xl max-h-[28rem] object-cover" />
+  <article class="max-w-2xl mx-auto px-4 py-10">
+    <ContentImage image={data.cover} alt={data.coverAlt} sizes="(min-width: 672px) 640px, 100vw" widths={[480, 800, 1200]} priority class="w-full rounded-xl max-h-[28rem] object-cover" />
 
-    <div class="mt-6 text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-stone-50 [&_a]:text-forest-400 [&_a]:underline">
+    <div class="mt-6 text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-stone-50 [&_a]:text-accent [&_a]:underline">
       <Content />
     </div>
 

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
 import ContentImage from '../components/ContentImage.astro';
 import { teaser, published } from '../lib/news.js';
 import { dateDe } from '../lib/date.js';
@@ -9,12 +10,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const posts = published(await getCollection('news'));
 ---
 <Base title="Neuigkeiten, mitrilmo" description="Kurze Beiträge von unterwegs: Ausflüge, Veranstaltungen und was sonst gerade ansteht.">
-  <section class="max-w-3xl mx-auto px-4 py-10">
+  <PageHero width="max-w-3xl">
     <h1 class="text-3xl font-black text-stone-50">Neuigkeiten</h1>
-    <p class="mt-2 text-stone-400">Kurze Beiträge von unterwegs. Die längeren Berichte stehen unter Geschichten.</p>
+    <p class="mt-2 text-stone-200">Kurze Beiträge von unterwegs. Die längeren Berichte stehen unter Geschichten.</p>
+  </PageHero>
 
-    {posts.length === 0 && <p class="mt-8 text-stone-400">Noch keine Beiträge.</p>}
-    <ul class="mt-8 space-y-6">
+  <section class="max-w-3xl mx-auto px-4 py-10">
+    {posts.length === 0 && <p class="text-stone-400">Noch keine Beiträge.</p>}
+    <ul class="space-y-6">
       {posts.map((p, i) => (
         <li>
           <article class="bg-slate-700 rounded-2xl overflow-hidden border border-white/5 sm:flex">

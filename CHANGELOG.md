@@ -1,5 +1,10 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, Unterseiten im Jahreszeiten-Look)
+
+### Geändert
+- Weltreise, Neuigkeiten, Einzelbeiträge und Stories bekommen ein Kopfband mit dem Himmelsverlauf der Startseite (neue Komponente `PageHero`) und nutzen die Jahreszeit-Akzentfarbe (`accent`) statt festem Grün für Badges, Links und Hover. Das Logo "mitril" bleibt grün wie live.
+
 ## 2026-11-01 (Phase 2, AP2.4 Stories)
 
 ### Neu
