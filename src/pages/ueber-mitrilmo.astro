@@ -1,0 +1,29 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Prose from '../components/Prose.astro';
+
+const entry = await getEntry('pages', 'ueber-mitrilmo');
+const { Content, headings } = await render(entry);
+const { data } = entry;
+const toc = headings.filter((h) => h.depth === 2);
+---
+<Base title={`${data.title}, mitrilmo`} description={data.description}>
+  <PageHero width="max-w-3xl">
+    {data.badge && <p class="text-xs font-semibold uppercase tracking-widest text-accent">{data.badge}</p>}
+    <h1 class="mt-2 text-3xl sm:text-4xl font-black text-stone-50 leading-tight">{data.title}</h1>
+  </PageHero>
+
+  <article class="max-w-3xl mx-auto px-4 py-10">
+    <nav aria-label="Inhalt" class="mb-8 rounded-xl border border-white/5 bg-slate-700 p-4">
+      <p class="text-xs font-semibold uppercase tracking-widest text-stone-400">Auf dieser Seite</p>
+      <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        {toc.map((h) => <li><a href={`#${h.slug}`} class="text-stone-300 hover:text-accent transition-colors">{h.text}</a></li>)}
+      </ul>
+    </nav>
+
+    <Prose><Content /></Prose>
+
+  </article>
+</Base>

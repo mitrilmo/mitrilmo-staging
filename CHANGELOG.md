@@ -1,5 +1,15 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, AP2.6 Über mitrilmo)
+
+### Neu
+- Seite `/ueber-mitrilmo.html` (`scripts/migrate-ueber.mjs`): "Über den Kanal" mit den vier Kacheln, Abo-Link und Kennzahlen als Text, dazu die drei Geschichten "Wer ist Björn?", "Woher kommt mitrilmo?" und "Wie alles begann". Die Tabs der alten Seite sind drei Abschnitte untereinander und ohne JavaScript lesbar, oben steht ein Inhaltsverzeichnis. Alle Texte der alten Seite sind vorhanden.
+- Komponente `Prose` für Markdown-Seiten (aus der Pfadwerk-Seite herausgelöst), Links zu Google Play und zum YouTube-Kanal erscheinen als Knopf.
+
+### Geändert
+- Navigation: "Über mitrilmo" ist jetzt sichtbar. Der alte Anker `#ueber` leitet damit auf die neue Seite weiter.
+- Der zweite Knopf "YouTube-Kanal öffnen" (Karte rechts) entfällt, es bleibt "Jetzt abonnieren". Das Logo der Karte kommt mit der Startseite in Phase 3.
+
 ## 2026-11-01 (Phase 2, AP2.5 Events, Projekte, Pfadwerk)
 
 ### Neu

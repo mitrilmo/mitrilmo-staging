@@ -2,6 +2,7 @@
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import Prose from '../components/Prose.astro';
 import { PREMIUM_CODES } from '../data/premium-codes.js';
 
 const entry = await getEntry('pages', 'pfadwerk');
@@ -50,9 +51,7 @@ const codeScript = `(function () {
       </ul>
     </nav>
 
-    <div class="text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-12 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-stone-50 [&_h3]:mt-8 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-stone-50 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-1 [&_a]:text-accent [&_a]:underline [&_p>img]:block [&_p>img]:mx-auto [&_p>img]:w-full [&_p>img]:max-w-[16rem] [&_p>img]:h-auto [&_p>img]:rounded-2xl [&_p>img]:border [&_p>img]:border-white/10 [&_p>img+em]:block [&_p>img+em]:mt-2 [&_p>img+em]:text-center [&_p>img+em]:text-xs [&_p>img+em]:text-stone-500 [&_[data-premium-code]]:mt-6 [&_[data-premium-code]]:rounded-xl [&_[data-premium-code]]:border [&_[data-premium-code]]:border-accent/40 [&_[data-premium-code]]:bg-slate-700 [&_[data-premium-code]]:p-5 [&_[data-premium-code]]:text-sm [&_[data-premium-code]]:text-stone-300 [&_a[href*='play.google']]:inline-block [&_a[href*='play.google']]:mt-2 [&_a[href*='play.google']]:no-underline [&_a[href*='play.google']]:rounded-full [&_a[href*='play.google']]:border [&_a[href*='play.google']]:border-accent [&_a[href*='play.google']]:px-5 [&_a[href*='play.google']]:py-2 [&_a[href*='play.google']]:font-semibold hover:[&_a[href*='play.google']]:bg-slate-700">
-      <Content />
-    </div>
+    <Prose><Content /></Prose>
   </article>
   <script is:inline set:html={codeScript}></script>
 </Base>
