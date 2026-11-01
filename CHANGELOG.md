@@ -3,6 +3,15 @@
 Protokoll der Änderungen am Neubau. Die alte Live-Seite hat ihr eigenes Changelog (nicht in diesem Repo).
 Format pro Eintrag: Datum, dann nur zutreffende Kategorien **Neu**, **Geändert**, **Entfernt**.
 
+## 2026-11-01 (Phase 2, Neuigkeiten)
+
+### Neu
+- Seite **Weltreise** (`/weltreise.html`) als Ersatz für das Weltumrundungs-Karussell: alle 24 Tage (Tag 0 bis 23) als Karten mit Datum, Titel und Vorschautext. Die 24 Tagesberichte sind als Stories migriert (`/stories/weltumrundung-tag-…html`, Texte unverändert, Einmal-Skript `scripts/migrate-weltreise.mjs`) und haben eine eigene Seitenvorlage `src/pages/stories/[slug].astro`. Story-Schema neu: `series`, `day`, `video` (YouTube-ID eines nicht gelisteten Kurzvideos, nur als Link, nie in der Mediathek). Anker `#weltreiseSection` leitet auf `weltreise.html`.
+- Seite **Neuigkeiten** (`/neuigkeiten.html`, Beiträge unter `/neuigkeiten/<slug>.html`) als Ersatz für den Blog-Slider der alten Seite. Neue Collection `news` (Schema `src/schemas/news.js`): Titelbild mit Alt-Text, optional Fotos, Stimmung, Wetter, Bewertung, Tags, Link (extern https oder intern), Tour-Verweis, `momentwerkId`, `draft`.
+- Die sechs Beiträge des alten Sliders übernommen (Texte unverändert, Bilder über `import-image.mjs`).
+- Alter Anker `#blogSlider` leitet auf `neuigkeiten.html` weiter, Menüpunkt "Neuigkeiten" (live).
+- Prüfungen: `check:content` kennt `news` (Titelbild, Fotos, kein GPS, Tour-Verweis), `import-image.mjs` akzeptiert das Ziel `news/`. 18 neue Tests.
+
 ## 2026-10-30 (Phase 1, Meilenstein M1)
 
 ### Neu

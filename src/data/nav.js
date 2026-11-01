@@ -5,6 +5,8 @@ export const nav = [
   { label: 'Touren', href: 'touren.html', live: false },
   { label: 'Videos', href: 'videos.html', live: false },
   { label: 'Geschichten', href: 'geschichten.html', live: false },
+  { label: 'Weltreise', href: 'weltreise.html', live: true },
+  { label: 'Neuigkeiten', href: 'neuigkeiten.html', live: true },
   { label: 'Projekte', href: 'projekte.html', live: false },
   { label: 'Über mitrilmo', href: 'ueber-mitrilmo.html', live: false },
 ];

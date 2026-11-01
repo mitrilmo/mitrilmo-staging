@@ -48,8 +48,9 @@ Pläne und Entscheidungen stehen im Vault `V:\MoKiWiki\02 Projekte\`: `mitrilmo-
 
 - **Tour/Ziel** (`src/content/tours/<slug>.md`): Pflicht `title`, `place`, `description`, `duration`, `difficulty`, `image`, `imageAlt`, `publishedAt`; bei `kind: tour` zusätzlich `distanceKm`. Optional: `gpx`, `coordinates`, `video`, `stories`, `komoot`, `parking`, `rating` u. a. Ein **Ziel** (`kind: ziel`) hat keine GPX. Unbekanntes bleibt leer oder `unbekannt`, **nichts erfinden**.
 - **Video** (`videos/<YouTube-ID>.md`): `youtubeId`, `title`, `thumbnail` (lokal unter `src/assets/images/videos/`, nie `img.youtube.com`).
-- **Story** (`stories/<bisheriger-dateiname>.md`): `title`, `description` (20–300 Zeichen), `date`, `category` (unterwegs, randnotizen, archiv), Titelbild nur mit Alt-Text.
+- **Story** (`stories/<bisheriger-dateiname>.md`): `title`, `description` (20–300 Zeichen), `date`, `category` (unterwegs, randnotizen, archiv), Titelbild nur mit Alt-Text. Reihe **Weltumrundung 2017**: `series: weltreise` und `day` (Tag 0 bis 23), optional `video` (YouTube-ID eines **nicht gelisteten** Kurzvideos, wird nur als Link "Kurzvideo ansehen" gezeigt, kein Embed, nicht in `videos/`). Die Übersicht `/weltreise.html` entsteht aus diesen Stories.
 - **Event** (`events/<slug>.md`): `endDate` ist Pflicht (danach wird der Eintrag ausgeblendet), `url` nur https.
+- **Neuigkeit** (`news/<JJJJ-MM-TT-titel>.md`): kurzer Beitrag (Ersatz Blog-Slider). Pflicht `title`, `date`, `cover`, `coverAlt`; optional `photos[{image,alt}]`, `mood`, `weather`, `rating` (1 bis 5), `tags` (ohne `#`), `link{href,text}` (https oder `/x.html`), `tour`, `momentwerkId`, `draft`. Bilder importieren mit `import-image.mjs <Quelle> news/<slug>.jpg`. Geplant: Import aus dem Momentwerk-ZIP (`npm run blog-import`, noch nicht gebaut, Format im Vault: Feature-Briefing-Website-Export-ZIP).
 - **Projekt** (`projects/<slug>.md`): Fortschritt nur mit `source` und `updatedAt`.
 - Ein fehlerhafter Eintrag **bricht den Build ab** (Zod-Schema). Schemas ändern nur zusammen mit `tests/schemas.test.mjs`.
 
@@ -85,7 +86,7 @@ src/data/nav.js          Hauptnavigation (live:true erst, wenn die Seite existie
 src/legal/               Text von Impressum und Datenschutz (1:1 aus der alten Seite, HTML), nur bewusst ändern
 src/components/LegalModals.astro  die beiden Modals mit Skript (nur auf der Startseite eingebunden)
 src/lib/anchors.js       alte Anker der Startseite: Modals öffnen bzw. Redirect auf neue Seiten (getestet in tests/anchors.test.mjs)
-src/content.config.ts    Collections: tours (inkl. Ziele per kind), videos, stories, events, projects
+src/content.config.ts    Collections: tours (inkl. Ziele per kind), videos, stories, events, projects, news
 src/schemas/             Zod-Schemas (testbar ohne Build), Pflichtfelder und Regeln je Typ
 src/content/<typ>/       Eine Markdown-Datei pro Inhalt, Dateiname = Slug (Video: YouTube-ID)
 src/pages/               Seiten

@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ContentImage from '../../components/ContentImage.astro';
+import { withBase } from '../../lib/url.js';
+import { teaser, published, isExternal } from '../../lib/news.js';
+import { dateDe } from '../../lib/date.js';
+
+export async function getStaticPaths() {
+  const posts = published(await getCollection('news'));
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const base = import.meta.env.BASE_URL;
+const root = base.replace(/\/$/, '');
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const facts = [data.mood && `Stimmung: ${data.mood}`, data.weather, data.rating && `${data.rating} von 5 Sternen`].filter(Boolean);
+---
+<Base title={`${data.title}, mitrilmo`} description={teaser(entry, 155)}>
+  <article class="max-w-2xl mx-auto px-4 py-10">
+    <p class="text-sm"><a href={`${root}/neuigkeiten.html`} class="text-forest-400 hover:underline">← Alle Neuigkeiten</a></p>
+    <h1 class="mt-4 text-3xl font-black text-stone-50 leading-tight">{data.title}</h1>
+    <p class="mt-2 text-sm text-stone-400">
+      <time datetime={data.date.toISOString().slice(0, 10)}>{dateDe(data.date)}</time>
+      {facts.length > 0 && <span> · {facts.join(' · ')}</span>}
+    </p>
+
+    <ContentImage image={data.cover} alt={data.coverAlt} sizes="(min-width: 672px) 640px, 100vw" widths={[480, 800, 1200]} priority class="mt-6 w-full rounded-xl max-h-[28rem] object-cover" />
+
+    <div class="mt-6 text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-stone-50 [&_a]:text-forest-400 [&_a]:underline">
+      <Content />
+    </div>
+
+    {data.photos.length > 0 && (
+      <ul class="mt-8 grid grid-cols-2 gap-2">
+        {data.photos.map((p) => (
+          <li><ContentImage image={p.image} alt={p.alt} sizes="(min-width: 672px) 320px, 50vw" widths={[480, 800]} class="w-full aspect-square object-cover rounded-lg" /></li>
+        ))}
+      </ul>
+    )}
+
+    {data.link && (
+      <p class="mt-8">
+        <a
+          href={withBase(base, data.link.href)}
+          {...(isExternal(data.link.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          class="inline-block px-4 py-2 rounded-full border border-accent text-accent hover:bg-slate-700 transition-colors"
+        >{data.link.text}</a>
+      </p>
+    )}
+
+    {data.tags.length > 0 && <p class="mt-8 text-xs text-stone-500">{data.tags.map((t) => `#${t}`).join(' ')}</p>}
+  </article>
+</Base>

@@ -7,7 +7,7 @@ import { checkEntries, parseFrontmatter, gpxLengthKm } from './lib/checks.mjs';
 import { exifHasGps } from './lib/exif.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const collections = ['tours', 'videos', 'stories', 'events', 'projects'];
+const collections = ['tours', 'videos', 'stories', 'events', 'projects', 'news'];
 const data = {};
 const readErrors = [];
 
@@ -29,7 +29,10 @@ const imageBase = join(root, 'src', 'content', 'tours');
 const imageCache = new Map();
 const imgFields = ['image', 'thumbnail', 'cover'];
 const referenced = new Set();
-for (const c of collections) for (const e of Object.values(data[c])) for (const f of imgFields) if (typeof e[f] === 'string') referenced.add(resolve(imageBase, e[f]));
+for (const c of collections) for (const e of Object.values(data[c])) {
+  for (const f of imgFields) if (typeof e[f] === 'string') referenced.add(resolve(imageBase, e[f]));
+  for (const p of Array.isArray(e.photos) ? e.photos : []) if (typeof p?.image === 'string') referenced.add(resolve(imageBase, p.image));
+}
 const infos = new Map();
 for (const p of referenced) {
   if (!existsSync(p)) { infos.set(p, null); continue; }

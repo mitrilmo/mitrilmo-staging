@@ -259,3 +259,21 @@ test('robots.txt: Live darf nicht komplett gesperrt sein, Staging egal', () => {
   assert.deepEqual(checkRobots('User-agent: *\nDisallow: /dev-bilder.html\nSitemap: https://www.mitrilmo.com/sitemap.xml\n', false), []);
   assert.deepEqual(checkRobots('User-agent: *\nDisallow:\n', false), []);
 });
+
+// --- Neuigkeiten (news) ---
+test('Neuigkeiten: Titelbild, Fotos und Tour werden geprüft', () => {
+  const d = baseData();
+  d.news = { '2026-10-31-test': { cover: 'images/c.jpg', photos: [{ image: 'images/p1.jpg' }], tour: 'heilenbecke-talsperre' } };
+  assert.deepEqual(errs(d, io()), []);
+  assert.ok(errs(d, io(['images/c.jpg'])).some((e) => /news\/2026-10-31-test: cover verweist auf eine Datei/.test(e)));
+  assert.ok(errs(d, io(['images/p1.jpg'])).some((e) => /photos\[0\]/.test(e)));
+  d.news['2026-10-31-test'].tour = 'keine-tour';
+  assert.ok(errs(d, io()).some((e) => /Tour keine-tour gibt es nicht/.test(e)));
+  d.news['Falscher_Slug'] = d.news['2026-10-31-test'];
+  assert.ok(errs(d, io()).some((e) => /news\/Falscher_Slug: Dateiname ist kein gültiger Slug/.test(e)));
+});
+test('Neuigkeiten: GPS in einem Foto ist ein Fehler', () => {
+  const d = baseData();
+  d.news = { '2026-10-31-test': { cover: 'images/c.jpg', photos: [{ image: 'images/p1.jpg' }] } };
+  assert.ok(errs(d, io([], 10, { ...okImage, gps: true })).some((e) => /GPS/.test(e)));
+});

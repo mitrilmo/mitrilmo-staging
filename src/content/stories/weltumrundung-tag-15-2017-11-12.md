@@ -1,0 +1,13 @@
+---
+title: Fidschi – Kamikaze-Vögel am Buffet und der Erdbeermarmeladen-Sonnenbrand
+description: Da es am Vorabend im Flieger die letzte feste Mahlzeit gab, wachen wir mit gigantischem Hunger auf.
+date: 2017-11-12
+category: archiv
+series: weltreise
+day: 15
+---
+Da es am Vorabend im Flieger die letzte feste Mahlzeit gab, wachen wir mit gigantischem Hunger auf. Wir haben uns im *Hilton Fiji Beach Resort* eingemietet und sind extrem gespannt auf das Frühstück. Die große Frage: Gibt es endlich mehr als nur Toast und Erdbeermarmelade? Oh ja! Das Buffet bietet alles, was das kulinarische Herz begehrt. Naiv wie wir sind, lassen wir uns einen romantischen Tisch draußen mit direktem Meerblick geben. Ein fataler Fehler. Wir müssen unser Frühstück vehement gegen koordinierte Luftangriffe verteidigen! Die lokalen Vögel – etwa so groß wie eine deutsche Amsel – sind so unfassbar dreist, dass sie im Sturzflug wie Kamikaze-Piloten Rührei-Portionen direkt von unseren Tellern klauen. Wir beschließen spontan, dass Meerblick völlig überbewertet wird, und flüchten für den Rest des Frühstücks in den geschützten Innenbereich.
+
+Danach geht es an den Pool. Es scheint, als läge ein Fluch auf uns, den wir getrost den „Fluch des australischen Toasts“ nennen können: Nach sechs entspannten Stunden unter dem Sonnenschirm stellen wir entsetzt fest, dass wir uns beide einen knallroten Sonnenbrand im exakten Farbton unserer Sydney-Erdbeermarmelade eingefangen haben! Und ja, wir hatten uns vorab penibel eingecremt. Gegen zwei deutsche Kalkeimer im ersten Südsee-Einsatz hatte die Creme aber absolut keine Chance.
+
+Die gesamte Hotelanlage ist ein Traum und jeder Angestellte grüßt uns mit einem strahlenden, lauten „Bula!“ (was so viel wie Hallo und Willkommen heißt). Glücklicherweise haben wir für den Notfall eine After-Sun-Lotion im Gepäck. Also heißt die Devise erst einmal: Duschen und den Sonnenbrand verarzten. Zum Abendessen steuern wir das zweite Restaurant des Resorts an, das *KORO*. Man weist uns einen wunderschönen Tisch direkt am Pool zu. Zu unserer Erleichterung herrscht hier augenscheinlich ein striktes Nachtflugverbot für die gefiederten Kamikaze-Vögel, sodass wir unser Essen in aller Ruhe genießen können. Die Karte ist angenehm übersichtlich. Ich entscheide mich für ein fantastisches vegetarisches Curry, Ursel wählt eine feine Zusammenstellung lokaler Vorspeisen. Dazu gibt es das allgegenwärtige, berühmte *Fiji Wasser* und ein gutes Glas Rotwein. Ein herrlicher Abend, wir fühlen uns rundum pudelwohl. Zum krönenden Abschluss gönnen wir uns eine Panna Cotta – ein Traum. Müde, erschöpft und vom Sonnenbrand gezeichnet schlendern wir zurück in unser Apartment 3307 und fallen ins Bett.

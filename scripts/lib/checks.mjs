@@ -95,6 +95,11 @@ export function checkEntries(data, io) {
     img('stories', id, 'cover', s.cover);
     if (s.tour && !(data.tours || {})[s.tour]) err('stories', id, `Tour ${s.tour} gibt es nicht`);
   }
+  for (const [id, n] of Object.entries(data.news || {})) {
+    img('news', id, 'cover', n.cover);
+    (n.photos || []).forEach((p, i) => img('news', id, `photos[${i}]`, p?.image));
+    if (n.tour && !(data.tours || {})[n.tour]) err('news', id, `Tour ${n.tour} gibt es nicht`);
+  }
   return { errors, warnings };
 }
 

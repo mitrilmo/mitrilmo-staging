@@ -20,7 +20,7 @@ if (!src || !target) {
 if (!existsSync(src)) { console.error(`Quelle nicht gefunden: ${src}`); process.exit(1); }
 const name = basename(target, extname(target));
 const folder = target.split('/')[0];
-if (!['tours', 'videos', 'stories'].includes(folder)) { console.error('Ziel muss mit tours/, videos/ oder stories/ beginnen'); process.exit(1); }
+if (!['tours', 'videos', 'stories', 'news'].includes(folder)) { console.error('Ziel muss mit tours/, videos/, stories/ oder news/ beginnen'); process.exit(1); }
 const valid = folder === 'videos' ? /^[A-Za-z0-9_-]{11}$/ : /^[a-z0-9]+(-[a-z0-9]+)*$/;
 if (!valid.test(name)) { console.error(`Dateiname "${name}" ist kein gültiger ${folder === 'videos' ? 'YouTube-ID' : 'Slug (a-z, 0-9, Bindestrich)'}`); process.exit(1); }
 

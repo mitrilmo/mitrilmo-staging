@@ -100,3 +100,14 @@ test('Projekt: Fortschritt nur mit Datenquelle und Stand', () => {
   bad(projectSchema, { ...p, progress: { ...prog, current: 5000 } });
   bad(projectSchema, { ...p, links: [{ label: 'Seite', href: 'http://example.org' }] });
 });
+
+test('Story in einer Reihe braucht day, video ist eine YouTube-ID', () => {
+  const base = { title: 'Dubai – Palmen', description: 'Bis 9:00 Uhr morgens liegen wir im Tiefkoma.', date: '2017-10-31', category: 'archiv' };
+  ok(story, base);
+  bad(story, { ...base, series: 'weltreise' });
+  ok(story, { ...base, series: 'weltreise', day: 0 });
+  bad(story, { ...base, series: 'weltreise', day: -1 });
+  bad(story, { ...base, series: 'andere', day: 1 });
+  ok(story, { ...base, series: 'weltreise', day: 3, video: 'iw7wg-KqpSU' });
+  bad(story, { ...base, series: 'weltreise', day: 3, video: 'https://www.youtube.com/watch?v=iw7wg-KqpSU' });
+});

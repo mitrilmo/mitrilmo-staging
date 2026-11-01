@@ -8,11 +8,12 @@ var ANCHOR_PAGES = {
   '#videos': 'videos.html',
   '#shortsSection': 'videos.html#shorts',
   '#wanderberichte': 'geschichten.html',
-  '#weltreiseSection': 'geschichten.html#archiv',
+  '#weltreiseSection': 'weltreise.html',
   '#randnotizenSection': 'geschichten.html#randnotizen',
   '#archiveSection': 'geschichten.html#archiv',
   '#eventsSection': 'termine.html',
   '#upcomingSection': 'termine.html',
+  '#blogSlider': 'neuigkeiten.html',
   '#ueber': 'ueber-mitrilmo.html'
 };
 function resolveHash(hash, livePages) {
