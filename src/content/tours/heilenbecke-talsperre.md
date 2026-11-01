@@ -8,6 +8,8 @@ distanceKm: 2.6
 duration: 30-60 Minuten
 difficulty: leicht
 image: ../../assets/images/tours/heilenbecke-talsperre.jpg
+stories:
+  - einmal-um-die-heilenbecke-talsperre-2026-06-07
 imageAlt: Titelbild zur Tour Rund um die Heilenbecke Talsperre
 gpx: gpx/heilenbecke-talsperre.gpx
 coordinates:

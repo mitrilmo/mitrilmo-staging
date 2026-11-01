@@ -8,6 +8,8 @@ distanceKm: 12
 duration: 3h 30min
 difficulty: mittel
 image: ../../assets/images/tours/elbschetal-rundweg.jpg
+stories:
+  - elbschetal-rundweg-2026-06-14
 video: WBPHsCee0OQ
 imageAlt: Titelbild zur Tour Elbschetal Rundweg
 gpx: gpx/elbschetal-rundweg.gpx

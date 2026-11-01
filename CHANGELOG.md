@@ -1,5 +1,19 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, AP2.4 Stories)
+
+### Neu
+- 9 weitere Stories migriert (Einmal-Skript `scripts/migrate-stories.mjs`): 5 Wanderberichte mit Fotos (3-Türme-Weg, Heilenbecke, Elbschetal, Klutert/Rüggeberg-Filde, Glörtalsperre), Mammutmarsch-Überlebenstipps und KI-Lernkurve Teil 1 bis 3. Damit sind alle 33 Stories da.
+- 67 Fotos aus dem Base64 im alten HTML herausgelöst, ohne Metadaten und GPS neu kodiert (`src/assets/images/stories/<Story>/NN.jpg`), mit Bildunterschrift als Alt-Text und sichtbarer Unterschrift.
+- Touren Heilenbecke, Elbschetal und Mammutmarsch verweisen auf ihre Story (`stories`).
+- `check-content` zählt Bilder im Fließtext als verwendet und prüft sie auf GPS und Existenz.
+- Story-Seite: Zwischenüberschriften und Bilder im Text gestaltet.
+
+### Geändert
+- Der Statistik-Kasten am Ende der Berichte (Rohtext mit `---` und Sternchen) ist jetzt echtes Markdown: Trennlinie, fette Überschrift, Aufzählung. Auch die Markdown-Reste `###` und `**` in Elbschetal und Glör sind jetzt Überschrift und Fettdruck. Die Wörter sind unverändert.
+- Texte gegen die alte Seite geprüft (Buchstaben und Ziffern identisch bei allen 9).
+- Beschreibung der Wanderberichte = Textanfang (alte Seite hatte keine).
+
 ## 2026-11-01 (Phase 2, AP2.3 Ziele)
 
 ### Neu

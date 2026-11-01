@@ -33,6 +33,19 @@ for (const c of collections) for (const e of Object.values(data[c])) {
   for (const f of imgFields) if (typeof e[f] === 'string') referenced.add(resolve(imageBase, e[f]));
   for (const p of Array.isArray(e.photos) ? e.photos : []) if (typeof p?.image === 'string') referenced.add(resolve(imageBase, p.image));
 }
+// Bilder im Fließtext (![Alt](Pfad)): zählen als verwendet und werden wie die Titelbilder geprüft
+const bodyImages = [];
+for (const c of collections) {
+  const dir = join(root, 'src', 'content', c);
+  if (!existsSync(dir)) continue;
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('.md'))) {
+    for (const m of readFileSync(join(dir, f), 'utf8').matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)) {
+      const p = resolve(imageBase, m[1]);
+      referenced.add(p);
+      bodyImages.push({ where: c + '/' + f, rel: m[1] });
+    }
+  }
+}
 const infos = new Map();
 for (const p of referenced) {
   if (!existsSync(p)) { infos.set(p, null); continue; }
@@ -46,6 +59,11 @@ const io = {
   image: (rel) => infos.get(resolve(imageBase, rel)) ?? null,
 };
 const { errors, warnings } = checkEntries(data, io);
+for (const { where, rel } of bodyImages) {
+  const i = io.image(rel);
+  if (!i) errors.push(where + ": Bild im Text fehlt (" + rel + ")");
+  else if (i.gps) errors.push(where + ": Bild im Text enthält GPS-Koordinaten (" + rel + ")");
+}
 errors.unshift(...readErrors);
 
 // Originale, die kein Eintrag verwendet (Hinweis, kein Fehler)

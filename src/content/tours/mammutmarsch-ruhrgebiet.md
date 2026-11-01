@@ -9,6 +9,8 @@ distanceKm: 30.3
 duration: ca. 7–8 Std.
 difficulty: schwer
 image: ../../assets/images/tours/mammutmarsch-ruhrgebiet.jpg
+stories:
+  - mammutmarsch-ueberlebenstipps-2026-09-27
 imageAlt: Titelbild zur Tour Nachtmammutmarsch Ruhrgebiet 30 km
 gpx: gpx/mammutmarsch-ruhrgebiet.gpx
 coordinates:
