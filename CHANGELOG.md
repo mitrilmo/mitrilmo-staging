@@ -18,7 +18,7 @@
 - Video-IDs behalten ihre Groß-/Kleinschreibung (`generateId` im Loader). Vorher schrieb Astro sie klein, und `reference()` meldete beim Build "Invalid content reference" für alle Tour-Videos.
 
 ### Geändert (Nachtrag)
-- Neue Thumbnails (Textfassung mit Schlagzeile) für 11 Videos eingesetzt (zuletzt 6 Schleusen, Megamarsch Düsseldorf, Neyetalsperre), Video "Rucksackhaken" angelegt.
+- Neue Thumbnails (Textfassung mit Schlagzeile) für 10 Videos eingesetzt (zuletzt 6 Schleusen und Megamarsch Düsseldorf), Video "Rucksackhaken" angelegt.
 - Drei weitere Videos angelegt: Drachen-Power (Drachenfels), Talsperren-Therapie (Lister), Verschwundene Grenzen (Bergische Landwehr). Titel von YouTube übernommen.
 
 Protokoll der Änderungen am Neubau. Die alte Live-Seite hat ihr eigenes Changelog (nicht in diesem Repo).
