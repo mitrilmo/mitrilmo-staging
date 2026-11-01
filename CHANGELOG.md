@@ -1,5 +1,13 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-01 (Phase 2, AP2.3 Ziele)
+
+### Neu
+- Ziel **6-Schleusen-Fahrt** (`kind: ziel`, Essen bis Gelsenkirchen, mit dem Schiff). Koordinaten fehlen bewusst, die alte Seite nennt nur einen Maps-Suchlink.
+
+### Geändert
+- Landesgartenschau Neuss: `publishedAt` von Platzhalter auf 2026-08-05 (erstes Erscheinen auf der alten Seite), Beispiel-Kommentar entfernt. Der Hinweis, dass die LAGA am 11.10.2026 endete, steht in der Beschreibung.
+
 ## 2026-11-01 (Phase 2, AP2.2 Mediathek)
 
 ### Neu

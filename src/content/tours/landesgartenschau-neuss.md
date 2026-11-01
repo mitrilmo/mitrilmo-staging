@@ -1,5 +1,4 @@
 ---
-# Beispiel für ein Ziel (kind: ziel), ohne GPX und ohne Distanz. Werte aus der Video-Karte, publishedAt ist ein Platzhalter (AP2.3).
 title: "Landesgartenschau Neuss 2026"
 kind: ziel
 place: "Neuss"
@@ -14,5 +13,5 @@ strollerOk: ja
 parking:
   name: "Parkplatz Ost"
   cost: "7 € pro Tag"
-publishedAt: 2026-10-30
+publishedAt: 2026-08-05
 ---
