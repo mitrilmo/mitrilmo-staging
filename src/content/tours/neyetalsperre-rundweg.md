@@ -8,7 +8,7 @@ distanceKm: 12
 duration: 2-3 Std.
 difficulty: leicht
 image: ../../assets/images/tours/neyetalsperre-rundweg.jpg
-imageAlt: Titelbild zur Tour Rund um die Neye-Talsperre
+imageAlt: "Vier Wanderer winken am Ufer der Neye-Talsperre, im Hintergrund die Staumauer"
 gpx: gpx/neyetalsperre-rundweg.gpx
 coordinates:
   lat: 51.14602

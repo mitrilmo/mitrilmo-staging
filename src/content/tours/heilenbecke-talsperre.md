@@ -10,7 +10,7 @@ difficulty: leicht
 image: ../../assets/images/tours/heilenbecke-talsperre.jpg
 stories:
   - einmal-um-die-heilenbecke-talsperre-2026-06-07
-imageAlt: Titelbild zur Tour Rund um die Heilenbecke Talsperre
+imageAlt: "Mo schaut von einem Uferweg über die Heilenbecke Talsperre, dahinter bewaldete Hänge"
 gpx: gpx/heilenbecke-talsperre.gpx
 coordinates:
   lat: 51.25655

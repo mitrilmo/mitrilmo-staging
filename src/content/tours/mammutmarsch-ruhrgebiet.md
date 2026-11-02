@@ -11,7 +11,7 @@ difficulty: schwer
 image: ../../assets/images/tours/mammutmarsch-ruhrgebiet.jpg
 stories:
   - mammutmarsch-ueberlebenstipps-2026-09-27
-imageAlt: Titelbild zur Tour Nachtmammutmarsch Ruhrgebiet 30 km
+imageAlt: "Bunt beleuchtete Industrieanlage mit Trasse und Hochofen bei Nacht"
 gpx: gpx/mammutmarsch-ruhrgebiet.gpx
 coordinates:
   lat: 51.48267

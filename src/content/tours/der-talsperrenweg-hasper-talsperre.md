@@ -8,7 +8,7 @@ distanceKm: 9.81
 duration: 3h 12min
 difficulty: leicht
 image: ../../assets/images/tours/der-talsperrenweg-hasper-talsperre.jpg
-imageAlt: Titelbild zur Tour Der Talsperrenweg - Hasper Talsperre
+imageAlt: "Staumauer der Hasper Talsperre mit Wehrturm aus Bruchstein, dahinter bewaldete Hügel"
 gpx: gpx/der-talsperrenweg-hasper-talsperre.gpx
 coordinates:
   lat: 51.306417

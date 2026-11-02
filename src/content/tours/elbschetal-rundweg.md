@@ -11,7 +11,7 @@ image: ../../assets/images/tours/elbschetal-rundweg.jpg
 stories:
   - elbschetal-rundweg-2026-06-14
 video: WBPHsCee0OQ
-imageAlt: Titelbild zur Tour Elbschetal Rundweg
+imageAlt: "Blick über Wiesen und bewaldete Hügel im Elbschetal unter Wolkenhimmel"
 gpx: gpx/elbschetal-rundweg.gpx
 coordinates:
   lat: 51.400660587189456

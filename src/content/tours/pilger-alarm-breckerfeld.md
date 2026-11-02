@@ -9,7 +9,7 @@ distanceKm: 6.7
 duration: ca. 3 Std.
 difficulty: leicht
 image: ../../assets/images/tours/pilger-alarm-breckerfeld.jpg
-imageAlt: Titelbild zur Tour Pilger-Alarm in Breckerfeld – Mühlenhof & Königsheide
+imageAlt: "Fachwerkhaus und Windmühle auf dem Historischen Mühlenhof in Breckerfeld"
 gpx: gpx/pilger-alarm-breckerfeld.gpx
 coordinates:
   lat: 51.27825

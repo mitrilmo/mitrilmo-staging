@@ -9,7 +9,7 @@ distanceKm: 10.6
 duration: ca. 3–4 Std.
 difficulty: mittel
 image: ../../assets/images/tours/schneckenlauf-ennepetal.jpg
-imageAlt: Titelbild zur Tour Schneckenlauf in Ennepetal
+imageAlt: "Gasthaus mit rotem Dach und grünen Sonnenschirmen vor einem bewaldeten Hang"
 gpx: gpx/schneckenlauf-ennepetal.gpx
 coordinates:
   lat: 51.26728

@@ -9,7 +9,7 @@ duration: 2–3 Std.
 difficulty: leicht
 image: ../../assets/images/tours/huelsenbecker-tal.jpg
 video: X6EM-J9xXRQ
-imageAlt: Titelbild zur Tour Meiler-Murmel-Minigolf im Hülsenbecker Tal
+imageAlt: "Rauchender Kohlenmeiler im Hülsenbecker Tal, Menschen stehen auf dem Meiler zwischen Nadelbäumen"
 gpx: gpx/huelsenbecker-tal.gpx
 coordinates:
   lat: 51.29243213026569

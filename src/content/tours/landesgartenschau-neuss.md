@@ -6,8 +6,8 @@ region: "Rheinland"
 description: "Die Landesgartenschau (LAGA) Neuss 2026 lief bis zum 11. Oktober 2026. Aus einem Lost Place, der alten Neusser Galopprennbahn, ist ein komplett neues Naherholungsgebiet geworden."
 duration: "ca. 3–4 Std."
 difficulty: leicht
-image: ../../assets/images/videos/C0qlK4FIMvI.jpg
-imageAlt: "Vorschaubild des Videos zur Landesgartenschau in Neuss"
+image: ../../assets/images/tours/landesgartenschau-neuss.jpg
+imageAlt: "Mo mit Strohhut neben der bunten Blumenfigur der Landesgartenschau Neuss"
 video: C0qlK4FIMvI
 strollerOk: ja
 parking:

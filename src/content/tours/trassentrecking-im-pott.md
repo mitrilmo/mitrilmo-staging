@@ -9,7 +9,7 @@ duration: 3-4 Std.
 difficulty: leicht
 image: ../../assets/images/tours/trassentrecking-im-pott.jpg
 video: g8KUCifX5ec
-imageAlt: "Titelbild zur Tour TRASSENTREKKING: Wandern auf alten Schienen durchs südliche Ruhrgebiet"
+imageAlt: "Vier Wanderer mit erhobenen Armen auf einer ehemaligen Bahntrasse unter einer Brücke"
 gpx: gpx/trassentrecking-im-pott.gpx
 coordinates:
   lat: 51.32053951038612

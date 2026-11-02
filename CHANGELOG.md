@@ -1,5 +1,14 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Echte Fotos als Titelbilder der Touren)
+
+### Geändert
+- **Dreizehn Titelbilder ausgetauscht:** Comic-Bilder und Thumbnails mit Text sind durch Björns Fotos ersetzt (3-Türme-Weg, Altenberger Dom, Hasper Talsperre, Elbschetal, Nachtmammutmarsch, Neye-Talsperre, Pilger-Alarm, Schneckenlauf, Trassentrekking, Heilenbecke Talsperre, Hülsenbecker Tal). 6-Schleusen-Fahrt und Landesgartenschau Neuss haben jetzt eigene Fotos statt des Video-Thumbnails.
+- Alt-Texte beschreiben jetzt das Bild statt „Titelbild zur Tour …“.
+- Trassentrekking: YouTube-Logo oben rechts im Foto abgeschnitten. Neye-Talsperre und Schneckenlauf stärker komprimiert, damit sie unter der Größengrenze der Prüfung bleiben.
+
+- Die 14 Videos ohne Vorschaubild sind Shorts. Sie bleiben bewusst eine Textliste ohne Bilder.
+
 ## 2026-11-02 (Wegweiser überarbeitet)
 
 ### Geändert
