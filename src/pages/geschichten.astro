@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ContentImage from '../components/ContentImage.astro';
+import { dateDe } from '../lib/date.js';
+
+const root = import.meta.env.BASE_URL.replace(/\/$/, '');
+const stories = (await getCollection('stories')).filter((s) => !s.data.draft);
+const standalone = stories.filter((s) => !s.data.series).sort((a, b) => b.data.date - a.data.date);
+const weltreise = stories.filter((s) => s.data.series === 'weltreise').length;
+
+const groups = [
+  { id: 'unterwegs', title: 'Unterwegs', text: 'Berichte von Wanderungen und Touren.' },
+  { id: 'randnotizen', title: 'Randnotizen', text: 'Gedanken am Wegesrand, Technik und anderes, das nicht in ein Video passte.' },
+  { id: 'archiv', title: 'Archiv', text: 'Ältere Berichte.' },
+].map((g) => ({ ...g, items: standalone.filter((s) => s.data.category === g.id) })).filter((g) => g.items.length > 0);
+---
+<Base title="Geschichten, mitrilmo" description="Wanderberichte, Randnotizen und das Reisetagebuch der Weltumrundung 2017.">
+  <PageHero width="max-w-5xl">
+    <h1 class="text-3xl font-black text-stone-50">Geschichten</h1>
+    <p class="mt-2 text-stone-200 max-w-2xl">Die längeren Berichte zu den Touren, ein paar Randnotizen und das Reisetagebuch von 2017. Kurzes von unterwegs steht unter Neuigkeiten.</p>
+  </PageHero>
+
+  <div class="max-w-5xl mx-auto px-4 py-10 space-y-14">
+    {groups.map((g) => (
+      <section aria-labelledby={`g-${g.id}`}>
+        <h2 id={`g-${g.id}`} class="text-2xl font-extrabold text-stone-50">{g.title}</h2>
+        <p class="mt-1 text-sm text-stone-400">{g.text}</p>
+        <ul class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {g.items.map((s, i) => (
+            <li>
+              <article class="h-full bg-slate-700 rounded-2xl overflow-hidden border border-white/5 hover:border-accent/50 transition-colors">
+                {s.data.cover && (
+                  <a href={`${root}/stories/${s.id}.html`} class="block" aria-hidden="true" tabindex="-1">
+                    <ContentImage image={s.data.cover} alt={s.data.coverAlt} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 100vw" widths={[480, 800]} priority={g === groups[0] && i < 2} class="w-full h-40 object-cover" />
+                  </a>
+                )}
+                <div class="p-5">
+                  <p class="text-xs text-stone-400"><time datetime={s.data.date.toISOString().slice(0, 10)}>{dateDe(s.data.date)}</time></p>
+                  <h3 class="mt-1 font-bold text-stone-50 leading-snug"><a href={`${root}/stories/${s.id}.html`} class="hover:text-accent transition-colors">{s.data.title}</a></h3>
+                  <p class="mt-2 text-sm text-stone-300">{s.data.description}</p>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    {weltreise > 0 && (
+      <section aria-labelledby="g-reise">
+        <h2 id="g-reise" class="text-2xl font-extrabold text-stone-50">Weltumrundung 2017</h2>
+        <a href={`${root}/weltreise.html`} class="mt-4 block rounded-2xl bg-slate-700 border border-white/5 hover:border-accent/50 transition-colors p-5">
+          <p class="font-bold text-stone-50">23 Tage, einmal um den Globus</p>
+          <p class="mt-1 text-sm text-stone-300">Das Reisetagebuch von Björn und Ursel, {weltreise} Berichte, Tag für Tag.</p>
+          <p class="mt-2 text-sm text-accent">Zur Weltreise →</p>
+        </a>
+      </section>
+    )}
+  </div>
+</Base>

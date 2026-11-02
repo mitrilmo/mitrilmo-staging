@@ -1,5 +1,17 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Phase 3, AP3.3 Mediathek, Geschichten, Termine, Projekte, Entdecken)
+
+### Neu
+- **Videos** `/videos.html`: 18 Videos mit lokalem Vorschaubild als Link zu YouTube, 14 Shorts als Textkarten. Beim Laden der Seite gibt es keine Anfrage an YouTube.
+- **Geschichten** `/geschichten.html`: Berichte nach Unterwegs, Randnotizen und Archiv, dazu ein Block zur Weltumrundung 2017 mit Link auf `/weltreise.html`.
+- **Termine** `/termine.html`: Region und Kanal getrennt, abgelaufene Einträge werden beim Bauen und zusätzlich im Browser ausgeblendet (`endDate` zählt als letzter Tag). `src/lib/events.js` mit 3 Tests.
+- **Projekte** `/projekte.html`: Entwürfe (`draft`) bleiben unsichtbar, Fortschritt nur mit Stand und Quelle.
+- **Entdecken** `/entdecken.html`: Übersicht mit Kacheln und Anzahlen zu allen Bereichen.
+
+### Geändert
+- `nav.js`: Entdecken, Videos, Geschichten, Termine, Projekte live. Kopfzeile am Rechner: Entdecken, Touren, Videos, Geschichten, Projekte, Neuigkeiten, Über mitrilmo; Termine, Weltreise und Pfadwerk nur in „Mehr“ und auf Entdecken (sonst zu eng bei Tablet-Breite).
+
 ## 2026-11-02 (Phase 3, AP3.1 und AP3.2 Touren)
 
 ### Neu

@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { upcoming, rangeDe, dayKey } from '../lib/events.js';
+
+const events = upcoming(await getCollection('events'));
+const groups = [
+  { id: 'region', title: 'Demnächst in der Region', text: 'Märkte, Wanderungen und Veranstaltungen im Bergischen Land und drumherum. Termine bitte vor dem Besuch beim Veranstalter prüfen.' },
+  { id: 'kanal', title: 'Demnächst auf dem Kanal', text: 'Was ich selbst vorhabe und woraus ein Video werden kann.' },
+].map((g) => ({ ...g, items: events.filter((e) => e.data.scope === g.id) })).filter((g) => g.items.length > 0);
+const categoryLabel = { wandern: 'Wandern', outdoor: 'Outdoor', rad: 'Radfahren', food: 'Essen', markt: 'Markt', sonstiges: 'Sonstiges' };
+---
+<Base title="Termine, mitrilmo" description="Veranstaltungen im Bergischen Land und was auf dem Kanal als Nächstes ansteht.">
+  <PageHero width="max-w-4xl">
+    <h1 class="text-3xl font-black text-stone-50">Termine</h1>
+    <p class="mt-2 text-stone-200 max-w-2xl">Was in der Region los ist und was ich als Nächstes vorhabe. Vergangene Termine verschwinden von selbst.</p>
+  </PageHero>
+
+  <div class="max-w-4xl mx-auto px-4 py-10 space-y-12">
+    {groups.length === 0 && <p class="text-stone-400">Im Moment steht nichts an.</p>}
+    {groups.map((g) => (
+      <section aria-labelledby={`t-${g.id}`}>
+        <h2 id={`t-${g.id}`} class="text-2xl font-extrabold text-stone-50">{g.title}</h2>
+        <p class="mt-1 text-sm text-stone-400">{g.text}</p>
+        <ul class="mt-4 space-y-4">
+          {g.items.map((e) => (
+            <li data-end={dayKey(e.data.endDate)}>
+              <article class="bg-slate-700 rounded-2xl border border-white/5 p-5">
+                <p class="text-sm font-semibold text-accent">{rangeDe(e.data.startDate, e.data.endDate)}{e.data.time ? `, ${e.data.time}` : ''}</p>
+                <h3 class="mt-1 text-lg font-bold text-stone-50 leading-snug">
+                  {e.data.url ? <a href={e.data.url} target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">{e.data.title}<span class="sr-only"> (öffnet die Seite des Veranstalters in einem neuen Tab)</span></a> : e.data.title}
+                </h3>
+                <p class="mt-1 text-xs text-stone-400">{[categoryLabel[e.data.category], e.data.location, e.data.price].filter(Boolean).join(' · ')}</p>
+                {e.data.description && <p class="mt-3 text-sm text-stone-300">{e.data.description}</p>}
+                {e.data.note && <p class="mt-2 text-xs text-stone-400">{e.data.note}</p>}
+              </article>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<script>
+  // Die Seite ist beim Bauen gefiltert. Wer sie später noch offen hat oder aus dem Cache sieht, bekommt abgelaufene Termine trotzdem nicht angezeigt.
+  const today = new Date().toISOString().slice(0, 10);
+  for (const li of document.querySelectorAll('li[data-end]')) {
+    if (li.dataset.end < today) li.hidden = true;
+  }
+</script>

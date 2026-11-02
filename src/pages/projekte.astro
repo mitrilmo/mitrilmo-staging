@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { withBase } from '../lib/url.js';
+import { dateDe } from '../lib/date.js';
+
+const base = import.meta.env.BASE_URL;
+const projects = (await getCollection('projects')).filter((p) => !p.data.draft);
+const statusLabel = { live: 'Live', laufend: 'Läuft', abgeschlossen: 'Abgeschlossen' };
+const kindLabel = { app: 'App', spiel: 'Spiel', challenge: 'Challenge', marsch: 'Märsche' };
+const isExternal = (h) => h.startsWith('https://');
+---
+<Base title="Projekte, mitrilmo" description="Apps, Challenges und Vorhaben neben dem Kanal: Pfadwerk, die Wander-Challenge und die Mammut- und Megamärsche.">
+  <PageHero width="max-w-4xl">
+    <h1 class="text-3xl font-black text-stone-50">Projekte</h1>
+    <p class="mt-2 text-stone-200 max-w-2xl">Woran ich neben den Videos arbeite oder wo ich mitmache.</p>
+  </PageHero>
+
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    {projects.length === 0 && <p class="text-stone-400">Im Moment gibt es hier nichts zu zeigen.</p>}
+    <ul class="grid gap-6 sm:grid-cols-2">
+      {projects.map((p) => (
+        <li>
+          <article class="h-full bg-slate-700 rounded-2xl border border-white/5 p-5 flex flex-col">
+            <p class="text-xs text-stone-400">{kindLabel[p.data.kind]} · {statusLabel[p.data.status]}</p>
+            <h2 class="mt-1 text-xl font-bold text-stone-50">{p.data.title}</h2>
+            <p class="mt-2 text-sm text-stone-300">{p.data.description}</p>
+            {p.data.progress && (
+              <div class="mt-4">
+                <p class="text-sm text-stone-200"><strong class="text-stone-50">{p.data.progress.current} von {p.data.progress.goal} {p.data.progress.unit}</strong></p>
+                <progress class="mt-1 w-full h-2 accent-[var(--season-accent)]" max={p.data.progress.goal} value={Math.min(p.data.progress.current, p.data.progress.goal)} aria-label={`Stand ${p.data.progress.current} von ${p.data.progress.goal} ${p.data.progress.unit}`}></progress>
+                <p class="mt-1 text-xs text-stone-400">Stand {dateDe(p.data.progress.updatedAt)}. {p.data.progress.source}</p>
+              </div>
+            )}
+            {p.data.links.length > 0 && (
+              <ul class="mt-4 space-y-1.5 text-sm">
+                {p.data.links.map((l) => (
+                  <li>
+                    <a href={isExternal(l.href) ? l.href : withBase(base, l.href)} {...(isExternal(l.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})} class="text-accent hover:underline">{l.label}{isExternal(l.href) && <span class="sr-only"> (öffnet in einem neuen Tab)</span>}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

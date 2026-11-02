@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { upcoming } from '../lib/events.js';
+import { published } from '../lib/news.js';
+
+const root = import.meta.env.BASE_URL.replace(/\/$/, '');
+const [tours, videos, stories, events, projects, news] = await Promise.all(
+  ['tours', 'videos', 'stories', 'events', 'projects', 'news'].map((c) => getCollection(c)),
+);
+const standalone = stories.filter((s) => !s.data.series && !s.data.draft).length;
+const tiles = [
+  { href: 'touren.html', title: 'Touren und Ausflugsziele', text: 'Strecken mit Karte, GPX-Datei und meiner Einschätzung.', meta: `${tours.length} Einträge` },
+  { href: 'videos.html', title: 'Videos', text: 'Alles vom Kanal, ein Klick öffnet YouTube.', meta: `${videos.length} Videos und Shorts` },
+  { href: 'geschichten.html', title: 'Geschichten', text: 'Längere Berichte und Randnotizen.', meta: `${standalone} Berichte` },
+  { href: 'neuigkeiten.html', title: 'Neuigkeiten', text: 'Kurze Beiträge von unterwegs.', meta: `${published(news).length} Beiträge` },
+  { href: 'termine.html', title: 'Termine', text: 'Was in der Region los ist und was ich vorhabe.', meta: `${upcoming(events).length} anstehend` },
+  { href: 'weltreise.html', title: 'Weltumrundung 2017', text: 'Das Reisetagebuch von damals, Tag für Tag.', meta: `${stories.filter((s) => s.data.series === 'weltreise').length} Berichte` },
+  { href: 'projekte.html', title: 'Projekte', text: 'Pfadwerk, Wander-Challenge und Mammutmärsche.', meta: `${projects.filter((p) => !p.data.draft).length} Projekte` },
+];
+---
+<Base title="Entdecken, mitrilmo" description="Alles auf einen Blick: Touren, Videos, Geschichten, Neuigkeiten, Termine und Projekte von mitrilmo.">
+  <PageHero width="max-w-4xl">
+    <h1 class="text-3xl font-black text-stone-50">Entdecken</h1>
+    <p class="mt-2 text-stone-200 max-w-2xl">Hier ist alles an einem Ort. Such dir aus, wonach dir gerade ist.</p>
+  </PageHero>
+
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <ul class="grid gap-5 sm:grid-cols-2">
+      {tiles.map((t) => (
+        <li>
+          <a href={`${root}/${t.href}`} class="block h-full bg-slate-700 rounded-2xl border border-white/5 hover:border-accent/50 transition-colors p-5">
+            <h2 class="text-lg font-bold text-stone-50">{t.title}</h2>
+            <p class="mt-1 text-sm text-stone-300">{t.text}</p>
+            <p class="mt-3 text-xs text-accent">{t.meta} →</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

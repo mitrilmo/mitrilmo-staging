@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ContentImage from '../components/ContentImage.astro';
+
+const byDate = (a, b) => (b.data.publishedAt?.getTime() ?? 0) - (a.data.publishedAt?.getTime() ?? 0);
+const all = (await getCollection('videos')).sort(byDate);
+const videos = all.filter((v) => v.data.format === 'video');
+const shorts = all.filter((v) => v.data.format === 'short');
+const categoryLabel = { wandern: 'Wandern', radfahren: 'Radfahren', ausflug: 'Ausflug', technik: 'Technik', reise: 'Reise', sonstiges: 'Sonstiges' };
+const watch = (v) => `https://www.youtube.com/watch?v=${v.data.youtubeId}`;
+---
+<Base title="Videos, mitrilmo" description="Alle Videos und Shorts von mitrilmo: Wanderungen, Ausflüge und Technik aus dem Bergischen Land.">
+  <PageHero width="max-w-5xl">
+    <h1 class="text-3xl font-black text-stone-50">Videos</h1>
+    <p class="mt-2 text-stone-200 max-w-2xl">Alles, was auf dem Kanal liegt. Ein Klick öffnet das Video auf YouTube in einem neuen Tab, hier auf der Seite wird nichts von YouTube geladen.</p>
+  </PageHero>
+
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <section aria-labelledby="videos-titel">
+      <h2 id="videos-titel" class="text-2xl font-extrabold text-stone-50">Videos <span class="text-base font-normal text-stone-400">({videos.length})</span></h2>
+      <ul class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {videos.map((v, i) => (
+          <li>
+            <a href={watch(v)} target="_blank" rel="noopener noreferrer" class="group block h-full bg-slate-700 rounded-2xl overflow-hidden border border-white/5 hover:border-accent/50 transition-colors">
+              {v.data.thumbnail ? (
+                <div class="relative">
+                  <ContentImage image={v.data.thumbnail} alt={`Vorschaubild: ${v.data.title}`} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 100vw" widths={[480, 800]} priority={i < 2} class="w-full aspect-video object-cover" />
+                  <span class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" class="h-12 w-12 text-white drop-shadow" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                  </span>
+                </div>
+              ) : null}
+              <div class="p-4">
+                <p class="text-xs text-stone-400">{categoryLabel[v.data.category]}</p>
+                <h3 class="mt-1 font-bold text-stone-50 leading-snug group-hover:text-accent transition-colors">{v.data.title}</h3>
+                <span class="sr-only"> (öffnet YouTube in einem neuen Tab)</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {shorts.length > 0 && (
+      <section class="mt-14" aria-labelledby="shorts-titel">
+        <h2 id="shorts-titel" class="text-2xl font-extrabold text-stone-50">Shorts <span class="text-base font-normal text-stone-400">({shorts.length})</span></h2>
+        <p class="mt-1 text-sm text-stone-400">Kurze Hochformat-Clips, hier nur als Liste.</p>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+          {shorts.map((v) => (
+            <li>
+              <a href={watch(v)} target="_blank" rel="noopener noreferrer" class="block h-full rounded-xl bg-slate-700 border border-white/5 hover:border-accent/50 transition-colors px-4 py-3">
+                <p class="text-xs text-stone-400">{categoryLabel[v.data.category]}</p>
+                <p class="mt-0.5 text-sm font-semibold text-stone-100">{v.data.title}<span class="sr-only"> (öffnet YouTube in einem neuen Tab)</span></p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="mt-12 text-sm text-stone-400">Mehr gibt es direkt auf dem Kanal: <a href="https://www.youtube.com/@mitrilmo" target="_blank" rel="noopener noreferrer" class="text-accent underline">youtube.com/@mitrilmo</a></p>
+  </div>
+</Base>
