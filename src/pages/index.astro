@@ -43,9 +43,24 @@ const nextEvent = upcoming(events).find((e) => e.data.scope === 'region');
 const standalone = stories.filter((s) => !s.data.series && !s.data.draft).length;
 
 const signs = [
-  { href: 'touren.html', title: 'Raus ins Grüne', text: 'Touren mit Streckenverlauf, Höhenprofil und GPX-Download.', left: false },
-  { href: 'videos.html', title: 'Auf der Couch mitkommen', text: `Die Videos vom Kanal: ${longVideos.length} Videos und ${shortCount} Shorts.`, left: true },
-  { href: 'geschichten.html', title: 'Zum Nachlesen', text: `${standalone} Berichte und Randnotizen, dazu das Reisetagebuch von 2017.`, left: false },
+  {
+    href: 'touren.html', title: 'Raus ins Grüne', left: false,
+    text: 'Touren mit Streckenverlauf, Höhenprofil und GPX-Download.',
+    icon: ['M5 19c0-8 5-14 14-14 0 9-6 14-14 14Z', 'M5 19l8-8'],
+    small: ['M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10Z', 'M12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z'],
+  },
+  {
+    href: 'videos.html', title: 'Auf der Couch mitkommen', left: true,
+    text: `Die Videos vom Kanal: ${longVideos.length} Videos und ${shortCount} Shorts.`,
+    icon: ['M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z', 'M10 9.5v5l4.5-2.5z'],
+    small: ['M4 6h16v11H4z', 'M9 21h6'],
+  },
+  {
+    href: 'geschichten.html', title: 'Zum Nachlesen', left: false,
+    text: `${standalone} Berichte und Randnotizen, dazu das Reisetagebuch von 2017.`,
+    icon: ['M3 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H3V5Z', 'M21 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7V5Z'],
+    small: ['M6 3h9l4 4v14H6z', 'M9 12h7M9 16h7'],
+  },
 ];
 ---
 <Base title="mitrilmo: Raus. Entdecken. Teilen." description="Wandern, Radfahren und Neugier im Bergischen Land, in NRW und darüber hinaus: Touren mit GPX-Download, Videos und Geschichten von mitrilmo.">
@@ -57,18 +72,23 @@ const signs = [
     <div class="relative max-w-5xl mx-auto px-4 py-12 md:py-20 grid gap-10 md:grid-cols-2 md:items-center">
       <div>
         <h1 class="text-4xl md:text-5xl font-black text-stone-50 leading-tight">Raus.<br /><span class="text-accent">Entdecken.</span><br />Teilen.</h1>
+        <span class="mt-5 block h-1 w-28 rounded-full bg-gradient-to-r from-accent to-transparent" aria-hidden="true"></span>
         <p class="mt-4 text-lg text-stone-100">Unterwegs im Bergischen Land, in NRW und darüber hinaus.</p>
         <p class="mt-3 text-stone-200 max-w-md">Wanderungen und Ausflüge, die ich selbst gelaufen bin. Mit GPX-Download, Streckenverlauf und, wo ich sie habe, meiner ehrlichen Einschätzung.</p>
       </div>
-      <nav aria-label="Einstieg" class="relative">
-        <div class="absolute left-1/2 top-0 bottom-0 w-3 -translate-x-1/2 rounded bg-[#4a2f18]" aria-hidden="true"></div>
-        <ul class="relative flex flex-col gap-3">
+      <nav aria-label="Einstieg" class="relative py-4">
+        <div class="post absolute left-1/2 top-0 bottom-0 w-12 -translate-x-1/2" aria-hidden="true"></div>
+        <ul class="relative flex flex-col gap-5">
           {signs.map((s) => (
-            <li class={`w-[92%] ${s.left ? 'self-start' : 'self-end'}`}>
+            <li class={`sign-item w-[94%] ${s.left ? 'self-start' : 'self-end'}`}>
               <a href={`${base}/${s.href}`} class={`sign ${s.left ? 'sign-left' : ''}`}>
-                <span class="block text-lg font-extrabold leading-tight">{s.title}</span>
-                <span class="mt-0.5 block text-sm text-stone-100/90">{s.text}</span>
+                <svg viewBox="0 0 24 24" class="h-8 w-8 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{s.icon.map((d) => <path d={d} />)}</svg>
+                <span class="text-xl font-extrabold leading-tight">{s.title}</span>
               </a>
+              <p class="plaque w-[78%] mx-auto text-sm font-semibold leading-snug">
+                <svg viewBox="0 0 24 24" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{s.small.map((d) => <path d={d} />)}</svg>
+                <span class="border-l border-[#3a2810]/30 pl-3">{s.text}</span>
+              </p>
             </li>
           ))}
         </ul>
@@ -134,7 +154,7 @@ const signs = [
   <section class="bg-slate-900/40 border-t border-white/5" aria-labelledby="dranbleiben">
     <div class="max-w-5xl mx-auto px-4 py-12">
       <h2 id="dranbleiben" class="text-2xl font-extrabold text-stone-50">Dranbleiben</h2>
-      <div class="mt-5 grid gap-5 md:grid-cols-3">
+      <div class="mt-5 grid gap-5 md:grid-cols-2">
         <a href="https://www.youtube.com/@mitrilmo" target="_blank" rel="noopener noreferrer" class="block bg-slate-700 rounded-2xl border border-white/5 hover:border-accent/50 transition-colors p-5">
           <p class="font-bold text-stone-50">Keine neue Runde verpassen</p>
           <p class="mt-1 text-sm text-stone-300">Abonniere den Kanal auf YouTube.</p>
@@ -144,11 +164,6 @@ const signs = [
           <p class="font-bold text-stone-50">Die Touren nachlaufen</p>
           <p class="mt-1 text-sm text-stone-300">Folge mir auf Komoot, dann hast du die Strecken auf der Uhr oder im Smartphone.</p>
           <p class="mt-2 text-sm text-accent">Komoot ↗<span class="sr-only"> (öffnet in einem neuen Tab)</span></p>
-        </a>
-        <a href="https://www.instagram.com/mitrilmo/" target="_blank" rel="noopener noreferrer" class="block bg-slate-700 rounded-2xl border border-white/5 hover:border-accent/50 transition-colors p-5">
-          <p class="font-bold text-stone-50">Zwischendurch</p>
-          <p class="mt-1 text-sm text-stone-300">Kurze Eindrücke von unterwegs auf Instagram.</p>
-          <p class="mt-2 text-sm text-accent">Instagram mitrilmo ↗<span class="sr-only"> (öffnet in einem neuen Tab)</span></p>
         </a>
       </div>
       <p class="mt-6 text-sm text-stone-400">

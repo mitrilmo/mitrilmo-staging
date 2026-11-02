@@ -1,5 +1,11 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Wegweiser überarbeitet)
+
+### Geändert
+- **Wegweiser nach Vorlage von Björn:** sichtbarer Holzpfosten mit Maserung, drei Pfeilschilder mit Symbol (Blatt, Video, Buch), darunter je ein hängendes Teaser-Schild an zwei Kettchen. Schein in der Jahreszeitenfarbe beim Darüberfahren und bei Tastaturfokus, Linie unter dem Claim. Das Teaser-Schild schwingt beim Darüberfahren, Antippen und Fokus kurz an den Kettchen aus (nicht bei prefers-reduced-motion).
+- Dranbleiben ohne Instagram mitrilmo: Das Profil ist privat. Die Instagram-Adresse von Einfach mal KI bleibt in der Zeile darunter.
+
 ## 2026-11-02 (Phase 3, AP3.4 und AP3.5 Startseite, erste Fassung)
 
 ### Neu

@@ -73,20 +73,75 @@ html[data-season="winter"]    { --mtn-far: #44596b; --mtn-near: #2f414f; --tree:
 .scene-sun { fill: var(--season-accent); opacity: var(--sun); }
 
 /* Wegweiser: Holzschilder als Links. Pfeilform über clip-path, Fokusring nach innen, damit er nicht abgeschnitten wird. */
+.post {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 2px, transparent 2px 9px),
+    linear-gradient(90deg, #5a3a1c 0%, #9a6a38 45%, #6b4423 100%);
+  border-radius: 0.9rem 0.9rem 0.25rem 0.25rem;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.18);
+}
+
+/* Der Schein folgt der Pfeilform, weil der Filter am umgebenden Eintrag sitzt und nicht am abgeschnittenen Schild */
+.sign-item { transition: filter 0.25s; }
+.sign-item:hover, .sign-item:focus-within { filter: drop-shadow(0 0 7px var(--season-accent)); }
+
 .sign {
-  display: block;
-  background: linear-gradient(180deg, #8b5e34 0%, #6f4726 100%);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.07) 0 2px, transparent 2px 8px),
+    linear-gradient(180deg, #9a6a38 0%, #6f4726 100%);
   color: #f7f5f2;
-  padding: 0.9rem 2.6rem 0.9rem 1.1rem;
-  clip-path: polygon(0 0, calc(100% - 1.6rem) 0, 100% 50%, calc(100% - 1.6rem) 100%, 0 100%);
-  transition: transform 0.25s, filter 0.25s;
+  padding: 1rem 2.8rem 1rem 1.2rem;
+  clip-path: polygon(0 0, calc(100% - 1.8rem) 0, 100% 50%, calc(100% - 1.8rem) 100%, 0 100%);
+  transition: transform 0.25s;
 }
 .sign.sign-left {
-  padding: 0.9rem 1.1rem 0.9rem 2.6rem;
-  clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%);
+  padding: 1rem 1.2rem 1rem 2.8rem;
+  clip-path: polygon(1.8rem 0, 100% 0, 100% 100%, 1.8rem 100%, 0 50%);
 }
-.sign:hover { filter: brightness(1.12); transform: translateY(-2px) rotate(-0.6deg); }
-.sign:focus-visible { outline: 3px solid var(--season-accent-light); outline-offset: -6px; }
+.sign:hover { transform: translateY(-2px) rotate(-0.6deg); }
+.sign:focus-visible { outline: 3px solid var(--season-accent-light); outline-offset: -7px; }
+
+/* Hängendes Schild mit dem Teaser unter dem Pfeil, an zwei Kettchen */
+.plaque {
+  position: relative;
+  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(180deg, #f3e2bd 0%, #e0c48c 100%);
+  color: #3a2810;
+  border-radius: 0.6rem;
+  padding: 0.7rem 1rem;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+.plaque::before, .plaque::after {
+  content: '';
+  position: absolute;
+  top: -0.9rem;
+  width: 2px;
+  height: 0.9rem;
+  background: #8a8a85;
+}
+.plaque::before { left: 14%; }
+.plaque::after { right: 14%; }
+
+/* Das Teaser-Schild schwingt beim Darüberfahren, Antippen und bei Tastaturfokus kurz an den Kettchen aus.
+   Bei prefers-reduced-motion schaltet die allgemeine Regel unten die Animation ab. */
+.plaque { transform-origin: 50% -0.9rem; }
+.sign-item:hover .plaque,
+.sign-item:focus-within .plaque,
+.sign-item:active .plaque { animation: swing 1.4s ease-out; }
+@keyframes swing {
+  0% { transform: rotate(0); }
+  16% { transform: rotate(3.2deg); }
+  38% { transform: rotate(-2.4deg); }
+  58% { transform: rotate(1.5deg); }
+  78% { transform: rotate(-0.8deg); }
+  100% { transform: rotate(0); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
