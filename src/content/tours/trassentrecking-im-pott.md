@@ -29,5 +29,9 @@ equipment:
   - Wasser mitnehmen
   - Snacks
 tips: für Kinder ab 6 Jahren geeignet
+rating:
+  scenery: 4
+  highlight: "20 km auf stillgelegten Bahntrassen, von Neuamerika quer durch das südliche Ruhrgebiet bis nach Gevelsberg."
 publishedAt: 2026-05-19
+updatedAt: 2026-11-02
 ---

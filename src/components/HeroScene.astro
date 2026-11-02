@@ -1,0 +1,25 @@
+---
+// Berg- und Tannenszene hinter dem Hero. Farben kommen aus html[data-season] (global.css), Schneekappen nur im Winter.
+// Dekorativ (aria-hidden), keine Bilddatei, keine Anfrage. Die Tannen sind fest gesetzt, damit die Szene bei jedem Bau gleich aussieht.
+const peaks = [[120, 150], [360, 110], [640, 140], [930, 120]];
+const firs = [[36, 78], [96, 58], [168, 86], [250, 62], [838, 70], [912, 90], [988, 60], [1064, 82], [1132, 64], [1186, 76]];
+const fir = (x, h) => {
+  const w = h * 0.5;
+  const tiers = [0, 1, 2].map((i) => {
+    const top = 360 - h + i * (h * 0.26);
+    const half = w * (0.42 + i * 0.3) / 1;
+    return `${x},${top} ${x + half},${top + h * 0.42} ${x - half},${top + h * 0.42}`;
+  });
+  return tiers;
+};
+---
+<svg viewBox="0 0 1200 360" preserveAspectRatio="xMidYMax slice" class="absolute inset-0 h-full w-full" aria-hidden="true" focusable="false">
+  <circle class="scene-sun" cx="1020" cy="70" r="26" />
+  <path class="scene-far" d="M0 260 L120 150 L230 220 L360 110 L500 230 L640 140 L780 235 L930 120 L1070 220 L1200 160 L1200 360 L0 360 Z" />
+  {peaks.map(([x, y]) => (
+    <polygon class="scene-snow" points={`${x - 24},${y + 30} ${x},${y} ${x + 24},${y + 30} ${x + 11},${y + 24} ${x},${y + 34} ${x - 11},${y + 24}`} />
+  ))}
+  <path class="scene-near" d="M0 320 L90 262 L190 305 L300 255 L430 312 L560 270 L700 318 L840 262 L980 312 L1100 270 L1200 300 L1200 360 L0 360 Z" />
+  {firs.map(([x, h]) => fir(x, h).map((p) => <polygon class="scene-tree" points={p} />))}
+  <rect class="scene-tree" x="0" y="344" width="1200" height="16" />
+</svg>

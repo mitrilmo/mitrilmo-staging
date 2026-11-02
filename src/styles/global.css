@@ -60,6 +60,34 @@ html[data-season="winter"] {
   transition: background 0.6s;
 }
 
+/* Landschaft im Hero: Berge, Tannen, Schneekappen und Sonne bzw. Mond je Jahreszeit */
+html[data-season="fruehling"] { --mtn-far: #3f6b4c; --mtn-near: #2c5239; --tree: #173325; --snow: 0.0; --sun: 0.55; }
+html[data-season="sommer"]    { --mtn-far: #386a70; --mtn-near: #265246; --tree: #14332a; --snow: 0.0; --sun: 0.7; }
+html[data-season="herbst"]    { --mtn-far: #6b4524; --mtn-near: #46301a; --tree: #2a1d0f; --snow: 0.0; --sun: 0.5; }
+html[data-season="winter"]    { --mtn-far: #44596b; --mtn-near: #2f414f; --tree: #14212b; --snow: 0.95; --sun: 0.4; }
+
+.scene-far { fill: var(--mtn-far); transition: fill 0.6s; }
+.scene-near { fill: var(--mtn-near); transition: fill 0.6s; }
+.scene-tree { fill: var(--tree); transition: fill 0.6s; }
+.scene-snow { fill: #f3f7fa; opacity: var(--snow); transition: opacity 0.6s; }
+.scene-sun { fill: var(--season-accent); opacity: var(--sun); }
+
+/* Wegweiser: Holzschilder als Links. Pfeilform über clip-path, Fokusring nach innen, damit er nicht abgeschnitten wird. */
+.sign {
+  display: block;
+  background: linear-gradient(180deg, #8b5e34 0%, #6f4726 100%);
+  color: #f7f5f2;
+  padding: 0.9rem 2.6rem 0.9rem 1.1rem;
+  clip-path: polygon(0 0, calc(100% - 1.6rem) 0, 100% 50%, calc(100% - 1.6rem) 100%, 0 100%);
+  transition: transform 0.25s, filter 0.25s;
+}
+.sign.sign-left {
+  padding: 0.9rem 1.1rem 0.9rem 2.6rem;
+  clip-path: polygon(1.6rem 0, 100% 0, 100% 100%, 1.6rem 100%, 0 50%);
+}
+.sign:hover { filter: brightness(1.12); transform: translateY(-2px) rotate(-0.6deg); }
+.sign:focus-visible { outline: 3px solid var(--season-accent-light); outline-offset: -6px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

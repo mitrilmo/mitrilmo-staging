@@ -1,5 +1,18 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Phase 3, AP3.4 und AP3.5 Startseite, erste Fassung)
+
+### Neu
+- **Startseite** ersetzt den Platzhalter: Hero mit dem Claim „Raus. Entdecken. Teilen.“, Unterzeile und drei Wegweiser-Schildern als Links (Raus ins Grüne, Auf der Couch mitkommen, Zum Nachlesen), darunter Neu bei mitrilmo (vier jüngste Inhalte mit Datum, Weltreise 2017 zählt nicht, Hinweis auf den nächsten Termin der Region), Für das Wochenende (drei jüngste Touren mit Video), Wer ist Mo (Text aus Über mitrilmo gekürzt) und Dranbleiben (YouTube, Komoot, Instagram, dazu eine ruhige Zeile zu Einfach mal KI).
+- **Jahreszeiten-Szene** im Hero (`HeroScene.astro`): Berge, Tannen, Sonne oder Mond, Schneekappen nur im Winter. Farben über `html[data-season]`, keine Bilddatei. Schilder mit Hover und sichtbarem Fokus.
+
+### Geändert
+- Die Testlinks der Platzhalter-Startseite (Jahreszeit, Teststory) sind entfernt, `?season=` funktioniert weiter. `#impressum` und `#datenschutz` öffnen weiter die Modals.
+- Trassentrecking im Pott: Landschaft 4 und Highlight.
+
+### Offen
+- Unterseiten-Landschaftsstreifen, Safari- und iPhone-Test, Review-Subagent. Tiere, Partikel und Parallax bleiben in der zweiten Welle.
+
 ## 2026-11-02 (Einschätzungen zu den Touren)
 
 ### Neu
