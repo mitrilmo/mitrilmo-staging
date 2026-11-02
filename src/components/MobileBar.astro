@@ -1,0 +1,89 @@
+---
+// Feste Leiste unten am Handy (AP3.6): vier Bereiche aus nav.js (tab: true, nur wenn live) und "Mehr" mit dem Rest.
+// Dazu Nach-oben-Knopf und eine dünne Fortschrittslinie beim Lesen. Ab md blendet sich alles aus.
+import { nav } from '../data/nav.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const current = Astro.url.pathname.replace(/\/$/, '').replace(base, '') || '/';
+const isHere = (href) => current === `/${href}` || current === `/${href.replace(/\.html$/, '')}`;
+
+const icons = {
+  'Touren': 'M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10Zm0-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z',
+  'Geschichten': 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Zm2 14h13M8 7h7',
+  'Termine': 'M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Zm0 5h14M8 3v4m8-4v4',
+  'Neuigkeiten': 'M5 4h11a1 1 0 0 1 1 1v14H6a2 2 0 0 1-2-2V5a1 1 0 0 1 1-1Zm12 5h3v8a2 2 0 0 1-2 2M8 8h5M8 12h5M8 16h5',
+};
+
+const live = nav.filter((n) => n.live);
+const tabs = live.filter((n) => n.tab);
+const more = live.filter((n) => !n.tab);
+---
+<div id="to-top-wrap" class="md:hidden fixed right-4 bottom-20 z-40 pointer-events-none">
+  <button id="to-top" type="button" aria-label="Nach oben" hidden
+    class="pointer-events-auto h-11 w-11 rounded-full bg-slate-700 border border-white/10 text-stone-200 shadow-lg flex items-center justify-center hover:text-accent">
+    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg>
+  </button>
+</div>
+
+<div id="more-sheet" hidden class="md:hidden fixed inset-x-0 bottom-14 z-40 border-t border-white/10 bg-slate-900 shadow-2xl">
+  <div class="px-4 py-4 max-h-[60vh] overflow-y-auto">
+    <ul class="grid grid-cols-2 gap-2 text-sm">
+      {more.map((n) => (
+        <li><a href={`${base}/${n.href}`} aria-current={isHere(n.href) ? 'page' : undefined}
+          class="block rounded-lg bg-slate-700 px-3 py-3 text-stone-200 hover:text-accent aria-[current=page]:text-accent">{n.label}</a></li>
+      ))}
+      <li><a href={`${base}/#impressum`} class="block rounded-lg bg-slate-700 px-3 py-3 text-stone-200 hover:text-accent">Impressum</a></li>
+      <li><a href={`${base}/#datenschutz`} class="block rounded-lg bg-slate-700 px-3 py-3 text-stone-200 hover:text-accent">Datenschutz</a></li>
+    </ul>
+  </div>
+</div>
+
+<nav aria-label="Navigation am Handy" class="md:hidden fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-slate-900/95 backdrop-blur" style="padding-bottom: env(safe-area-inset-bottom)">
+  <div id="read-progress" class="absolute left-0 top-0 h-0.5 w-0 bg-accent" aria-hidden="true"></div>
+  <ul class="flex h-14">
+    {tabs.map((n) => (
+      <li class="flex-1">
+        <a href={`${base}/${n.href}`} aria-current={isHere(n.href) ? 'page' : undefined}
+          class="h-full flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-stone-400 aria-[current=page]:text-accent">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[n.label]}/></svg>
+          {n.label}
+        </a>
+      </li>
+    ))}
+    <li class="flex-1">
+      <button id="more-btn" type="button" aria-expanded="false" aria-controls="more-sheet"
+        class="h-full w-full flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-stone-400 aria-expanded:text-accent">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+        Mehr
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const btn = document.getElementById('more-btn');
+  const sheet = document.getElementById('more-sheet');
+  const top = document.getElementById('to-top');
+  const bar = document.getElementById('read-progress');
+  const setMore = (open) => {
+    if (!btn || !sheet) return;
+    sheet.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+  };
+  btn?.addEventListener('click', () => setMore(sheet.hidden));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMore(false); });
+  document.addEventListener('click', (e) => {
+    if (sheet && !sheet.hidden && !sheet.contains(e.target) && !btn.contains(e.target)) setMore(false);
+  });
+  top?.addEventListener('click', () => {
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
+  });
+  const onScroll = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (top) top.hidden = scrollY < 600;
+    if (bar) bar.style.width = max > 0 ? `${Math.min(100, (scrollY / max) * 100)}%` : '0';
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>

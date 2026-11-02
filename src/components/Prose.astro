@@ -2,6 +2,32 @@
 // Fließtext aus Markdown (Seiten der Sammlung pages): Überschriften, Listen, Bilder mit Unterschrift, Knopf-Links.
 // Links zu Google Play und zum YouTube-Kanal (youtube.com/@mitrilmo) erscheinen als Knopf.
 ---
-<div class="text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-12 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-stone-50 [&_h3]:mt-8 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-stone-50 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-1 [&_a]:text-accent [&_a]:underline [&_p>img]:block [&_p>img]:mx-auto [&_p>img]:w-full [&_p>img]:max-w-[16rem] [&_p>img]:h-auto [&_p>img]:rounded-2xl [&_p>img]:border [&_p>img]:border-white/10 [&_p>img+em]:block [&_p>img+em]:mt-2 [&_p>img+em]:text-center [&_p>img+em]:text-xs [&_p>img+em]:text-stone-500 [&_[data-premium-code]]:mt-6 [&_[data-premium-code]]:rounded-xl [&_[data-premium-code]]:border [&_[data-premium-code]]:border-accent/40 [&_[data-premium-code]]:bg-slate-700 [&_[data-premium-code]]:p-5 [&_[data-premium-code]]:text-sm [&_[data-premium-code]]:text-stone-300 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:inline-block [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:mt-2 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:no-underline [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:rounded-full [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:border [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:border-accent [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:px-5 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:py-2 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:font-semibold hover:[&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:bg-slate-700">
+<div data-prose class="text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-12 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-stone-50 [&_h3]:mt-8 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-stone-50 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mt-1 [&_a]:text-accent [&_a]:underline [&_p>img]:block [&_p>img]:mx-auto [&_p>img]:w-full [&_p>img]:max-w-[16rem] [&_p>img]:h-auto [&_p>img]:rounded-2xl [&_p>img]:border [&_p>img]:border-white/10 [&_p>img+em]:block [&_p>img+em]:mt-2 [&_p>img+em]:text-center [&_p>img+em]:text-xs [&_p>img+em]:text-stone-500 [&_[data-premium-code]]:mt-6 [&_[data-premium-code]]:rounded-xl [&_[data-premium-code]]:border [&_[data-premium-code]]:border-accent/40 [&_[data-premium-code]]:bg-slate-700 [&_[data-premium-code]]:p-5 [&_[data-premium-code]]:text-sm [&_[data-premium-code]]:text-stone-300 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:inline-block [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:mt-2 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:no-underline [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:rounded-full [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:border [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:border-accent [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:px-5 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:py-2 [&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:font-semibold hover:[&_a:is([href*='play.google'],[href*='youtube.com/@mitrilmo'])]:bg-slate-700">
   <slot />
 </div>
+
+<script>
+  // Inhaltsverzeichnis ab drei Zwischenüberschriften (AP3.6); die Ids setzt Astro beim Rendern des Markdowns.
+  const root = document.querySelector('[data-prose]');
+  const heads = root ? [...root.querySelectorAll('h2[id]')] : [];
+  if (root && heads.length >= 3) {
+    const box = document.createElement('details');
+    box.className = 'mt-6 rounded-xl border border-white/10 bg-slate-700 px-4 py-3 text-sm';
+    const sum = document.createElement('summary');
+    sum.className = 'cursor-pointer font-semibold text-stone-50';
+    sum.textContent = 'Inhalt';
+    const list = document.createElement('ol');
+    list.className = 'mt-3 space-y-1.5';
+    for (const h of heads) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.textContent = h.textContent;
+      a.className = 'no-underline text-stone-300 hover:text-accent';
+      li.append(a);
+      list.append(li);
+    }
+    box.append(sum, list);
+    root.prepend(box);
+  }
+</script>

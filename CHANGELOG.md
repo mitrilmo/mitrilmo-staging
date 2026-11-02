@@ -1,5 +1,16 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Phase 3, AP3.6 mobile Navigation)
+
+### Neu
+- **Feste Leiste unten am Handy** (`MobileBar.astro`, unter `md` sichtbar): Touren, Geschichten, Termine, Neuigkeiten, Mehr (Entscheidung Björn). „Mehr" öffnet ein Fenster mit den übrigen Seiten und Impressum und Datenschutz als eigene Kacheln (Videos, Entdecken, Weltreise, Projekte, Pfadwerk, Über mitrilmo). Bereiche erscheinen erst, wenn ihre Seite in `nav.js` auf `live: true` steht.
+- Nach-oben-Knopf (ab 600 px Scrolltiefe) und dünne Fortschrittslinie beim Lesen, beides ohne externe Abhängigkeit, Scrollen ohne Animation bei `prefers-reduced-motion`.
+- Aufklappbares Inhaltsverzeichnis in `Prose` ab drei Zwischenüberschriften.
+
+### Geändert
+- `nav.js`: Felder `tab` und `header`, neue Einträge Termine (noch nicht live) und Pfadwerk (nur in „Mehr").
+- Kopfzeilen-Navigation nur noch ab `md`, am Handy übernimmt die Leiste. Footer mit Abstand nach unten für die Leiste.
+
 ## 2026-11-01 (Entscheidungen nach M2-Review)
 
 ### Geändert
