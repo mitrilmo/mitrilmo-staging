@@ -2,6 +2,8 @@
 title: Elbschetal Rundweg
 description: Der 14. Juni 2026 – ein Datum, das sich tief in unsere Wanderherzen gebrannt hat! Mo, Lurt und unser vierbeiniger Wandergefährte Möter haben uns heute auf eine unvergessliche Reise durch das Elbschetal entführt, genauer gesagt auf den Elbschetal Rundweg.
 date: 2026-06-14
+cover: ../../assets/images/tours/elbschetal-rundweg.jpg
+coverAlt: "Blick über Wiesen und bewaldete Hügel im Elbschetal unter Wolkenhimmel"
 category: unterwegs
 tour: elbschetal-rundweg
 ---

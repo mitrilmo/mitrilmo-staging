@@ -2,6 +2,8 @@
 title: Einmal um die Heilenbecke Talsperre
 description: Was für ein Tag! Am 7. Juni 2026 zog es mich mal wieder raus in die Natur, und diesmal stand die Heilenbecke Talsperre auf dem Programm. Schon die Anfahrt mit dem Auto war entspannt, und als ich am Parkplatz ankam, empfing mich ein herrlicher Tag.
 date: 2026-06-07
+cover: ../../assets/images/tours/heilenbecke-talsperre.jpg
+coverAlt: "Mo schaut von einem Uferweg über die Heilenbecke Talsperre, dahinter bewaldete Hänge"
 category: unterwegs
 tour: heilenbecke-talsperre
 ---

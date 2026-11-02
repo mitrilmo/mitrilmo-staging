@@ -2,6 +2,8 @@
 title: 3-Türme-Weg Hagen
 description: Was für ein grandioser Wandertag am 23. August 2026! Wir, Mo & Ursel & Wanderbuddies, haben uns auf den 3-Türme-Weg in Hagen gewagt und sind restlos begeistert.
 date: 2026-08-23
+cover: ../../assets/images/stories/3-tuerme-weg-hagen-2026-08-23/02.jpg
+coverAlt: "Steinturm auf einer Anhöhe am 3-Türme-Weg in Hagen unter bewölktem Himmel"
 category: unterwegs
 tour: 3-tuerme-weg-hagen
 ---

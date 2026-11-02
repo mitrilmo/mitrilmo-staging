@@ -2,6 +2,8 @@
 title: "Überlebe die 30 km: 10 Überlebenstipps für Mammutmarsch-Ersttäter"
 description: 2025 bin ich in Dortmund zu meinem allerersten 30-Kilometer-Mammutmarsch angetreten – voll motiviert, aber als absoluter Rookie.
 date: 2026-09-27
+cover: ../../assets/images/tours/mammutmarsch-ruhrgebiet.jpg
+coverAlt: "Bunt beleuchtete Industrieanlage mit Trasse und Hochofen bei Nacht"
 category: unterwegs
 tour: mammutmarsch-ruhrgebiet
 ---

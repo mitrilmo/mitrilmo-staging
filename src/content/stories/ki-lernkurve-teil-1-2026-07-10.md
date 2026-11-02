@@ -2,6 +2,8 @@
 title: "KI-Lernkurve, Teil 1: Wie ich anfing, mit einer KI Quatsch zu machen"
 description: Kein großer Plan, kein System – nur ChatGPT, Copilot und Gemini nach Lust und Laune gefragt. Wie aus loser Spielerei am Ende doch etwas Ernstes wurde.
 date: 2026-07-10
+cover: ../../assets/images/stories/ki-lernkurve.jpg
+coverAlt: "Tastatur und Maus auf einem Mauspad mit einer schwarzen Katze mit großen Augen"
 category: randnotizen
 ---
 Als ich vor ein paar Monaten zum ersten Mal ernsthaft mit KI rumgespielt hab, war der Anspruch ungefähr: „Mach mir mal ein lustiges Bild." Kein Plan, kein System, einfach nur ChatGPT, Windows Copilot oder Gemini fragen, was gerade in den Kopf kam. Falls du bei „KI" auch noch zögerst — willkommen, genau da hab ich auch gestanden.

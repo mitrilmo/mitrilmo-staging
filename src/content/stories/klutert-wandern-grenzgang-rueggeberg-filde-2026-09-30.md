@@ -2,6 +2,8 @@
 title: Klutert Wandern Grenzgang Rüggeberg-Filde
 description: Guten Morgen, ihr Lieben! Was für ein herrlicher Tag Ende September! Bei strahlenden 20 Grad, wolkenlosem Himmel und einer sanften, frischen Brise habe ich mich heute auf einen richtig gemütlichen Spaziergang rund um Rüggeberg begeben.
 date: 2026-09-30
+cover: ../../assets/images/stories/klutert-wandern-grenzgang-rueggeberg-filde-2026-09-30/10.jpg
+coverAlt: "Mo steht mit ausgebreiteten Armen auf einem Feldweg vor Wiesen und Wald"
 category: unterwegs
 ---
 Guten Morgen, ihr Lieben! Was für ein herrlicher Tag Ende September! Bei strahlenden 20 Grad, wolkenlosem Himmel und einer sanften, frischen Brise habe ich mich heute auf einen richtig gemütlichen Spaziergang rund um Rüggeberg begeben. Ausgangspunkt war die pittoreske Kirche in Rüggeberg, wo mich direkt das berühmte Wahrzeichen der Region begrüßte: der Rüggeberger Fuchs. Ein perfekter Start für meine kleine Runde!

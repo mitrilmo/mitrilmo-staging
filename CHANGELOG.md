@@ -1,5 +1,12 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Geschichten mit Titelbild, Fußnote, Neye-Thumbnail)
+
+### Geändert
+- **Geschichten haben Titelbilder** statt Farbverlauf: 3-Türme-Weg, Klutert-Wanderung und Glörtalsperre mit einem Foto aus dem Bericht, Heilenbecke, Elbschetal und Mammutmarsch-Überlebenstipps mit dem Foto der zugehörigen Tour. Zu sehen auf der Startseite (Neu bei mitrilmo), in Geschichten und auf der Berichtsseite. Die drei KI-Lernkurve-Teile teilen sich ein Foto (Tastatur, Maus, Katzen-Mauspad).
+- Dranbleiben, Zeile zu Einfach mal KI: Leerzeichen vor YouTube und Instagram ergänzt (der Build hatte sie weggekürzt).
+- Thumbnail der Neye-Talsperre durch die neue YouTube-Fassung ersetzt.
+
 ## 2026-11-02 (Echte Fotos als Titelbilder der Touren)
 
 ### Geändert

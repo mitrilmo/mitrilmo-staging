@@ -2,6 +2,8 @@
 title: "KI-Lernkurve, Teil 3: Die GPS-Saga (und andere Bruchlandungen)"
 description: Wochenlang gegen das eigene GPS-Signal gekämpft, einen Kopierschutz gebaut, der mich selbst sabotierte, und Exporte, die lautlos verschwanden. Warum hartnäckige Bugs oft auf das falsche Fundament zeigen.
 date: 2026-09-25
+cover: ../../assets/images/stories/ki-lernkurve.jpg
+coverAlt: "Tastatur und Maus auf einem Mauspad mit einer schwarzen Katze mit großen Augen"
 category: randnotizen
 ---
 Bisher klang meine Geschichte fast zu glatt. Zeit, das geradezurücken: Meine eigene Wander-App zu bauen war der mit Abstand härteste Teil der Reise — und ich hab dabei mehr falsch gemacht, als mir lieb war.

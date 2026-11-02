@@ -2,6 +2,8 @@
 title: Rund um die Glörtalsperre
 description: "Ein Sommerglück am Glörsee: Unser zauberhafter Kurztrip rund um die Glörtalsperre!"
 date: 2026-06-21
+cover: ../../assets/images/stories/rund-um-die-gloertalsperre-2026-06-21/04.jpg
+coverAlt: "Blick über die Glörtalsperre unter bewölktem Himmel"
 category: unterwegs
 ---
 **Ein Sommerglück am Glörsee: Unser zauberhafter Kurztrip rund um die Glörtalsperre!**

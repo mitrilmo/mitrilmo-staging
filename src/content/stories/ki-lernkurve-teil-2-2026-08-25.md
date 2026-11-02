@@ -2,6 +2,8 @@
 title: "KI-Lernkurve, Teil 2: Vom Geistesblitz zur eigenen Website"
 description: Ein Redaktionsplan, fertige Skripte, eine eigene Domain – und am Ende eine eigene Website, die sogar einmal umgezogen ist. Wie aus Spielerei ein System wurde.
 date: 2026-08-25
+cover: ../../assets/images/stories/ki-lernkurve.jpg
+coverAlt: "Tastatur und Maus auf einem Mauspad mit einer schwarzen Katze mit großen Augen"
 category: randnotizen
 ---
 Ein einzelner guter Prompt fühlt sich toll an — aber er bringt dich nicht weiter, wenn er einmalig bleibt. Das hab ich in den Wochen nach meinem KI-Start gelernt, als aus losen Ideen langsam ein echtes System wurde.
