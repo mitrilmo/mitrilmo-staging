@@ -1,0 +1,168 @@
+---
+import { readFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import ContentImage from '../../components/ContentImage.astro';
+import Prose from '../../components/Prose.astro';
+import { dateDe } from '../../lib/date.js';
+import { difficultyLabel, activityLabel, seasonLabel, triLabel, kmDe, parseGpx, trackPaths, elevationPath } from '../../lib/tours.js';
+
+export async function getStaticPaths() {
+  const tours = await getCollection('tours');
+  return tours.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const root = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const hasBody = Boolean(entry.body?.trim());
+
+const video = d.video ? await getEntry(d.video) : null;
+const stories = (await Promise.all(d.stories.map((s) => getEntry(s)))).filter(Boolean);
+
+// Strecke und Höhenprofil aus der GPX-Datei, beim Bauen berechnet (nur wenn die Tour eine hat)
+let gpx = null;
+if (d.gpx) {
+  const file = join(process.cwd(), 'public', d.gpx);
+  if (existsSync(file)) gpx = parseGpx(readFileSync(file, 'utf8'));
+}
+const track = gpx ? trackPaths(gpx) : null;
+const profile = gpx ? elevationPath(gpx) : null;
+// Bei Rundwegen und Hin-und-zurück-Strecken liegen Start und Ziel übereinander: dann nur ein Punkt
+const sameEnd = track ? Math.hypot(track.start.x - track.end.x, track.start.y - track.end.y) < 14 : false;
+
+const facts = [
+  d.distanceKm !== undefined && ['Länge', kmDe(d.distanceKm)],
+  ['Dauer', d.duration],
+  ['Schwierigkeit', difficultyLabel[d.difficulty]],
+  gpx?.ascent != null && ['Aufstieg', `${gpx.ascent} m`],
+  gpx?.descent != null && ['Abstieg', `${gpx.descent} m`],
+].filter(Boolean);
+
+const yesNo = [['Familienfreundlich', d.familyFriendly], ['Hunde erlaubt', d.dogFriendly], ['Kinderwagen möglich', d.strollerOk]]
+  .filter(([, v]) => v !== 'unbekannt');
+
+const practical = [
+  d.startPoint && ['Start', d.startPoint],
+  d.parking && ['Parken', [d.parking.name, d.parking.cost, d.parking.note].filter(Boolean).join(' · ')],
+  d.openingHours && ['Öffnungszeiten', d.openingHours],
+  d.prices && ['Kosten', d.prices],
+  d.refreshments.length > 0 && ['Einkehr', d.refreshments.join(', ')],
+  d.equipment.length > 0 && ['Ausrüstung', d.equipment.join(', ')],
+  d.bestSeasons.length > 0 && ['Beste Zeit', d.bestSeasons.map((s) => seasonLabel[s]).join(', ')],
+  ...yesNo.map(([k, v]) => [k, triLabel[v]]),
+].filter(Boolean);
+
+const ratings = d.rating ? [['Wandern', d.rating.hiking], ['Landschaft', d.rating.scenery], ['Einkehr', d.rating.refreshments], ['Fotos', d.rating.photo]].filter(([, v]) => v) : [];
+const updated = d.updatedAt ?? d.publishedAt;
+---
+<Base title={`${d.title}, mitrilmo`} description={d.description.length > 155 ? `${d.description.slice(0, 152)}…` : d.description}>
+  <PageHero width="max-w-3xl">
+    <nav aria-label="Brotkrumen" class="text-sm"><a href={`${root}/touren.html`} class="text-accent hover:underline">← Touren und Ausflugsziele</a></nav>
+    <h1 class="mt-4 text-3xl font-black text-stone-50 leading-tight">{d.title}</h1>
+    <p class="mt-2 text-sm text-stone-300">{d.place}{d.region && d.region !== d.place ? `, ${d.region}` : ''} · {d.kind === 'ziel' ? 'Ausflugsziel' : activityLabel[d.activity]}</p>
+  </PageHero>
+
+  <article class="max-w-3xl mx-auto px-4 py-8">
+    <ContentImage image={d.image} alt={d.imageAlt} sizes="(min-width: 768px) 768px, 100vw" widths={[800, 1200, 1600]} priority class="w-full rounded-2xl border border-white/10 max-h-[28rem] object-cover" />
+
+    <dl class="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
+      {facts.map(([k, v]) => (
+        <div class="rounded-xl bg-slate-700 px-4 py-3">
+          <dt class="text-xs uppercase tracking-wide text-stone-400">{k}</dt>
+          <dd class="mt-0.5 font-semibold text-stone-50">{v}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <p class="mt-6 text-lg leading-relaxed text-stone-200">{d.description}</p>
+    {hasBody && <Prose><Content /></Prose>}
+
+    {(d.gpx || d.komoot || d.mapsUrl) && (
+      <div class="mt-6 flex flex-wrap gap-3">
+        {d.gpx && <a href={`${root}/${d.gpx}`} download class="rounded-full border border-accent px-5 py-2 text-sm font-semibold text-accent hover:bg-slate-700">GPX herunterladen</a>}
+        {d.komoot && <a href={d.komoot} target="_blank" rel="noopener noreferrer" class="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-stone-200 hover:text-accent">Auf Komoot ansehen</a>}
+        {d.mapsUrl && <a href={d.mapsUrl} target="_blank" rel="noopener noreferrer" class="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-stone-200 hover:text-accent">Google Maps öffnen</a>}
+      </div>
+    )}
+
+    {track && (
+      <section class="mt-10" aria-labelledby="strecke">
+        <h2 id="strecke" class="text-2xl font-extrabold text-stone-50">Streckenverlauf</h2>
+        <figure class="mt-3 rounded-xl border border-white/10 bg-slate-950 p-2">
+          <svg viewBox={`0 0 ${track.width} ${track.height}`} class="block w-full h-auto" role="img" aria-label={`Verlauf der Strecke, Start und Ziel markiert`}>
+            <path d={track.route} fill="none" stroke="var(--season-accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+            {!sameEnd && <circle cx={track.end.x} cy={track.end.y} r="6" fill="#f59e0b" stroke="#0d1510" stroke-width="2"><title>Ziel</title></circle>}
+            <circle cx={track.start.x} cy={track.start.y} r="6" fill="#7bbf6a" stroke="#0d1510" stroke-width="2"><title>{sameEnd ? 'Start und Ziel' : 'Start'}</title></circle>
+          </svg>
+          <figcaption class="px-2 pb-1 pt-2 text-xs text-stone-400">{sameEnd ? 'Der grüne Punkt ist Start und Ziel.' : 'Grün: Start, Orange: Ziel.'} Norden ist oben. Das ist der Verlauf, keine Wanderkarte.</figcaption>
+        </figure>
+        {profile && (
+          <figure class="mt-4 rounded-xl border border-white/10 bg-slate-950 p-2">
+            <svg viewBox={`0 0 ${profile.width} ${profile.height}`} class="block w-full h-auto" role="img" aria-label={`Höhenprofil, tiefster Punkt ${profile.minE} m, höchster Punkt ${profile.maxE} m`}>
+              <path d={profile.area} fill="var(--season-accent)" fill-opacity="0.2" />
+              <path d={profile.line} fill="none" stroke="var(--season-accent)" stroke-width="2" stroke-linejoin="round" />
+            </svg>
+            <figcaption class="px-2 pb-1 pt-2 text-xs text-stone-400">Höhenprofil: tiefster Punkt {profile.minE} m, höchster Punkt {profile.maxE} m über dem Meer.</figcaption>
+          </figure>
+        )}
+      </section>
+    )}
+
+    {video && (
+      <section class="mt-10" aria-labelledby="video">
+        <h2 id="video" class="text-2xl font-extrabold text-stone-50">Das Video dazu</h2>
+        <a href={`https://www.youtube.com/watch?v=${video.data.youtubeId}`} target="_blank" rel="noopener noreferrer" class="group mt-3 block relative rounded-2xl overflow-hidden border border-white/10">
+          {video.data.thumbnail && <ContentImage image={video.data.thumbnail} alt={`Vorschaubild zum Video: ${video.data.title}`}sizes="(min-width: 768px) 768px, 100vw" widths={[480, 800]} class="w-full aspect-video object-cover" />}
+          <span class="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/20" aria-hidden="true">
+            <svg viewBox="0 0 24 24" class="h-16 w-16 text-white drop-shadow" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+          </span>
+        </a>
+        <p class="mt-2 text-sm text-stone-300"><a href={`https://www.youtube.com/watch?v=${video.data.youtubeId}`} target="_blank" rel="noopener noreferrer" class="text-accent underline">{video.data.title}</a> (öffnet YouTube in einem neuen Tab)</p>
+      </section>
+    )}
+
+    {ratings.length > 0 && (
+      <section class="mt-10" aria-labelledby="einschaetzung">
+        <h2 id="einschaetzung" class="text-2xl font-extrabold text-stone-50">Meine Einschätzung</h2>
+        <ul class="mt-3 grid grid-cols-2 gap-3 text-sm">
+          {ratings.map(([k, v]) => <li class="rounded-xl bg-slate-700 px-4 py-3"><span class="text-stone-300">{k}</span> <span class="float-right font-semibold text-stone-50">{v} von 5</span></li>)}
+        </ul>
+        {d.rating?.highlight && <p class="mt-3 text-stone-200"><strong class="text-stone-50">Highlight:</strong> {d.rating.highlight}</p>}
+      </section>
+    )}
+
+    {(practical.length > 0 || d.tips) && (
+      <section class="mt-10" aria-labelledby="praktisch">
+        <h2 id="praktisch" class="text-2xl font-extrabold text-stone-50">Praktisches</h2>
+        {practical.length > 0 && (
+          <dl class="mt-3 divide-y divide-white/5 rounded-xl bg-slate-700 text-sm">
+            {practical.map(([k, v]) => (
+              <div class="grid grid-cols-3 gap-3 px-4 py-3"><dt class="text-stone-400">{k}</dt><dd class="col-span-2 text-stone-100">{v}</dd></div>
+            ))}
+          </dl>
+        )}
+        {d.tips && <p class="mt-4 text-stone-200"><strong class="text-stone-50">Tipp:</strong> {d.tips}</p>}
+      </section>
+    )}
+
+    {stories.length > 0 && (
+      <section class="mt-10" aria-labelledby="bericht">
+        <h2 id="bericht" class="text-2xl font-extrabold text-stone-50">{stories.length > 1 ? 'Berichte dazu' : 'Der Bericht dazu'}</h2>
+        <ul class="mt-3 space-y-3">
+          {stories.map((s) => (
+            <li class="rounded-xl bg-slate-700 px-4 py-3">
+              <a href={`${root}/stories/${s.id}.html`} class="font-semibold text-accent hover:underline">{s.data.title}</a>
+              {s.data.description && <p class="mt-1 text-sm text-stone-300">{s.data.description}</p>}
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="mt-10 text-xs text-stone-500">Zuletzt aktualisiert am <time datetime={updated.toISOString().slice(0, 10)}>{dateDe(updated)}</time></p>
+  </article>
+</Base>

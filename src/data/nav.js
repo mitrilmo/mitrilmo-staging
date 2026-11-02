@@ -5,7 +5,7 @@
 // header: false = nur im "Mehr"-Fenster und nicht in der Kopfzeile am Rechner.
 export const nav = [
   { label: 'Entdecken', href: 'entdecken.html', live: false },
-  { label: 'Touren', href: 'touren.html', live: false, tab: true },
+  { label: 'Touren', href: 'touren.html', live: true, tab: true },
   { label: 'Videos', href: 'videos.html', live: false },
   { label: 'Geschichten', href: 'geschichten.html', live: false, tab: true },
   { label: 'Termine', href: 'termine.html', live: false, tab: true },

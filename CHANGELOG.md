@@ -1,5 +1,16 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Phase 3, AP3.1 und AP3.2 Touren)
+
+### Neu
+- **Touren-Übersicht** `/touren.html`: 13 Einträge als Karten, Filter nach Art, Schwierigkeit und Länge (am Handy eingeklappt, Dauer und Region folgen nicht, weil die Angaben uneinheitlich bzw. fast leer sind). Karte der Region als SVG (Umrisse aus der alten Seite, `src/data/region-map.js`), Pins aus den Koordinaten, 10 von 13 Einträgen haben einen Pin, Pins und Karten filtern gemeinsam.
+- **Tourseiten** `/touren/<slug>.html`: Kennzahlen (Länge, Dauer, Schwierigkeit, Auf- und Abstieg aus der GPX), GPX-Download, Links zu Komoot und Google Maps, Streckenverlauf und Höhenprofil als SVG (beim Bauen aus der GPX berechnet), Video als Link mit lokalem Vorschaubild, Einschätzung, Praktisches, Tipp, Verweis auf Berichte, „zuletzt aktualisiert“. Blöcke ohne Daten entfallen.
+- `src/lib/tours.js` mit GPX-Auswertung und 6 neuen Tests.
+
+### Geändert
+- Touren in der Navigation und in der Leiste am Handy sichtbar (`live: true`). Die Projektseite Mammut- und Megamärsche verlinkt damit auf eine gültige Seite.
+- Offen: Die Pin-Positionen kommen jetzt aus den echten Koordinaten. Die alten Pins waren von Hand gesetzt und lagen teils in einer Spalte, die Lage einzelner Pins weicht deshalb ab.
+
 ## 2026-11-02 (Phase 3, AP3.6 mobile Navigation)
 
 ### Neu

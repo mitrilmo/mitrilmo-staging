@@ -1,0 +1,135 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ContentImage from '../components/ContentImage.astro';
+import { regionMap, project } from '../data/region-map.js';
+import { difficultyLabel, lengthClasses, lengthClass, kmDe } from '../lib/tours.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const tours = (await getCollection('tours')).sort((a, b) => b.data.publishedAt - a.data.publishedAt);
+const pins = tours.map((t) => ({ t, pos: t.data.coordinates ? project(t.data.coordinates) : null })).filter((p) => p.pos);
+const [w, h] = regionMap.viewBox;
+
+const chips = [
+  { group: 'kind', title: 'Art', items: [['tour', 'Touren'], ['ziel', 'Ausflugsziele']] },
+  { group: 'difficulty', title: 'Schwierigkeit', items: Object.entries(difficultyLabel).filter(([id]) => tours.some((t) => t.data.difficulty === id)) },
+  { group: 'length', title: 'Länge', items: lengthClasses.filter((c) => tours.some((t) => lengthClass(t.data.distanceKm) === c.id)).map((c) => [c.id, c.label]) },
+];
+---
+<Base title="Touren und Ausflugsziele, mitrilmo" description="Wanderungen und Ausflugsziele im Bergischen Land und drumherum, mit Karte, GPX-Strecke und ehrlicher Einschätzung.">
+  <PageHero width="max-w-5xl">
+    <h1 class="text-3xl font-black text-stone-50">Touren und Ausflugsziele</h1>
+    <p class="mt-2 text-stone-200 max-w-2xl">Strecken, die ich selbst gelaufen bin, und Orte, die einen Besuch wert sind. Jede Tour hat ihre GPX-Datei zum Herunterladen.</p>
+  </PageHero>
+
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <details id="filter" class="rounded-xl border border-white/10 bg-slate-700 px-4 py-3 md:open:block" open>
+      <summary class="cursor-pointer font-semibold text-stone-50 md:pointer-events-none">Filter <span id="filter-count" class="ml-2 text-sm font-normal text-stone-400"></span></summary>
+      <div class="mt-3 space-y-3">
+        {chips.filter((c) => c.items.length > 1).map((c) => (
+          <fieldset>
+            <legend class="text-xs uppercase tracking-wide text-stone-400">{c.title}</legend>
+            <div class="mt-1.5 flex flex-wrap gap-2">
+              {c.items.map(([id, label]) => (
+                <button type="button" data-group={c.group} data-value={id} aria-pressed="false"
+                  class="rounded-full border border-white/15 px-3 py-1 text-sm text-stone-300 hover:text-accent aria-pressed:border-accent aria-pressed:text-accent aria-pressed:bg-slate-800">{label}</button>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        <button type="button" id="filter-reset" hidden class="text-sm text-accent underline">Filter zurücksetzen</button>
+      </div>
+    </details>
+
+    {pins.length > 0 && (
+      <section class="mt-8" aria-labelledby="karte-titel">
+        <h2 id="karte-titel" class="text-xl font-extrabold text-stone-50">Karte</h2>
+        <p class="mt-1 text-sm text-stone-400">{pins.length} von {tours.length} Einträgen haben einen Platz auf der Karte. Ein Punkt führt zur Tour.</p>
+        <div class="mt-3 rounded-xl overflow-hidden border border-white/10 bg-slate-950">
+          <svg viewBox={`0 0 ${w} ${h}`} class="block w-full h-auto" role="group" aria-label="Karte der Touren im Bergischen Land">
+            {regionMap.districts.map((d) => <path d={d.d} fill={d.fill} stroke="#0d1510" stroke-width="1" />)}
+            {regionMap.labels.map((l) => <text x={l.x} y={l.y} text-anchor="middle" font-size="11" fill="#ffffff" fill-opacity="0.45">{l.text}</text>)}
+            {pins.map(({ t, pos }) => (
+              <a href={`${base}/touren/${t.id}.html`} class="pin" data-slug={t.id} data-kind={t.data.kind} data-difficulty={t.data.difficulty} data-length={lengthClass(t.data.distanceKm)} aria-label={t.data.title}>
+                <title>{t.data.title}</title>
+                <circle cx={pos.x} cy={pos.y} r="14" fill="transparent" />
+                <circle cx={pos.x} cy={pos.y} r="9" fill="#f59e0b" fill-opacity="0.25" />
+                <circle cx={pos.x} cy={pos.y} r="6" fill="#f59e0b" stroke="#0d1510" stroke-width="1.5" />
+                <circle cx={pos.x} cy={pos.y} r="2.5" fill="#0d1510" />
+              </a>
+            ))}
+          </svg>
+        </div>
+      </section>
+    )}
+
+    <section class="mt-10" aria-labelledby="liste-titel">
+      <h2 id="liste-titel" class="sr-only">Alle Touren und Ausflugsziele</h2>
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {tours.map((t, i) => (
+          <li data-card data-kind={t.data.kind} data-difficulty={t.data.difficulty} data-length={lengthClass(t.data.distanceKm)}>
+            <article class="h-full bg-slate-700 rounded-2xl overflow-hidden border border-white/5">
+              <a href={`${base}/touren/${t.id}.html`} class="block" aria-hidden="true" tabindex="-1">
+                <ContentImage image={t.data.image} alt={t.data.imageAlt} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 100vw" widths={[480, 800]} priority={i < 2} class="w-full h-44 object-cover" />
+              </a>
+              <div class="p-5">
+                <p class="text-xs text-stone-400">{t.data.place}{t.data.kind === 'ziel' ? ' · Ausflugsziel' : ''}</p>
+                <h3 class="mt-1 text-lg font-bold text-stone-50 leading-snug"><a href={`${base}/touren/${t.id}.html`} class="hover:text-accent transition-colors">{t.data.title}</a></h3>
+                <p class="mt-3 text-sm text-stone-300">
+                  {[t.data.distanceKm !== undefined && kmDe(t.data.distanceKm), t.data.duration, difficultyLabel[t.data.difficulty]].filter(Boolean).join(' · ')}
+                </p>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+      <p id="leer" hidden class="mt-6 text-stone-400">Dazu habe ich nichts gefunden. Probier es mit weniger Filtern.</p>
+    </section>
+  </div>
+</Base>
+
+<script>
+  // Filter: innerhalb einer Gruppe gilt "oder", zwischen Gruppen "und". Karten und Punkte kommen aus denselben Daten.
+  const active = { kind: new Set(), difficulty: new Set(), length: new Set() };
+  const cards = [...document.querySelectorAll('[data-card]')];
+  const pins = [...document.querySelectorAll('.pin')];
+  const count = document.getElementById('filter-count');
+  const empty = document.getElementById('leer');
+  const reset = document.getElementById('filter-reset');
+  const box = document.getElementById('filter');
+
+  // Am Rechner bleibt der Filter offen, am Handy startet er eingeklappt.
+  if (matchMedia('(max-width: 767px)').matches) box.open = false;
+
+  const matches = (el) => Object.entries(active).every(([g, set]) => set.size === 0 || set.has(el.dataset[g]));
+
+  function apply() {
+    let shown = 0;
+    for (const c of cards) {
+      const ok = matches(c);
+      c.hidden = !ok;
+      if (ok) shown++;
+    }
+    for (const p of pins) p.style.display = matches(p) ? '' : 'none';
+    const any = Object.values(active).some((s) => s.size);
+    count.textContent = any ? `${shown} von ${cards.length}` : '';
+    empty.hidden = shown > 0;
+    reset.hidden = !any;
+  }
+
+  for (const b of document.querySelectorAll('#filter button[data-group]')) {
+    b.addEventListener('click', () => {
+      const set = active[b.dataset.group];
+      const on = !set.has(b.dataset.value);
+      on ? set.add(b.dataset.value) : set.delete(b.dataset.value);
+      b.setAttribute('aria-pressed', String(on));
+      apply();
+    });
+  }
+  reset.addEventListener('click', () => {
+    for (const s of Object.values(active)) s.clear();
+    for (const b of document.querySelectorAll('#filter button[data-group]')) b.setAttribute('aria-pressed', 'false');
+    apply();
+  });
+</script>
