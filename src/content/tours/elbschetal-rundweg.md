@@ -3,6 +3,8 @@ title: Elbschetal Rundweg
 kind: tour
 activity: wandern
 place: Wetter/Wengern
+startPoint: Wetter-Wengern
+endPoint: Wetter-Wengern
 description: "Eine mittlere Wanderung über 12.0 km und 3h 30min über befestigte Wege, Schotterwege und Waldwege. Besondere Momente: Alter Bahnhof Albringhausen und Panorama über das Elbschetal."
 distanceKm: 12
 duration: 3h 30min

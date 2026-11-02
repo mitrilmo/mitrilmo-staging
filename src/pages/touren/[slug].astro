@@ -7,7 +7,7 @@ import PageHero from '../../components/PageHero.astro';
 import ContentImage from '../../components/ContentImage.astro';
 import Prose from '../../components/Prose.astro';
 import { dateDe } from '../../lib/date.js';
-import { difficultyLabel, activityLabel, seasonLabel, triLabel, kmDe, parseGpx, trackPaths, elevationPath } from '../../lib/tours.js';
+import { difficultyLabel, activityLabel, seasonLabel, triLabel, kmDe, parseGpx, isClosed, trackPaths, elevationPath } from '../../lib/tours.js';
 
 export async function getStaticPaths() {
   const tours = await getCollection('tours');
@@ -32,7 +32,14 @@ if (d.gpx) {
 const track = gpx ? trackPaths(gpx) : null;
 const profile = gpx ? elevationPath(gpx) : null;
 // Bei Rundwegen und Hin-und-zurück-Strecken liegen Start und Ziel übereinander: dann nur ein Punkt
-const sameEnd = track ? Math.hypot(track.start.x - track.end.x, track.start.y - track.end.y) < 14 : false;
+const closed = gpx ? isClosed(gpx) : false;
+const sameEnd = track ? closed || Math.hypot(track.start.x - track.end.x, track.start.y - track.end.y) < 14 : false;
+// Orte für Start und Ziel: bei geschlossenen Strecken zählt der Parkplatz, wenn kein Startpunkt angegeben ist
+const startLabel = d.startPoint ?? (closed ? d.parking?.name : undefined);
+const endLabel = closed ? startLabel : d.endPoint;
+const endsText = closed || (startLabel && startLabel === endLabel)
+  ? (startLabel ? `Start und Ziel: ${startLabel}` : '')
+  : [startLabel && `Start: ${startLabel}`, endLabel && `Ziel: ${endLabel}`].filter(Boolean).join(' · ');
 
 const facts = [
   d.distanceKm !== undefined && ['Länge', kmDe(d.distanceKm)],
@@ -46,7 +53,7 @@ const yesNo = [['Familienfreundlich', d.familyFriendly], ['Hunde erlaubt', d.dog
   .filter(([, v]) => v !== 'unbekannt');
 
 const practical = [
-  d.startPoint && ['Start', d.startPoint],
+  d.startPoint && !track && ['Start', d.startPoint],
   d.parking && ['Parken', [d.parking.name, d.parking.cost, d.parking.note].filter(Boolean).join(' · ')],
   d.openingHours && ['Öffnungszeiten', d.openingHours],
   d.prices && ['Kosten', d.prices],
@@ -92,6 +99,7 @@ const updated = d.updatedAt ?? d.publishedAt;
     {track && (
       <section class="mt-10" aria-labelledby="strecke">
         <h2 id="strecke" class="text-2xl font-extrabold text-stone-50">Streckenverlauf</h2>
+        {endsText && <p class="mt-2 text-stone-200">{endsText}</p>}
         <figure class="mt-3 rounded-xl border border-white/10 bg-slate-950 p-2">
           <svg viewBox={`0 0 ${track.width} ${track.height}`} class="block w-full h-auto" role="img" aria-label={`Verlauf der Strecke, Start und Ziel markiert`}>
             <path d={track.route} fill="none" stroke="var(--season-accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />

@@ -3,6 +3,8 @@ title: "TRASSENTREKKING: Wandern auf alten Schienen durchs südliche Ruhrgebiet"
 kind: tour
 activity: wandern
 place: Gevelsberg
+startPoint: Neuamerika
+endPoint: Gevelsberg
 description: Wir wandern von "Neuamerika" quer durch das südliche Ruhrgebiet bis nach Gevelsberg über stillgelegte Bahntrassen.
 distanceKm: 20
 duration: 3-4 Std.

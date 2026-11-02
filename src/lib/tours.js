@@ -36,6 +36,11 @@ function haversineKm(a, b) {
   return 2 * 6371 * Math.asin(Math.sqrt(h));
 }
 
+// Start und Ziel liegen beieinander (Rundweg oder Hin und zurück): Abstand der Endpunkte unter 150 m.
+export function isClosed(gpx) {
+  return haversineKm(gpx.points[0], gpx.points[gpx.points.length - 1]) < 0.15;
+}
+
 // Liest Trackpunkte (lat, lon, optional ele) aus einer GPX-Datei. Gibt null zurück, wenn weniger als zwei Punkte da sind.
 export function parseGpx(xml) {
   const points = [];

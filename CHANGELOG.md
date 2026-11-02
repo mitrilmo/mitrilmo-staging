@@ -4,6 +4,8 @@
 
 ### Geändert
 - **Dreizehn Titelbilder ausgetauscht:** Comic-Bilder und Thumbnails mit Text sind durch Björns Fotos ersetzt (3-Türme-Weg, Altenberger Dom, Hasper Talsperre, Elbschetal, Nachtmammutmarsch, Neye-Talsperre, Pilger-Alarm, Schneckenlauf, Trassentrekking, Heilenbecke Talsperre, Hülsenbecker Tal). 6-Schleusen-Fahrt und Landesgartenschau Neuss haben jetzt eigene Fotos statt des Video-Thumbnails.
+- Neye-Talsperre: Gesichter der vier Personen verpixelt (Björns bearbeitete Fassung).
+- Tourseiten: unter Streckenverlauf steht eine Zeile mit Start und Ziel (Rundwege: „Start und Ziel: Parkplatz“, sonst „Start … · Ziel …“). Neues Feld `endPoint`; Start und Ziel gepflegt für Altenberger Dom, Elbschetal, Hülsenbecker Tal, Schneckenlauf und Trassentrekking. Rundweg heißt: GPX-Anfang und -Ende unter 150 m auseinander.
 - Alt-Texte beschreiben jetzt das Bild statt „Titelbild zur Tour …“.
 - Trassentrekking: YouTube-Logo oben rechts im Foto abgeschnitten. Neye-Talsperre und Schneckenlauf stärker komprimiert, damit sie unter der Größengrenze der Prüfung bleiben.
 

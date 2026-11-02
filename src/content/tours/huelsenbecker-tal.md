@@ -3,6 +3,8 @@ title: Meiler-Murmel-Minigolf im Hülsenbecker Tal
 kind: tour
 activity: wandern
 place: Ennepetal
+startPoint: Ennepetal-Rüggeberg
+endPoint: Gut Ahlhausen
 description: Eine abwechslungsreiche Runde durch das idyllische Hülsenbecker Tal in Ennepetal. Vorbei am historischen Meiler und dem beliebten Murmel-Minigolf – ideal für Familien mit Kindern.
 distanceKm: 5.2
 duration: 2–3 Std.

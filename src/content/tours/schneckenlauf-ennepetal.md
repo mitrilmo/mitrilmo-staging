@@ -3,6 +3,8 @@ title: Schneckenlauf in Ennepetal
 kind: tour
 activity: wandern
 place: Ennepetal
+startPoint: Ennepetal-Rüggeberg
+endPoint: Krenzer Hammer, Peddenöde
 region: Bergisches Land
 description: 10,5 km entspanntes Wandern im idyllischen Ennepetal – pure Natur, bis das Eisen glüht! Begleite uns auf unserer Walking-Tour zum traditionellen Schmiedefest am historischen Krenzer Hammer.
 distanceKm: 10.6

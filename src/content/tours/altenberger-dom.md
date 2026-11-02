@@ -3,6 +3,7 @@ title: "Dom-Hopping im Grünen: Von der Dhünn zum Dom"
 kind: tour
 activity: wandern
 place: Odenthal
+startPoint: Leverkusen-Schlebusch
 description: Von der Dhünn-Talsperre zum Altenberger Dom – eine klassische Bergische Route mit wechselndem Terrain, Aussichten über das Bergische Land und einem beeindruckenden Ziel.
 distanceKm: 16.4
 duration: 4–5 Std.

@@ -30,6 +30,7 @@ export const tourSchema = ({ reference, image }) =>
       place: z.string().min(2),
       region: z.string().optional(),
       startPoint: z.string().optional(),
+      endPoint: z.string().optional(),
       description: z.string().min(20, 'Beschreibung zu kurz'),
       distanceKm: z.number().positive().optional(),
       duration: z.string().min(3), // Freitext wie "4–5 Std." (Bestand ist uneinheitlich)
