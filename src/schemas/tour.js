@@ -10,6 +10,7 @@ const rating = z.object({
   refreshments: z.number().int().min(1).max(5).optional(),
   photo: z.number().int().min(1).max(5).optional(),
   highlight: z.string().optional(),
+  note: z.string().optional(), // persönlicher Zusatz in Mos Worten, auch Kritisches
 });
 
 const parking = z.object({

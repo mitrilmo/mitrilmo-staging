@@ -24,12 +24,18 @@ parking:
   note: Wander-Parkticket
 familyFriendly: ja
 dogFriendly: ja
-refreshments:
-  - Ja, mit Hütte/Gasthaus
 bestSeasons:
   - sommer
   - herbst
 tips: "Viele zusätzliche Infos findet man unter: https://3tuermeweg.de/die-tuerme/3-tuerme"
 mapsUrl: https://maps.google.com/?q=Stadtgarten+Hagen
+refreshments:
+  - "Gaststätte am Friedrich-Turm"
+rating:
+  scenery: 5
+  refreshments: 4
+  highlight: "Aussicht vom Kaiser-Friedrich-Turm, die Hagener Sternwarte und ruhige Waldstücke."
+  note: "Die Runde ist wirklich schön, man sollte aber bedenken, dass ein paar Höhenmeter zu machen sind und einige Passagen etwas Trittsicherheit erfordern."
 publishedAt: 2026-08-23
+updatedAt: 2026-11-02
 ---

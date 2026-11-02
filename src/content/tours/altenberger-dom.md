@@ -21,8 +21,6 @@ familyFriendly: ja
 dogFriendly: ja
 openingHours: Ganzjährig, Dom täglich 9–18 Uhr
 prices: Kostenlos
-refreshments:
-  - Gaststätte
 equipment:
   - Festes Schuhwerk
   - Sonnenschutz
@@ -32,5 +30,13 @@ bestSeasons:
   - sommer
   - herbst
 tips: Für Kinder ab 8 Jahren empfohlen. Einige Anstiege, feste Schuhe nötig.
+refreshments:
+  - "Gaststätten am Dom und unterwegs"
+rating:
+  scenery: 4
+  refreshments: 4
+  highlight: "Das Ziel, der Altenberger Dom. Unterwegs gibt es immer wieder schöne Blicke auf die Dhünn."
+  note: "Der urbane Teil der Strecke ist nicht ganz so schön, aber man wird schnell entschädigt, wenn es ins Grüne geht. Ein Besuch des Mühlenmuseums ist empfehlenswert und ein Muss auf der Wanderung."
 publishedAt: 2026-05-19
+updatedAt: 2026-11-02
 ---

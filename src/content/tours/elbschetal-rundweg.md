@@ -23,9 +23,6 @@ parking:
   note: Hinweisschilder beachten. 5 Minuten Fußweg zum Start im Tal
 familyFriendly: nein
 dogFriendly: ja
-refreshments:
-  - Gaststätte
-  - Restaurant
 equipment:
   - Festes Schuhwerk
   - Regenjacke
@@ -35,5 +32,13 @@ bestSeasons:
   - sommer
   - herbst
 tips: Hunde erlaubt (Leinenpflicht im NSG)
+refreshments:
+  - "Gaststätte und Restaurant am Albringhauser Bahnhof"
+rating:
+  scenery: 4
+  refreshments: 4
+  highlight: "Der alte Bahnhof Albringhausen und das Panorama über das Elbschetal."
+  note: "Wer von Wetter-Wengern aus startet, sollte sich unbedingt das Örtchen anschauen. Ein Besuch des Henriette Davidis-Museum ist dann natürlich Pflicht."
 publishedAt: 2026-06-15
+updatedAt: 2026-11-02
 ---

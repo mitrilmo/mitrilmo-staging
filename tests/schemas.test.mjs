@@ -50,6 +50,13 @@ test('Tour: gültiger Minimalfall, Standardwerte greifen', () => {
   assert.deepEqual(t.refreshments, []);
 });
 
+test('Tour: Einschätzung mit Noten von 1 bis 5, Highlight und Hinweis, auch nur der Text', () => {
+  ok(tour, { ...okTour, rating: { scenery: 5, refreshments: 1, highlight: 'Blick auf die Staumauer.', note: 'Parkgebühr nicht vergessen.' } });
+  ok(tour, { ...okTour, rating: { highlight: 'Nur ein Satz, keine Note.' } });
+  bad(tour, { ...okTour, rating: { scenery: 6 } });
+  bad(tour, { ...okTour, rating: { refreshments: 0 } });
+});
+
 test('Tour: Pflichtfelder fehlen oder sind falsch', () => {
   for (const f of ['title', 'place', 'description', 'duration', 'difficulty', 'image', 'imageAlt', 'publishedAt', 'distanceKm']) {
     const o = { ...okTour }; delete o[f]; bad(tour, o);

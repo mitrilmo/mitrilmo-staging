@@ -19,5 +19,11 @@ parking:
   name: Wanderparkplatz Ennepetal-Rüggeberg
 strollerOk: nein
 mapsUrl: https://maps.google.com/?q=Wanderparkplatz+Ennepetal-R%C3%BCggeberg
+rating:
+  scenery: 4
+  refreshments: 1
+  highlight: "Das Ziel ist das Schmiedefest am historischen Krenzer Hammer."
+  note: "Wenn Schmiedefest ist, sollte man unbedingt zum Krenzer Hammer seine Liebsten mitnehmen. Gerade für Familien mit Kindern wird dann viel geboten und die Kleinen können mitmachen."
 publishedAt: 2026-09-20
+updatedAt: 2026-11-02
 ---

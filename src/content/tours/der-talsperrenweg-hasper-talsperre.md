@@ -32,5 +32,13 @@ bestSeasons:
   - herbst
   - winter
 mapsUrl: https://maps.google.com/?q=Wanderparkplatz+Ennepetal-Voerde+Aldi
+refreshments:
+  - "Gasthaus Plessen am Parkplatz (geschlossen)"
+rating:
+  scenery: 4
+  refreshments: 1
+  highlight: "Das Viadukt Plessen an der alten Kleinbahntrasse und natürlich der Blick von der Staumauer."
+  note: "Es ist ein schöner Rundkurs, der wirklich durch die Natur, teils abseits der üblichen Wanderwege, führt."
 publishedAt: 2026-08-16
+updatedAt: 2026-11-02
 ---

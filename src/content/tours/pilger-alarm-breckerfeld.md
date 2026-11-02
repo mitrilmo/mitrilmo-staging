@@ -20,5 +20,13 @@ parking:
   cost: kostenfrei
 strollerOk: nein
 mapsUrl: https://maps.google.com/?q=Breckerfeld+Delle
+refreshments:
+  - "Café am Mühlenhof"
+rating:
+  scenery: 4
+  refreshments: 4
+  highlight: "Historischer Mühlenhof und Königsheide, dazu eine unerwartete Begegnung mit einer Pilgerin auf dem Weg."
+  note: "Gerade auf den Abschnitten der alten Kleinbahntrasse kann man wunderbar die Seele baumeln lassen und erhascht viele schöne Panoramablicke."
 publishedAt: 2026-10-25
+updatedAt: 2026-11-02
 ---

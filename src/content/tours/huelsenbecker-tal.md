@@ -21,8 +21,6 @@ familyFriendly: ja
 dogFriendly: ja
 openingHours: Ganzjährig zugänglich
 prices: Eintritt frei, Minigolf kostenpflichtig
-refreshments:
-  - Imbiss
 equipment:
   - Festes Schuhwerk
   - Sonnenschutz
@@ -32,5 +30,14 @@ bestSeasons:
   - sommer
   - herbst
 tips: Ideal für Kinder ab 3 Jahren. Kinderwagen-tauglich auf dem Hauptweg.
+refreshments:
+  - "Imbiss unten im Hülsenbecker Tal"
+  - "Yuva-Restaurant mit Biergarten"
+rating:
+  scenery: 4
+  refreshments: 4
+  highlight: "Historischer Meiler und Murmel-Minigolf, mit Kinderwagen auf dem Hauptweg machbar."
+  note: "Man kann die Strecke auch wieder gut retour gehen, dann sind aber ein paar Höhenmeter zu machen."
 publishedAt: 2026-05-19
+updatedAt: 2026-11-02
 ---

@@ -30,5 +30,11 @@ bestSeasons:
   - herbst
   - winter
 tips: für Kinder ab 6 Jahren geeignet
+rating:
+  scenery: 4
+  refreshments: 1
+  highlight: "Kurze Runde mit 2,6 km, auch für Kinder ab 6 gut zu laufen."
+  note: "Der Rundweg verfügt über viele Sitzgelegenheiten, die zum Verweilen einladen. Achtung: das Entrichten der Parkgebühren nicht vergessen, sonst wird aus einem Parkgroschen schnell ein großer Betrag."
 publishedAt: 2026-06-07
+updatedAt: 2026-11-02
 ---

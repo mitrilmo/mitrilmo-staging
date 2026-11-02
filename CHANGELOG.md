@@ -1,5 +1,13 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-02 (Einschätzungen zu den Touren)
+
+### Neu
+- **Einschätzung bei 9 Touren** (Noten und Texte von Björn aus dem Google Doc): Landschaft und Einkehr als Sterne (1 bis 5, Zusatz „von 5“ für Screenreader), dazu Highlight und „Auch ehrlich“. Neues Feld `rating.note`. Der Block erscheint auch mit nur einem Text ohne Note. Noch ohne Einschätzung: Trassentrecking im Pott, Nachtmammutmarsch, 6-Schleusen-Fahrt, Landesgartenschau Neuss.
+
+### Geändert
+- Einkehr-Angaben bei 7 Touren mit Björns Ortsangaben ersetzt (zum Beispiel Yuva-Restaurant am Hülsenbecker Tal, Gasthaus Plessen geschlossen). `updatedAt` bei den 9 Touren auf 02.11.2026.
+
 ## 2026-11-02 (Phase 3, AP3.3 Mediathek, Geschichten, Termine, Projekte, Entdecken)
 
 ### Neu

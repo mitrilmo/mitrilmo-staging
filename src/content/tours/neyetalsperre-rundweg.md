@@ -21,8 +21,6 @@ familyFriendly: ja
 dogFriendly: ja
 openingHours: ganzjährig zugänglich
 prices: Kostenlos
-refreshments:
-  - Gaststätte
 equipment:
   - Festes Schuhwerk
   - Wasser mitnehmen
@@ -33,5 +31,13 @@ bestSeasons:
   - winter
 tips: Für Kinder ab 6 Jahren geeignet
 mapsUrl: https://maps.google.com/?q=Neyetalsperre+Wipperf%C3%BCrth
+refreshments:
+  - "Gaststätte an der Neyetalsperre, gute Bergische Stube"
+rating:
+  scenery: 5
+  refreshments: 5
+  highlight: "Schattige Pfade im Wald und der Blick aufs Wasser sowie die imposante Staumauer."
+  note: "Der Besuch der Talsperre ist zu jeder Jahreszeit zu empfehlen, aber mit am Schönsten im Herbst, wenn sich die Blätter färben und überall Pilze zu finden sind."
 publishedAt: 2026-06-06
+updatedAt: 2026-11-02
 ---
