@@ -81,10 +81,11 @@ html[data-season="sommer"]    { --mtn-far: #386a70; --mtn-near: #265246; --tree:
 html[data-season="herbst"]    { --mtn-far: #6b4524; --mtn-near: #46301a; --tree: #2a1d0f; --snow: 0.0; --sun: 0.5; }
 html[data-season="winter"]    { --mtn-far: #44596b; --mtn-near: #2f414f; --tree: #14212b; --snow: 0.95; --sun: 0.4; }
 
-.scene-far { fill: var(--mtn-far); transition: fill 0.6s; }
-.scene-near { fill: var(--mtn-near); transition: fill 0.6s; }
-.scene-tree { fill: var(--tree); transition: fill 0.6s; }
-.scene-snow { fill: #f3f7fa; opacity: var(--snow); transition: opacity 0.6s; }
+/* Ohne Übergang bei fill: Safari (WebKit) blendete die Landschaft sonst beim Laden kurz von Schwarz ein */
+.scene-far { fill: var(--mtn-far); }
+.scene-near { fill: var(--mtn-near); }
+.scene-tree { fill: var(--tree); }
+.scene-snow { fill: #f3f7fa; opacity: var(--snow); }
 .scene-sun { fill: var(--season-accent); opacity: var(--sun); }
 
 /* Wegweiser: Holzschilder als Links. Pfeilform über clip-path, Fokusring nach innen, damit er nicht abgeschnitten wird. */
