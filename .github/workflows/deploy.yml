@@ -30,6 +30,15 @@ jobs:
       - run: npm run check:content
       - run: npm run build
       - run: npm run check:dist
+      # Größenwarnung (AP4.7): Repository über 300 MB (Wert der GitHub-API in KB). Nur Hinweis, bricht nichts ab.
+      - name: Repo-Größe prüfen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          kb=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .size || echo 0)
+          mb=$((kb / 1024))
+          echo "Repository: ${mb} MB"
+          if [ "$mb" -gt 300 ]; then echo "::warning::Repository ist ${mb} MB groß (Warnschwelle 300 MB). Historie bereinigen prüfen (Umsetzungsplan AP4.7)."; fi
       - uses: withastro/action@v3
         with:
           node-version: 24

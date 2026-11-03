@@ -2,6 +2,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { getCollection, getEntry, render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import ContentImage from '../../components/ContentImage.astro';
@@ -65,8 +66,23 @@ const practical = [
 
 const ratings = d.rating ? [['Wandern', d.rating.hiking], ['Landschaft', d.rating.scenery], ['Einkehr', d.rating.refreshments], ['Fotos', d.rating.photo]].filter(([, v]) => v) : [];
 const updated = d.updatedAt ?? d.publishedAt;
+
+// Vorschaubild für Link-Vorschauen: JPEG, weil nicht jeder Dienst AVIF/WebP liest
+const og = await getImage({ src: d.image, width: 1200, format: 'jpeg', quality: 70 });
+const metaDescription = d.description.length > 155 ? `${d.description.slice(0, 152)}…` : d.description;
+const pageUrl = new URL(`${root}/touren/${entry.id}.html`, Astro.site).href;
+const tripSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TouristTrip',
+  name: d.title,
+  description: d.description,
+  url: pageUrl,
+  image: new URL(og.src, Astro.site).href,
+  provider: { '@type': 'Organization', name: 'mitrilmo', url: new URL(`${root}/`, Astro.site).href },
+};
 ---
-<Base title={`${d.title}, mitrilmo`} description={d.description.length > 155 ? `${d.description.slice(0, 152)}…` : d.description}>
+<Base title={`${d.title}, mitrilmo`} description={metaDescription} ogImage={og.src} ogType="article">
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(tripSchema)}></script>
   <PageHero width="max-w-3xl">
     <nav aria-label="Brotkrumen" class="text-sm"><a href={`${root}/touren.html`} class="text-accent hover:underline">← Touren und Ausflugsziele</a></nav>
     <h1 class="mt-4 text-3xl font-black text-stone-50 leading-tight">{d.title}</h1>

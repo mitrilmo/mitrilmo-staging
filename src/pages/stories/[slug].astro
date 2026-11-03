@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import ContentImage from '../../components/ContentImage.astro';
 import PageHero from '../../components/PageHero.astro';
@@ -16,8 +17,10 @@ const { data } = entry;
 const { Content } = await render(entry);
 const weltreise = data.series === 'weltreise';
 const back = weltreise ? { href: `${root}/weltreise.html`, text: '← Zur Weltumrundung 2017' } : { href: `${root}/`, text: '← Startseite' };
+// Vorschaubild für Link-Vorschauen (JPEG); ohne Titelbild gilt das Kanal-Logo
+const og = data.cover ? await getImage({ src: data.cover, width: 1200, format: 'jpeg', quality: 70 }) : null;
 ---
-<Base title={`${data.title}, mitrilmo`} description={data.description}>
+<Base title={`${data.title}, mitrilmo`} description={data.description} ogImage={og?.src} ogType="article">
   <PageHero width="max-w-2xl" scenery={false}>
     <p class="text-sm"><a href={back.href} class="text-accent hover:underline">{back.text}</a></p>
     <p class="mt-6 flex flex-wrap items-center gap-3 text-xs">

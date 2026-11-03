@@ -3,11 +3,12 @@
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkHtml, checkLinks, checkLegal, checkDistImages, checkCss, checkRobots } from './lib/checks.mjs';
+import { checkHtml, checkLinks, checkLegal, checkDistImages, checkCss, checkRobots, checkSitemap } from './lib/checks.mjs';
 
 // Seiten, auf die schon verlinkt wird, die aber erst migriert werden (Umsetzungsplan). Nur im Staging erlaubt,
 // beim Live-Build ist ein Link ohne Seite ein Fehler. Eintrag entfernen, sobald die Seite existiert.
 const PENDING = {};
+const SITE_LIMIT_MB = 500;
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
@@ -43,6 +44,10 @@ problems.push(...checkLinks(pages, base, (rel) => {
 problems.push(...checkLegal(pages));
 problems.push(...checkDistImages(files.map((f) => ({ path: f, bytes: statSync(join(dist, f)).size }))));
 if (set.has('robots.txt')) problems.push(...checkRobots(readFileSync(join(dist, 'robots.txt'), 'utf8'), staging));
+if (live) {
+  const read = (f) => (set.has(f) ? readFileSync(join(dist, f), 'utf8') : '');
+  problems.push(...checkSitemap(read('sitemap.xml'), read('robots.txt'), [...pages.keys()], 'https://www.mitrilmo.com'));
+}
 
 for (const rel of pending) console.log(`  Hinweis: Link auf ${rel} noch ohne Seite, geplant in ${PENDING[rel]}`);
 for (const rel of Object.keys(PENDING)) if (set.has(rel)) problems.push(`${rel} existiert jetzt, bitte aus PENDING in scripts/check-dist.mjs entfernen`);
@@ -50,12 +55,17 @@ for (const rel of Object.keys(PENDING)) if (set.has(rel)) problems.push(`${rel} 
 if (live) for (const f of files.filter((x) => /(^|\/)dev-[^/]*\.html$/.test(x))) problems.push(`Entwicklungsseite ${f} darf nicht live gehen`);
 if (live && set.has('stories/test.html')) problems.push('Testseite stories/test.html darf nicht live gehen');
 
+// Größe der ausgelieferten Seite (AP4.7): GitHub Pages erlaubt höchstens 1 GB, wir warnen früh
+const distBytes = files.reduce((sum, f) => sum + statSync(join(dist, f)).size, 0);
+const distMb = Math.round(distBytes / 1024 / 1024);
+if (distMb > SITE_LIMIT_MB) problems.push(`Seite ist ${distMb} MB groß (Grenze ${SITE_LIMIT_MB} MB), Bilder oder GPX verkleinern`);
+
 for (const req of ['index.html', '404.html']) if (!set.has(req)) problems.push(`${req} fehlt im Build`);
 if (files.some((f) => f.endsWith('.woff2')) && !files.some((f) => /^fonts\/OFL.*\.txt$/.test(f))) {
   problems.push('Schriftdateien ohne Lizenztext (fonts/OFL-*.txt) im Build');
 }
 
-console.log(`Gebaute Seite geprüft: ${pages.size} Seiten, ${files.length} Dateien (${staging ? 'Staging' : 'Live'}).`);
+console.log(`Gebaute Seite geprüft: ${pages.size} Seiten, ${files.length} Dateien, ${distMb} MB (${staging ? 'Staging' : 'Live'}).`);
 for (const p of problems) console.error(`  FEHLER: ${p}`);
 if (problems.length) {
   console.error(`\n${problems.length} Fehler in der gebauten Seite.`);

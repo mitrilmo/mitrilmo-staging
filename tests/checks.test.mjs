@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkEntries, checkHtml, checkLinks, checkLegal, checkDistImages, gpxLengthKm, UMAMI } from '../scripts/lib/checks.mjs';
+import { checkEntries, checkHtml, checkLinks, checkLegal, checkDistImages, checkSitemap, gpxLengthKm, UMAMI } from '../scripts/lib/checks.mjs';
+import { sitemapUrls, sitemapXml, robotsTxt } from '../src/lib/sitemap.js';
 
 // --- GPX ---
 const gpx = (...segments) =>
@@ -82,9 +83,10 @@ test('Inhalte: fehlende Koordinaten sind nur ein Hinweis', () => {
 });
 
 // --- gebaute Seiten ---
-const page = ({ title = '<title>Start</title>', desc = '<meta name="description" content="Eine ausreichend lange Beschreibung der Seite.">', canon = '<link rel="canonical" href="https://mitrilmo.github.io/mitrilmo-staging/index.html">', umami, robots = '<meta name="robots" content="noindex, nofollow">', head = '', body = '', lang = 'de' } = {}) => {
+const OG_OK = '<meta property="og:title" content="Start"><meta property="og:description" content="Eine ausreichend lange Beschreibung der Seite."><meta property="og:url" content="https://mitrilmo.github.io/mitrilmo-staging/index.html"><meta property="og:image" content="https://mitrilmo.github.io/mitrilmo-staging/images/channel-logo.jpg">';
+const page = ({ title = '<title>Start</title>', desc = '<meta name="description" content="Eine ausreichend lange Beschreibung der Seite.">', canon = '<link rel="canonical" href="https://mitrilmo.github.io/mitrilmo-staging/index.html">', umami, robots = '<meta name="robots" content="noindex, nofollow">', og = OG_OK, head = '', body = '', main = '<main><h1>T</h1></main>', lang = 'de' } = {}) => {
   const u = umami ?? `<script defer src="${UMAMI.src}" data-website-id="${UMAMI.websiteId}" data-domains="${UMAMI.domains}"></script>`;
-  return `<!doctype html><html lang="${lang}"><head>${title}${desc}${canon}${robots}${head}${u}</head><body>${body}</body></html>`;
+  return `<!doctype html><html lang="${lang}"><head>${title}${desc}${canon}${og}${robots}${head}${u}</head><body>${main}${body}</body></html>`;
 };
 const hasProblem = (html, re, opts) => checkHtml(html, opts).some((p) => re.test(p));
 
@@ -103,6 +105,12 @@ test('Seite: Metadaten fehlen', () => {
   assert.ok(hasProblem(page({ canon: '' }), /Canonical/));
   assert.ok(hasProblem(page({ canon: '<link rel="canonical" href="https://x.de/seite">' }), /Canonical/));
   assert.ok(hasProblem(page({ lang: 'en' }), /lang/));
+});
+test('Seite: Open Graph ist Pflicht, Bild absolut, og:url gleich Canonical', () => {
+  assert.ok(hasProblem(page({ og: '' }), /og:title fehlt/));
+  assert.ok(hasProblem(page({ og: '' }), /og:image fehlt/));
+  assert.ok(hasProblem(page({ og: OG_OK.replace('https://mitrilmo.github.io/mitrilmo-staging/images', '/images') }), /absolute https-Adresse/));
+  assert.ok(hasProblem(page({ og: OG_OK.replace('index.html"><meta property="og:image', 'x.html"><meta property="og:image') }), /weicht vom Canonical ab/));
 });
 test('Seite: Umami genau einmal und unverändert (data-domains darf github.io nicht enthalten)', () => {
   assert.ok(hasProblem(page({ umami: '' }), /genau 1x/));
@@ -284,4 +292,40 @@ test('Inhalte: Video braucht Vorschaubild, Short ein Datum', () => {
   assert.ok(errs(s, io()).some((e) => /Short braucht ein Datum/.test(e)));
   const ok = baseData(); ok.videos._A4uDbxSqSI = { youtubeId: '_A4uDbxSqSI', format: 'short', publishedAt: '2026-08-01' };
   assert.ok(!errs(ok, io()).some((e) => /_A4uDbxSqSI/.test(e)));
+});
+
+// --- Sitemap und robots.txt (nur Live) ---
+const SITE = 'https://www.mitrilmo.com';
+const htmlFiles = ['index.html', '404.html', 'touren.html', 'touren/a.html', 'stories/test.html', 'dev-bilder.html'];
+
+test('Sitemap: enthält Startseite als /index.html (wie der Canonical) und alle Seiten, aber nicht 404, dev-* und Testseiten', () => {
+  assert.deepEqual(sitemapUrls(htmlFiles, SITE), [`${SITE}/index.html`, `${SITE}/touren.html`, `${SITE}/touren/a.html`]);
+});
+test('Sitemap: Sonderzeichen werden maskiert', () => {
+  assert.match(sitemapXml(['https://x.de/a&b.html']), /a&amp;b\.html/);
+});
+test('Sitemap: passende Sitemap und robots.txt sind in Ordnung', () => {
+  const urls = sitemapUrls(htmlFiles, SITE);
+  assert.deepEqual(checkSitemap(sitemapXml(urls), robotsTxt(SITE), htmlFiles, SITE), []);
+});
+test('Sitemap: fehlende Seite, überzählige Seite, fehlende Sitemap-Zeile und fehlende Dateien', () => {
+  const urls = sitemapUrls(htmlFiles, SITE);
+  const p = (xml, robots) => checkSitemap(xml, robots, htmlFiles, SITE).join(' | ');
+  assert.match(p(sitemapXml(urls.slice(1)), robotsTxt(SITE)), /Sitemap enthält nicht/);
+  assert.match(p(sitemapXml([...urls, `${SITE}/404.html`]), robotsTxt(SITE)), /ausgeschlossene Seite/);
+  assert.match(p(sitemapXml(urls), 'User-agent: *\nAllow: /\n'), /robots\.txt ohne Zeile/);
+  assert.match(p('', robotsTxt(SITE)), /sitemap\.xml fehlt/);
+  assert.match(p(sitemapXml(urls), ''), /robots\.txt fehlt/);
+});
+
+test('Seite: genau eine h1, keine übersprungene Ebene, main vorhanden', () => {
+  assert.ok(hasProblem(page({ main: '<main></main>' }), /genau eine h1 erwartet \(gefunden: 0\)/));
+  assert.ok(hasProblem(page({ main: '<main><h1>a</h1><h1>b</h1></main>' }), /gefunden: 2/));
+  assert.ok(hasProblem(page({ main: '<main><h1>a</h1><h3>b</h3></main>' }), /Sprung von h1 auf h3/));
+  assert.ok(hasProblem(page({ main: '<h1>a</h1>' }), /Kein main/));
+  assert.deepEqual(checkHtml(page({ main: '<main><h1>a</h1><h2>b</h2><h3>c</h3><h2>d</h2></main>' }), { staging: true }), []);
+});
+
+test('Sitemap: Windows-Pfade mit Backslash werden zu normalen Adressen', () => {
+  assert.deepEqual(sitemapUrls(['touren\\a.html', 'stories\\test.html', 'dev-x.html'], SITE), [`${SITE}/touren/a.html`]);
 });

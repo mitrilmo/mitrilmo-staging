@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import ContentImage from '../../components/ContentImage.astro';
 import PageHero from '../../components/PageHero.astro';
@@ -18,8 +19,9 @@ const { entry } = Astro.props;
 const { data } = entry;
 const { Content } = await render(entry);
 const facts = [data.mood && `Stimmung: ${data.mood}`, data.weather, data.rating && `${data.rating} von 5 Sternen`].filter(Boolean);
+const og = await getImage({ src: data.cover, width: 1200, format: 'jpeg', quality: 70 });
 ---
-<Base title={`${data.title}, mitrilmo`} description={teaser(entry, 155)}>
+<Base title={`${data.title}, mitrilmo`} description={teaser(entry, 155)} ogImage={og.src} ogType="article">
   <PageHero width="max-w-2xl" scenery={false}>
     <p class="text-sm"><a href={`${root}/neuigkeiten.html`} class="text-accent hover:underline">← Alle Neuigkeiten</a></p>
     <h1 class="mt-4 text-3xl font-black text-stone-50 leading-tight">{data.title}</h1>

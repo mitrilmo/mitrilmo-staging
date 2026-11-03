@@ -5,12 +5,18 @@ import { fontFaceCss } from '../lib/fonts.js';
 import { nav } from '../data/nav.js';
 import MobileBar from '../components/MobileBar.astro';
 
-const { title, description = 'mitrilmo: Wandern, Radfahren und Neugier im Bergischen Land.' } = Astro.props;
+const {
+  title,
+  description = 'mitrilmo: Wandern, Radfahren und Neugier im Bergischen Land.',
+  ogImage, // Pfad ab Site-Root inkl. Basispfad (z. B. von getImage); Standard: Kanal-Logo
+  ogType = 'website',
+} = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const staging = base !== '';
 // Canonical immer auf die .html-Adresse (die Variante ohne Endung liefert GitHub Pages ebenfalls aus)
 const path = Astro.url.pathname.replace(/\/$/, '') || '';
 const canonical = new URL(path.endsWith('.html') || path === base ? path || '/' : path + '.html', Astro.site).href;
+const ogImageUrl = new URL(ogImage ?? `${base}/images/channel-logo.jpg`, Astro.site).href;
 
 // Jahreszeit aus dem Datum, per ?season=herbst testbar. Ohne JavaScript bleibt der Standard (herbst).
 const seasonScript = seasonFn + `
@@ -28,6 +34,14 @@ const seasonScript = seasonFn + `
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  <meta property="og:site_name" content="mitrilmo" />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta name="twitter:card" content="summary_large_image" />
   {staging && <meta name="robots" content="noindex, nofollow" />}
   <link rel="icon" href={`${base}/favicon.ico`} sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href={`${base}/favicon-32x32.png`} />
@@ -39,6 +53,7 @@ const seasonScript = seasonFn + `
   <script is:inline defer src="https://mobrain.tail4c30a8.ts.net/script.js" data-website-id="b0279420-580a-4f86-99df-4ac427936c73" data-domains="mitrilmo.com,www.mitrilmo.com"></script>
 </head>
 <body class="bg-slate-800 text-stone-200 font-sans antialiased min-h-screen flex flex-col">
+  <a href="#inhalt" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-slate-950 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white">Zum Inhalt springen</a>
   <header class="bg-slate-900/90 border-b border-white/5">
     <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
       <a href={`${base}/`} class="font-black text-lg tracking-tight text-white"><span class="text-forest-400">mitril</span>mo</a>
@@ -50,7 +65,7 @@ const seasonScript = seasonFn + `
     </div>
   </header>
 
-  <main class="flex-1"><slot /></main>
+  <main id="inhalt" tabindex="-1" class="flex-1 focus:outline-none"><slot /></main>
 
   <footer class="border-t border-white/5 bg-slate-950/50">
     <div class="max-w-5xl mx-auto px-4 pt-8 pb-24 md:pb-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">

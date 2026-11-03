@@ -3,6 +3,7 @@
 // (Pins entstehen aus Daten), neu sind Slugs, Dateien, Referenzen, GPX-Länge, Metadaten, Umami, Fremdanfragen, Links.
 import { posix } from 'node:path';
 import { parse } from 'yaml';
+import { sitemapUrls } from '../../src/lib/sitemap.js';
 
 export const UMAMI = {
   src: 'https://mobrain.tail4c30a8.ts.net/script.js',
@@ -166,6 +167,12 @@ export function checkHtml(html, opts = { staging: true }) {
   const canon = tagsOf(html, 'link').find((a) => a.rel === 'canonical');
   if (!canon || !/^https:\/\/.+\.html$/.test(canon.href || '')) problems.push('Canonical fehlt oder zeigt nicht auf eine https-Adresse mit .html');
 
+  // Open Graph: Link-Vorschauen (Messenger, soziale Netze) brauchen Titel, Beschreibung, Adresse und ein Bild mit absoluter https-Adresse
+  const og = Object.fromEntries(tagsOf(html, 'meta').filter((a) => a.property?.startsWith('og:')).map((a) => [a.property, a.content || '']));
+  for (const key of ['og:title', 'og:description', 'og:url', 'og:image']) if (!og[key]?.trim()) problems.push(`${key} fehlt`);
+  if (og['og:image'] && !/^https:\/\//.test(og['og:image'])) problems.push('og:image muss eine absolute https-Adresse sein');
+  if (og['og:url'] && canon && og['og:url'] !== canon.href) problems.push('og:url weicht vom Canonical ab');
+
   const umami = tagsOf(html, 'script').filter((a) => (a.src || '').includes('mobrain.'));
   if (umami.length !== 1) problems.push(`Umami-Skript muss genau 1x vorkommen (gefunden: ${umami.length})`);
   else {
@@ -194,6 +201,16 @@ export function checkHtml(html, opts = { staging: true }) {
     if (!a.width || !a.height) problems.push(`Bild ohne width und height (Layout springt beim Laden): ${label}`);
   }
 
+  // Überschriften und Landmarken: genau eine h1, keine übersprungenen Ebenen, ein main-Bereich
+  const visible = html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '');
+  const levels = [...visible.matchAll(/<h([1-6])\b/gi)].map((m) => Number(m[1]));
+  const h1s = levels.filter((l) => l === 1).length;
+  if (h1s !== 1) problems.push(`Überschriften: genau eine h1 erwartet (gefunden: ${h1s})`);
+  for (let i = 1; i < levels.length; i++) {
+    if (levels[i] - levels[i - 1] > 1) { problems.push(`Überschriften: Sprung von h${levels[i - 1]} auf h${levels[i]}`); break; }
+  }
+  if (!/<main\b/i.test(visible)) problems.push('Kein main-Bereich');
+
   problems.push(...externalProblems(html));
   return problems;
 }
@@ -203,6 +220,20 @@ export function checkHtml(html, opts = { staging: true }) {
 export function checkRobots(content, staging) {
   if (!staging && /^\s*Disallow:\s*\/\s*$/im.test(content || '')) return ['robots.txt sperrt die ganze Live-Seite (Disallow: /)'];
   return [];
+}
+
+// Live: robots.txt muss auf die Sitemap zeigen, die Sitemap muss genau die indexierbaren Seiten enthalten.
+export function checkSitemap(sitemap, robots, htmlFiles, site) {
+  const problems = [];
+  if (!sitemap) return ['sitemap.xml fehlt im Live-Build'];
+  const expected = sitemapUrls(htmlFiles, site);
+  const listed = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  for (const u of expected) if (!listed.includes(u)) problems.push(`Sitemap enthält nicht: ${u}`);
+  for (const u of listed) if (!expected.includes(u)) problems.push(`Sitemap enthält eine Adresse ohne Seite oder eine ausgeschlossene Seite: ${u}`);
+  const want = `Sitemap: ${site.replace(/\/$/, '')}/sitemap.xml`;
+  if (!robots) problems.push('robots.txt fehlt im Live-Build');
+  else if (!robots.split(/\r?\n/).some((l) => l.trim() === want)) problems.push(`robots.txt ohne Zeile "${want}"`);
+  return problems;
 }
 
 // files: [{ path, bytes }] des Builds. Jede ausgelieferte Bilddatei muss unter dem Budget bleiben.

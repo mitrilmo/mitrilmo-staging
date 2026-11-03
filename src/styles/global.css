@@ -159,6 +159,12 @@ html[data-season="winter"]    { --mtn-far: #44596b; --mtn-near: #2f414f; --tree:
   100% { transform: rotate(0); }
 }
 
+/* Tastaturfokus: überall ein deutlicher Ring in der Akzentfarbe der Jahreszeit (Maus-Klicks lösen ihn nicht aus) */
+:focus-visible { outline: 2px solid var(--season-accent-light, #7bbf6a); outline-offset: 2px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Nach dem Skip-Link bekommt <main> den Fokus, dort soll kein Ring stehen */
+main:focus-visible { outline: none; }

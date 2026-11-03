@@ -1,5 +1,24 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-03 (Phase 4: SEO, Barrierefreiheit, Größenwarnung)
+
+### Neu
+- **Link-Vorschau (Open Graph) auf allen Seiten:** `og:title`, `og:description`, `og:url`, `og:image`, `og:type`, `og:locale`, `twitter:card`. Touren, Geschichten mit Titelbild und Neuigkeiten zeigen ihr eigenes Titelbild (JPEG, 1200 px), alle anderen das Kanal-Logo.
+- **Tourseiten mit Schema.org `TouristTrip`** (Name, Beschreibung, Adresse, Bild, Anbieter).
+- **`sitemap.xml` und `robots.txt` beim Live-Build** (nur Live, im Staging weiter keine). Die Sitemap hat alle Seiten außer 404, `dev-*` und `stories/test`, `robots.txt` hat die `Sitemap:`-Zeile. Weiterleitungsseiten sind nicht nötig: alle 35 URLs bleiben gleich.
+- **Skip-Link „Zum Inhalt springen“** am Seitenanfang (nur bei Tastaturfokus sichtbar) und ein einheitlicher Fokusring in der Jahreszeit-Akzentfarbe.
+- **Neue Prüfungen:** Open Graph vollständig, genau eine `h1` und keine übersprungene Überschriftenebene, ein `<main>`, Sitemap vollständig, `robots.txt` mit `Sitemap:`-Zeile (Live), Seitengröße unter 500 MB. CI warnt, wenn das Repository über 300 MB groß wird.
+- Vault: Cutover-Checkliste mit Rollback (AP4.5).
+
+### Geändert
+- Mo's Hike Quest (nur Staging) hat dieselben Open-Graph-Tags und einen `<main>`-Bereich.
+- Tests: 107 (vorher 100). Die Sitemap nennt die Startseite als /index.html, passend zum Canonical.
+
+### Geprüft, ohne Änderung
+- **Rechtliches (AP4.4):** Der Neubau führt keinen neuen Dienst ein. Keine Cookies, kein Browserspeicher, außer Umami keine Fremdanfrage, Schriften lokal, kein Tailwind-CDN mehr. Impressum und Datenschutz bleiben Wort für Wort unverändert (Prüfsummen-Test grün).
+- **Tastatur:** Skip-Link, Fokusring, Schilder der Startseite als echte Links, alle Bedienelemente haben einen Namen.
+- **Größen:** Live-Repo 70 MB, Staging-Repo 37 MB, gebaute Seite 68 MB.
+
 ## 2026-11-03 (Landschaftsstreifen auf Unterseiten)
 
 ### Neu
