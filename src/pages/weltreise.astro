@@ -29,7 +29,7 @@ const videos = days.filter((d) => d.data.video).length;
         <li class="bg-slate-700 rounded-xl border border-white/5 hover:border-accent/50 transition-colors p-4 flex flex-col gap-2">
           <p class="flex items-center justify-between text-xs">
             <span class="bg-slate-900/60 text-accent border border-accent/40 font-semibold px-2.5 py-0.5 rounded-full">Tag {d.data.day}</span>
-            <time datetime={d.data.date.toISOString().slice(0, 10)} class="text-stone-500">{dateDe(d.data.date)}</time>
+            <time datetime={d.data.date.toISOString().slice(0, 10)} class="text-stone-400">{dateDe(d.data.date)}</time>
           </p>
           <h2 class="text-sm font-bold text-stone-50 leading-snug"><a href={`${root}/stories/${d.id}.html`} class="hover:text-accent transition-colors">{d.data.title}</a></h2>
           <p class="text-xs text-stone-400 leading-relaxed flex-1">{d.data.description}</p>

@@ -55,7 +55,7 @@ html[data-season="winter"] {
   --sky-1: #0d1318; --sky-2: #1c2a36; --sky-3: #5d7f9a;
 }
 
-/* Grundton der Seite je Jahreszeit (Vorschau, noch nicht freigegeben): Die Slate-Töne bekommen den Farbstich der Jahreszeit,
+/* Grundton der Seite je Jahreszeit (freigegeben 03.11.2026): Die Slate-Töne bekommen den Farbstich der Jahreszeit,
    damit Himmel, Landschaft und Seite zusammenpassen. Frühling bleibt beim Grundton aus @theme. Alles bleibt dunkel. */
 html[data-season="sommer"] {
   --color-slate-950: #0b1519; --color-slate-900: #101c21; --color-slate-800: #16252b;

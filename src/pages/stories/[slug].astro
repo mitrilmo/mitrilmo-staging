@@ -29,13 +29,13 @@ const back = weltreise ? { href: `${root}/weltreise.html`, text: '← Zur Weltum
 
   <article class="max-w-2xl mx-auto px-4 py-10">
     {data.cover && <ContentImage image={data.cover} alt={data.coverAlt} sizes="(min-width: 672px) 640px, 100vw" widths={[480, 800, 1200]} priority class="w-full rounded-xl max-h-[28rem] object-cover" />}
-    <div class="mt-6 text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-stone-50 [&_p>img]:block [&_p>img]:w-full [&_p>img]:h-auto [&_p>img]:rounded-xl [&_p>img+em]:block [&_p>img+em]:mt-2 [&_p>img+em]:text-center [&_p>img+em]:text-xs [&_p>img+em]:text-stone-500 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_a]:text-accent [&_a]:underline">
+    <div class="mt-6 text-stone-200 leading-relaxed [&_p]:mt-4 [&_h2]:mt-8 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-stone-50 [&_p>img]:block [&_p>img]:w-full [&_p>img]:h-auto [&_p>img]:rounded-xl [&_p>img+em]:block [&_p>img+em]:mt-2 [&_p>img+em]:text-center [&_p>img+em]:text-xs [&_p>img+em]:text-stone-400 [&_ul]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_a]:text-accent [&_a]:underline">
       <Content />
     </div>
     {data.video && (
       <p class="mt-8">
         <a href={`https://www.youtube.com/watch?v=${data.video}`} target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2 rounded-full border border-accent text-accent hover:bg-slate-700 transition-colors">Kurzvideo auf YouTube ansehen</a>
-        <span class="block mt-2 text-xs text-stone-500">Kleiner animierter KI-Clip zu diesem Tag, auf YouTube nicht gelistet.</span>
+        <span class="block mt-2 text-xs text-stone-400">Kleiner animierter KI-Clip zu diesem Tag, auf YouTube nicht gelistet.</span>
       </p>
     )}
   </article>

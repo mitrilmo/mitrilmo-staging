@@ -11,7 +11,7 @@ difficulty: schwer
 image: ../../assets/images/tours/mammutmarsch-ruhrgebiet.jpg
 stories:
   - mammutmarsch-ueberlebenstipps-2026-09-27
-imageAlt: "Bunt beleuchtete Industrieanlage mit Trasse und Hochofen bei Nacht"
+imageAlt: "Bunt beleuchtete Industrieanlage mit Hochofen bei Nacht, im Vordergrund gehen zwei Menschen über den Platz"
 gpx: gpx/mammutmarsch-ruhrgebiet.gpx
 coordinates:
   lat: 51.48267

@@ -54,6 +54,6 @@ const facts = [data.mood && `Stimmung: ${data.mood}`, data.weather, data.rating 
       </p>
     )}
 
-    {data.tags.length > 0 && <p class="mt-8 text-xs text-stone-500">{data.tags.map((t) => `#${t}`).join(' ')}</p>}
+    {data.tags.length > 0 && <p class="mt-8 text-xs text-stone-400">{data.tags.map((t) => `#${t}`).join(' ')}</p>}
   </article>
 </Base>
