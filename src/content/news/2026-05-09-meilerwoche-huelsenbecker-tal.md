@@ -2,7 +2,7 @@
 title: Meilerwoche im Hülsenbecker Tal
 date: 2026-05-09
 cover: ../../assets/images/news/2026-05-09-meilerwoche-huelsenbecker-tal.jpg
-coverAlt: Titelbild zum Beitrag Meilerwoche im Hülsenbecker Tal
+coverAlt: Ein Köhler mit schwarzem Hut und Schutzhandschuhen arbeitet am rauchenden Kohlenmeiler, daneben steht eine Metallfigur mit Hut (Gesicht des Mannes verpixelt)
 tags:
   - Wandern
   - HülsenbeckerTal

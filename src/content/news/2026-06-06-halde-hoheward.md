@@ -2,7 +2,7 @@
 title: Halde Hoheward und das Horizontobservatorium
 date: 2026-06-06
 cover: ../../assets/images/news/2026-06-06-halde-hoheward.jpg
-coverAlt: Titelbild zum Beitrag Halde Hoheward und Horizontobservatorium
+coverAlt: Wegweiser aus Stahl und schwarzer Tafel auf der Halde Hoheward, dahinter die Stahlbögen des Horizontobservatoriums unter bewölktem Himmel
 tags:
   - HaldeHoheward
   - Horizontobservatorium

@@ -7,6 +7,10 @@
 - Geschichten und Neuigkeiten-Beiträge behalten nur den ruhigen Farbstreifen (`scenery={false}`), wegen der Lesbarkeit langer Texte.
 - **Grundton der Seite wechselt mit der Jahreszeit (von Björn freigegeben, Regel in `CLAUDE.md` angepasst):** Die Slate-Töne (Body, Karten, Header, Footer) bekommen im Sommer einen Petrol-Stich, im Herbst einen Braun-Stich und im Winter einen Blaugrau-Stich. Frühling bleibt beim bisherigen Grün. Textkontraste je Jahreszeit mindestens so gut wie im Frühling.
 
+### Geändert
+- **Safari-Test (WebKit, iPhone-13-Größe):** Kein seitliches Überlaufen, Schilder per Tippen verlinkt, keine Konsolenfehler. Zwei Funde behoben: Die Landschaft (Hero und Kopfband) blendete beim Laden kurz von Schwarz ein, weil `fill` einen Übergang hatte (Übergang entfernt). Die Leiste unten war leicht durchsichtig, Text darunter schien durch (jetzt deckend, ohne Unschärfe).
+- **Neuigkeiten-Titelbilder:** Die fünf Comicbilder (Meilerwoche, Trainingsbergwerk, Ennepetal Rollen und Räder, Halde Hoheward, Megamarsch) sind durch Björns Fotos ersetzt, mit neuen Alt-Texten. Pfadwerk bleibt (Screenshot). Ennepetal und Megamarsch in Björns nachbearbeiteter Fassung (Gesichter verpixelt, Logos unkenntlich). Das Ennepetal-Foto ist auf 1600 px verkleinert, sonst liegt es über der Größengrenze von 450 KB.
+
 ## 2026-11-02 (Geschichten mit Titelbild, Fußnote, Neye-Thumbnail)
 
 ### Geändert

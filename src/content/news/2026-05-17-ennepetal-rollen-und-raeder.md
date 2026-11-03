@@ -2,7 +2,7 @@
 title: Ennepetal auf Rollen und Rädern
 date: 2026-05-17
 cover: ../../assets/images/news/2026-05-17-ennepetal-rollen-und-raeder.jpg
-coverAlt: Titelbild zum Beitrag Ennepetal auf Rollen und Rädern
+coverAlt: Radfahrerinnen und Radfahrer warten mit ihren Rädern auf der gesperrten Straße vor einem roten Startbogen im Ennepetal
 tags:
   - Ennepetal
   - Rüggeberg

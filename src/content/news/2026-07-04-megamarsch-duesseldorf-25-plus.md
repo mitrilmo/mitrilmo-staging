@@ -2,7 +2,7 @@
 title: Megamarsch Düsseldorf 25+
 date: 2026-07-04
 cover: ../../assets/images/news/2026-07-04-megamarsch-duesseldorf-25-plus.jpg
-coverAlt: Titelbild zum Beitrag Megamarsch Düsseldorf 25+
+coverAlt: Teilnehmende des Megamarschs Düsseldorf in grünen Trikots von hinten beim Start, im Hintergrund Fahrräder
 tags:
   - Megamarsch
   - Düsseldorf

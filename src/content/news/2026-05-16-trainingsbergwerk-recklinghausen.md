@@ -2,7 +2,7 @@
 title: Tag der offenen Tür im Trainingsbergwerk Recklinghausen
 date: 2026-05-16
 cover: ../../assets/images/news/2026-05-16-trainingsbergwerk-recklinghausen.jpg
-coverAlt: Titelbild zum Beitrag Trainingsbergwerk Recklinghausen
+coverAlt: Gelbe Grubenlok in einem Streckenstollen mit Stahlausbau und Gleisen im Trainingsbergwerk Recklinghausen
 tags:
   - Bergbau
   - Recklinghausen
