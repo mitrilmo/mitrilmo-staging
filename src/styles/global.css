@@ -55,6 +55,21 @@ html[data-season="winter"] {
   --sky-1: #0d1318; --sky-2: #1c2a36; --sky-3: #5d7f9a;
 }
 
+/* Grundton der Seite je Jahreszeit (Vorschau, noch nicht freigegeben): Die Slate-Töne bekommen den Farbstich der Jahreszeit,
+   damit Himmel, Landschaft und Seite zusammenpassen. Frühling bleibt beim Grundton aus @theme. Alles bleibt dunkel. */
+html[data-season="sommer"] {
+  --color-slate-950: #0b1519; --color-slate-900: #101c21; --color-slate-800: #16252b;
+  --color-slate-700: #1f3138; --color-slate-600: #2a3f47;
+}
+html[data-season="herbst"] {
+  --color-slate-950: #14100b; --color-slate-900: #1c1610; --color-slate-800: #251d15;
+  --color-slate-700: #31271c; --color-slate-600: #3d3225;
+}
+html[data-season="winter"] {
+  --color-slate-950: #0c1217; --color-slate-900: #121a21; --color-slate-800: #19232c;
+  --color-slate-700: #222f3a; --color-slate-600: #2d3d4a;
+}
+
 .sky {
   background: linear-gradient(135deg, var(--sky-1) 0%, var(--sky-2) 55%, var(--sky-3) 100%);
   transition: background 0.6s;

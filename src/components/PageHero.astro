@@ -1,10 +1,26 @@
 ---
 // Kopfband der Unterseiten im Jahreszeiten-Look der Startseite (Himmelsverlauf und Akzentfarbe aus html[data-season]).
 // Inhalt kommt über den Slot, width wie der Textbereich der Seite darunter.
-const { width = 'max-w-4xl' } = Astro.props;
+// scenery: niedriger Landschaftsstreifen am unteren Rand (Berge und Tannen in den Jahreszeitenfarben).
+// Auf langen Lesetexten (Geschichten, Neuigkeiten) mit scenery={false} abschalten, dort bleibt nur der ruhige Farbstreifen.
+const { width = 'max-w-4xl', scenery = true } = Astro.props;
+const firs = [[40, 22], [92, 30], [150, 20], [1048, 26], [1104, 20], [1156, 30]];
+const fir = (x, h) => [0, 1].map((i) => {
+  const top = 70 - h + i * (h * 0.32);
+  const half = h * (0.26 + i * 0.16);
+  return `${x},${top} ${x + half},${top + h * 0.55} ${x - half},${top + h * 0.55}`;
+});
 ---
-<section class="sky border-b border-white/5">
-  <div class={`${width} mx-auto px-4 py-10`}>
+<section class="sky border-b border-white/5 relative overflow-hidden">
+  {scenery && (
+    <svg viewBox="0 0 1200 70" preserveAspectRatio="xMidYMax slice" class="absolute inset-x-0 bottom-0 h-12 sm:h-16 w-full pointer-events-none" aria-hidden="true" focusable="false">
+      <path class="scene-far" d="M0 52 L110 30 L210 46 L340 22 L470 48 L610 28 L760 50 L900 26 L1040 48 L1200 30 L1200 70 L0 70 Z" />
+      <path class="scene-near" d="M0 62 L130 50 L260 60 L420 48 L580 60 L740 50 L900 61 L1060 51 L1200 60 L1200 70 L0 70 Z" />
+      {firs.map(([x, h]) => fir(x, h).map((p) => <polygon class="scene-tree" points={p} />))}
+      <rect class="scene-tree" x="0" y="66" width="1200" height="4" />
+    </svg>
+  )}
+  <div class={`${width} mx-auto px-4 pt-10 ${scenery ? 'pb-16 sm:pb-20' : 'pb-10'} relative`}>
     <slot />
   </div>
 </section>

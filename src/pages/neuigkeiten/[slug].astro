@@ -20,7 +20,7 @@ const { Content } = await render(entry);
 const facts = [data.mood && `Stimmung: ${data.mood}`, data.weather, data.rating && `${data.rating} von 5 Sternen`].filter(Boolean);
 ---
 <Base title={`${data.title}, mitrilmo`} description={teaser(entry, 155)}>
-  <PageHero width="max-w-2xl">
+  <PageHero width="max-w-2xl" scenery={false}>
     <p class="text-sm"><a href={`${root}/neuigkeiten.html`} class="text-accent hover:underline">← Alle Neuigkeiten</a></p>
     <h1 class="mt-4 text-3xl font-black text-stone-50 leading-tight">{data.title}</h1>
     <p class="mt-2 text-sm text-stone-300">

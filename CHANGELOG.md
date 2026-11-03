@@ -1,5 +1,12 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-03 (Landschaftsstreifen auf Unterseiten)
+
+### Neu
+- **Kopfband der Unterseiten mit Landschaftsstreifen:** Am unteren Rand von `PageHero` liegen jetzt niedrige Berge und Tannen in den Jahreszeitenfarben. Reines SVG, keine Anfrage, keine Bewegung.
+- Geschichten und Neuigkeiten-Beiträge behalten nur den ruhigen Farbstreifen (`scenery={false}`), wegen der Lesbarkeit langer Texte.
+- **Grundton der Seite wechselt mit der Jahreszeit (von Björn freigegeben, Regel in `CLAUDE.md` angepasst):** Die Slate-Töne (Body, Karten, Header, Footer) bekommen im Sommer einen Petrol-Stich, im Herbst einen Braun-Stich und im Winter einen Blaugrau-Stich. Frühling bleibt beim bisherigen Grün. Textkontraste je Jahreszeit mindestens so gut wie im Frühling.
+
 ## 2026-11-02 (Geschichten mit Titelbild, Fußnote, Neye-Thumbnail)
 
 ### Geändert

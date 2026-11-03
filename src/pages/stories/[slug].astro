@@ -18,7 +18,7 @@ const weltreise = data.series === 'weltreise';
 const back = weltreise ? { href: `${root}/weltreise.html`, text: '← Zur Weltumrundung 2017' } : { href: `${root}/`, text: '← Startseite' };
 ---
 <Base title={`${data.title}, mitrilmo`} description={data.description}>
-  <PageHero width="max-w-2xl">
+  <PageHero width="max-w-2xl" scenery={false}>
     <p class="text-sm"><a href={back.href} class="text-accent hover:underline">{back.text}</a></p>
     <p class="mt-6 flex flex-wrap items-center gap-3 text-xs">
       {weltreise && <span class="bg-slate-900/50 border border-accent/40 text-accent font-semibold px-3 py-1 rounded-full">🌍 Weltumrundung 2017 · Tag {data.day}</span>}
