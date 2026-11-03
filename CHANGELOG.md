@@ -1,5 +1,18 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-03 (Phase 5 Vorbereitung, Cutover noch nicht ausgeführt)
+
+### Neu
+- **Baumodus per Repo-Variable `STAGING`** in `.github/workflows/deploy.yml` (Job-Ebene, gilt auch für die Astro-Aktion, die selbst noch einmal baut). Nicht gesetzt = Staging wie bisher. Im Live-Repo auf `false` stellen = Live-Build mit Basispfad `/`, `sitemap.xml`, `robots.txt` und ohne Spiel. Ohne diese Variable würde das Live-Repo den Staging-Build ausliefern (falsche Links, `noindex`).
+- **`public/CNAME`** mit `www.mitrilmo.com` (bei der Quelle „GitHub Actions“ wirkungslos, aber harmlose Absicherung).
+
+### Entfernt
+- Testseiten `src/pages/dev-bilder.astro` und `src/pages/stories/test.astro` (Commit `fc37048`, gepusht).
+
+### Geprüft
+- `npm test` (107), `npm run check`, `npm run check:live` (mit `STAGING=false`) und `scripts/parity.mjs` ohne Fehler. Nachzugsliste leer, Premium-Codes 2027 im Neubau vorhanden, Spiel entfällt im Live-Build sauber.
+- Zwei unabhängige Review-Subagenten zur Umschaltung (nur lesend): Blocker waren der Staging-Build im Workflow und die Reihenfolge. Befunde stehen in der Vault-Notiz „Cutover-Checkliste“.
+
 ## 2026-11-03 (Phase 4: SEO, Barrierefreiheit, Größenwarnung)
 
 ### Neu
