@@ -20,6 +20,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Baumodus über die Repo-Variable STAGING (Settings → Secrets and variables → Actions → Variables).
+    # Nicht gesetzt = Staging (Test-URL, noindex). Im Live-Repo auf false stellen = Live-Build (www.mitrilmo.com).
+    # Gilt für alle Schritte, auch für die Astro-Aktion unten, die selbst noch einmal baut.
+    env:
+      STAGING: ${{ vars.STAGING }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
