@@ -53,3 +53,14 @@ test('Import: nicht unterstützte Dateiendung wird abgelehnt', async () => {
 });
 
 test.after(() => rmSync(dir, { recursive: true, force: true }));
+
+test('Import: AVIF-Ziel verkleinert und entfernt GPS (Quellformat der Momentwerk-Beiträge)', async () => {
+  const src = await make('fuer-avif.jpg', 3000, 2000, GPS);
+  const dest = join(dir, 'ziel.avif');
+  const r = await importImage(src, dest, { max: 1200, quality: 50 });
+  const m = await sharp(dest).metadata();
+  assert.equal(m.format, 'heif');
+  assert.equal(Math.max(m.width, m.height), 1200);
+  assert.equal(r.hadGps, true);
+  assert.equal(r.keptExif, false);
+});

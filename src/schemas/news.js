@@ -7,8 +7,15 @@ import { date, httpsUrl } from './common.js';
 const internalPath = z.string().regex(/^\/[a-z0-9][a-z0-9\-/.]*\.html$/, 'Interner Link wie /pfadwerk.html');
 const link = z.object({ href: z.union([httpsUrl, internalPath]), text: z.string().min(3) });
 
-export const newsSchema = ({ reference, image }) =>
-  z
+export const newsSchema = ({ reference, image }) => {
+  // Abschnitt eines längeren Beitrags (Momentwerk-Import): Überschrift, Text (Absätze durch Leerzeile), Fotos.
+  // Die Einleitung steht im Fließtext der Datei, das Fazit ist ein normaler Abschnitt.
+  const section = z.object({
+    heading: z.string().min(2),
+    text: z.string().default(''),
+    photos: z.array(z.object({ image: image(), alt: z.string().min(3) })).default([]),
+  });
+  return z
     .object({
       title: z.string().min(3),
       date,
@@ -22,6 +29,8 @@ export const newsSchema = ({ reference, image }) =>
       tags: z.array(z.string().regex(/^[^\s#]+$/, 'Tag ohne Leerzeichen und ohne #')).default([]),
       link: link.optional(),
       tour: reference('tours').optional(),
-      momentwerkId: z.string().min(3).optional(), // erneuter Import überschreibt denselben Beitrag
+      sections: z.array(section).default([]),
+      momentwerkId: z.string().min(1).optional(), // erneuter Import überschreibt denselben Beitrag
       draft: z.boolean().default(false),
     });
+};

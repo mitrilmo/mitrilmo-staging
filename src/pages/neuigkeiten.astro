@@ -22,7 +22,7 @@ const posts = published(await getCollection('news'));
         <li>
           <article class="bg-slate-700 rounded-2xl overflow-hidden border border-white/5 sm:flex">
             <a href={`${base}/neuigkeiten/${p.id}.html`} class="sm:w-56 sm:shrink-0 block" aria-hidden="true" tabindex="-1">
-              <ContentImage image={p.data.cover} alt={p.data.coverAlt} sizes="(min-width: 640px) 224px, 100vw" widths={[480, 800]} priority={i === 0} class="w-full h-48 sm:h-full object-cover" />
+              <ContentImage avifOnly image={p.data.cover} alt={p.data.coverAlt} sizes="(min-width: 640px) 224px, 100vw" widths={[480, 800]} priority={i === 0} class="w-full h-48 sm:h-full object-cover" />
             </a>
             <div class="p-5">
               <p class="text-xs text-stone-400"><time datetime={p.data.date.toISOString().slice(0, 10)}>{dateDe(p.data.date)}</time></p>

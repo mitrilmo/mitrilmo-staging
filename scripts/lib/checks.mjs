@@ -103,6 +103,7 @@ export function checkEntries(data, io) {
   for (const [id, n] of Object.entries(data.news || {})) {
     img('news', id, 'cover', n.cover);
     (n.photos || []).forEach((p, i) => img('news', id, `photos[${i}]`, p?.image));
+    (n.sections || []).forEach((s, si) => (s?.photos || []).forEach((p, i) => img('news', id, `sections[${si}].photos[${i}]`, p?.image)));
     if (n.tour && !(data.tours || {})[n.tour]) err('news', id, `Tour ${n.tour} gibt es nicht`);
   }
   return { errors, warnings };

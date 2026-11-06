@@ -1,5 +1,25 @@
 # Changelog – mitrilmo-Website 2.0 (Neubau, Staging)
 
+## 2026-11-06 (Momentwerk-Import)
+
+### Neu
+- **`npm run blog-import -- <datei.zip> [--force]`** (`scripts/blog-import.mjs`, Logik in `scripts/lib/blog-import.mjs`): übernimmt den Momentwerk-Export „Für Website (ZIP)“ (Format `momentwerk-1`) als Neuigkeit. Ohne `--force` Trockenlauf. Prüft Pflichtfelder, Bildverweise, unerwartete Dateien und unsichere ZIP-Pfade, wandelt die Bilder in JPG (längste Kante 1200 px, Qualität 72, keine Metadaten), schreibt `news/<slug>.md`. Gleiche `momentwerkId` ersetzt den Beitrag. Neue Dev-Abhängigkeit `fflate` (ZIP lesen).
+- **Neuigkeiten-Schema: `sections`** (Überschrift, Text, Fotos je Abschnitt). Die Beitragsseite zeigt Abschnitte mit Überschrift, Absätzen und Fotoraster. `momentwerkId` darf jetzt auch kurz sein (Momentwerk liefert eine Zahl).
+- Erster echter Import: „Gasthaus zur Neyetalsperre“ (31.10.2026, 13 Bilder). Alt-Texte sind noch Platzhalter.
+- Zweiter Import: „Landgasthof Filde“ (23.10.2026, 14 Bilder), ZIP direkt aus dem synchronisierten Google-Drive-Ordner `H:\Meine Ablage\Website mitrilmo`. Alt-Texte nach Sichtung der Fotos ergänzt (zwei stammten aus Momentwerk). Ohne Bewertung (`rating` fehlt in der ZIP).
+
+### Geändert
+- `check:content` kennt Fotos in `sections` (Pfad, Größe, GPS, unbenutzte Bilder).
+- 9 neue Tests (116 gesamt).
+- **Speicherplatz Momentwerk-Bilder:** Import mit 1200 px und Qualität 72 statt 1600 px und 85, Fotos im Raster der Beitragsseite mit Auslieferungsqualität 60. Beitrag „Gasthaus zur Neyetalsperre“: Repo 3,0 auf 1,3 MB, gebaute Seite 6,3 auf 3,9 MB, größte Einzeldatei 422 auf 212 KB. Sichtprüfung der Fotos ohne sichtbare Artefakte.
+- **Speicherplatz, zweite Runde (viele Beiträge erwartet):**
+  - Neuigkeiten liefern Bilder **nur als AVIF** aus, ohne WebP-Fallback (`ContentImage`-Option `avifOnly`, genutzt auf `/neuigkeiten.html` und den Beitragsseiten). Browser ohne AVIF (vor Safari 16.4 und Chrome 85, Geräte von 2022 und älter) sähen die Bilder dort nicht. Die Standardbreite ist die größte angeforderte Variante statt des Originals.
+  - Quellbilder im Repo sind jetzt **AVIF** (1200 px, Qualität 50) statt JPG. Gleiche Bildqualität nach dem Bauen (Messung: Abweichung 4,09 gegenüber 4,02), Repo-Bilder rund 45 % kleiner. `importImage` kann `.avif` schreiben.
+  - Vorschaubild für Social Media (`og:image`) auf 1200 x 630 zugeschnitten statt in voller Hochformatgröße.
+  - Erneuter Import behält von Hand ergänzte Alt-Texte, wo Momentwerk keinen eigenen liefert. Textänderungen gehen weiter verloren.
+  - Ergebnis je Beitrag (14 und 13 Bilder): Repo 1,2 auf 0,7 MB und 1,3 auf 0,8 MB, gebaute Seite 3,2 auf 1,4 MB und 3,9 auf 1,7 MB. Gesamte `dist` 65 auf 58 MB. Beide Beiträge neu importiert.
+  - 117 Tests (neu: AVIF-Import).
+
 ## 2026-11-03 (Phase 5 Vorbereitung, Cutover noch nicht ausgeführt)
 
 ### Neu

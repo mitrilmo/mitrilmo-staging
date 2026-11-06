@@ -31,6 +31,7 @@ const imgFields = ['image', 'thumbnail', 'cover'];
 const referenced = new Set();
 for (const c of collections) for (const e of Object.values(data[c])) {
   for (const f of imgFields) if (typeof e[f] === 'string') referenced.add(resolve(imageBase, e[f]));
+  for (const s of Array.isArray(e.sections) ? e.sections : []) for (const p of Array.isArray(s?.photos) ? s.photos : []) if (typeof p?.image === 'string') referenced.add(resolve(imageBase, p.image));
   for (const p of Array.isArray(e.photos) ? e.photos : []) if (typeof p?.image === 'string') referenced.add(resolve(imageBase, p.image));
 }
 // Bilder im Fließtext (![Alt](Pfad)): zählen als verwendet und werden wie die Titelbilder geprüft
